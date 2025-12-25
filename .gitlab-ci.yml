@@ -1,0 +1,23 @@
+image: python:3.11
+
+pages:
+  script:
+    # Устанавливаем зависимости
+    - pip install pyyaml jinja2 markdown
+    
+    # Устанавливаем LibreOffice для конвертации PDF
+    - apt-get update && apt-get install -y libreoffice
+    
+    # Запускаем сборку сайта
+    - cd docs/scripts
+    - python build_site.py
+    
+    # Копируем в папку public для GitLab Pages
+    - mkdir -p ../../public
+    - cp -r ../output/web/* ../../public/
+    
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
