@@ -25,28 +25,12 @@ jobs:
     
     - name: Generate website
       run: |
-        # Показываем окружение
-        echo "📁 GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-        echo "📁 PWD: $(pwd)"
-        echo "📄 Содержимое корня:"
-        ls -la
-        
-        # Запускаем генерацию с отладкой
-        cd docs/scripts
-        echo "📁 В папке скриптов: $(pwd)"
-        echo "📄 Файлы:"
-        ls -la
-        
-        # Запускаем скрипт
+        # Вход в правильную директорию и запуск
+        cd docs/scripts/builders
         python build_site.py
-        
-        # Проверяем результат
-        echo "✅ Результат генерации:"
-        ls -la ../output/web/
     
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: docs/output/web
-        

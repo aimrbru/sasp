@@ -22,14 +22,16 @@ sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 # ──────────────────────────────────────────────────────────────────────────────
 
 # ИСПРАВЛЕННЫЙ БЛОК: Работает и локально, и в GitHub Actions
+
+from pathlib import Path
+
 if 'GITHUB_WORKSPACE' in os.environ:
-    # В GitHub Actions используем рабочую директорию
     PROJECT_ROOT = Path(os.environ['GITHUB_WORKSPACE'])
-    print(f"🔧 Режим GitHub Actions. PROJECT_ROOT: {PROJECT_ROOT}")
 else:
-    # Локальный режим
-    PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-    print(f"🔧 Локальный режим. PROJECT_ROOT: {PROJECT_ROOT}")
+    # Для builders/build_site.py нужно на один уровень выше
+    PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent.parent
+
+print(f"PROJECT_ROOT установлен: {PROJECT_ROOT}")
 
 CONFIG = {
     "web_output": PROJECT_ROOT / "docs" / "output" / "web",
