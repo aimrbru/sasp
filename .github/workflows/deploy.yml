@@ -1,34 +1,35 @@
-# .github/workflows/test.yml
-name: Test Python Scripts
+name: Deploy Documentation
 
-on: [push, workflow_dispatch]
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'hardware/**'
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
     
-    - name: Setup Python 3.12
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.12'
     
-    - name: Test imports
-      run: |
-        cd docs/scripts
-        python -c "
-        try:
-            import yaml, jinja2, markdown
-            print('✅ Все импорты работают')
-        except ImportError as e:
-            print(f'❌ Ошибка импорта: {e}')
-            sys.exit(1)
-        "
+    - name: Install dependencies
+      run: pip install pyyaml jinja2
     
-    - name: Test script syntax
+    - name: Generate website
       run: |
         cd docs/scripts
-        # Проверяем синтаксис без выполнения
-        python -m py_compile build_site.py builders/build_docs.py
-        echo "✅ Синтаксис Python корректен"
+        python build_site.py
+    
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: docs/output/web
