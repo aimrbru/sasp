@@ -1,10 +1,14 @@
 # docs/scripts/builders/build_docs.py
 #!/usr/bin/env python3
 import sys
+import io
 import argparse
 from pathlib import Path
 import yaml
 from typing import Dict, Any, List, Optional, Tuple
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 from gost_shared import (
     GOSTFormatter,

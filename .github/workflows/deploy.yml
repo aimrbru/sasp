@@ -1,0 +1,34 @@
+# .github/workflows/test.yml
+name: Test Python Scripts
+
+on: [push, workflow_dispatch]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    
+    - name: Test imports
+      run: |
+        cd docs/scripts
+        python -c "
+        try:
+            import yaml, jinja2, markdown
+            print('✅ Все импорты работают')
+        except ImportError as e:
+            print(f'❌ Ошибка импорта: {e}')
+            sys.exit(1)
+        "
+    
+    - name: Test script syntax
+      run: |
+        cd docs/scripts
+        # Проверяем синтаксис без выполнения
+        python -m py_compile build_site.py builders/build_docs.py
+        echo "✅ Синтаксис Python корректен"

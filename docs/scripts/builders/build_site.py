@@ -3,13 +3,18 @@
 """
 build_site.py - Генерация high-tech сайта документации САСП-2
 """
-
+import sys
 import shutil
 from pathlib import Path
 from datetime import datetime
 import yaml
+import io
 import jinja2
 from jinja2 import Template, UndefinedError
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+
 
 # ──────────────────────────────────────────────────────────────────────────────
 # КОНФИГУРАЦИЯ
