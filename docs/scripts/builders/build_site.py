@@ -3,6 +3,7 @@
 """
 build_site.py - Генерация high-tech сайта документации САСП-2
 """
+import os
 import sys
 import shutil
 from pathlib import Path
@@ -20,7 +21,15 @@ sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 # КОНФИГУРАЦИЯ
 # ──────────────────────────────────────────────────────────────────────────────
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
+# ИСПРАВЛЕННЫЙ БЛОК: Работает и локально, и в GitHub Actions
+if 'GITHUB_WORKSPACE' in os.environ:
+    # В GitHub Actions используем рабочую директорию
+    PROJECT_ROOT = Path(os.environ['GITHUB_WORKSPACE'])
+    print(f"🔧 Режим GitHub Actions. PROJECT_ROOT: {PROJECT_ROOT}")
+else:
+    # Локальный режим
+    PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
+    print(f"🔧 Локальный режим. PROJECT_ROOT: {PROJECT_ROOT}")
 
 CONFIG = {
     "web_output": PROJECT_ROOT / "docs" / "output" / "web",
