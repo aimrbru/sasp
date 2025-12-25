@@ -49,7 +49,7 @@ sections:
             - "наличие базовых навыков работы с мобильным устройством или компьютером (открытие веб-страниц, использование приложений);"
             - "умение подключать устройство к домашней Wi-Fi-сети (знание имени сети и пароля)."
       - text: |
-          Изделие относится к устройствам с питанием от источника постоянного тока {{ power.nominal_voltage.value }} {{ power.nominal_voltage.unit }}.
+          Изделие относится к устройствам с питанием от источника постоянного тока {{ specifications.power.voltage_v.value }} {{ specifications.power.voltage_v.unit }}.
       - text: |
           Опасными факторами при эксплуатации являются:
       - list:
@@ -183,14 +183,8 @@ sections:
                             - "{{ specifications.environmental.placement.description }}"
                             - "{{ specifications.environmental.placement.value }}"
                         - cells:
-                            - "{{ specifications.environmental.lightingquirements.description }}"
-                            - "{{ specifications.environmental.lightingquirements.value }}"
-                        - cells:
                             - "{{ specifications.safety.class.description }}"
                             - "{{ specifications.safety.class.value }}"
-                        - cells:
-                            - "{{ specifications.safety.supplyquirements.description }}"
-                            - "{{ specifications.safety.supplyquirements.value }}"
                         - cells:
                             - "{{ specifications.features.ota_support.description }}"
                             - "{{ specifications.features.ota_support.display_text }}"
