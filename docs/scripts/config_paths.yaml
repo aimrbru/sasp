@@ -1,0 +1,34 @@
+
+# Основные пути проекта
+
+base_dirs:
+  hardware: "hardware"            # Аппаратная часть
+  software: "software"            # Программная часть
+  production: "production"        # Производственная часть 
+  docs: "docs"                    # Директория документации
+  templates: "docs/templates"     # Шаблоны документов
+  output: "docs/output"           # Выходные файлы
+  content: "docs/content"         # Директория контента YAML
+
+# Файлы шаблонов документов
+templates:
+  eskd: "eskd/eskd.ott"           # Шаблон ЕСКД
+
+# Файлы контента (YAML шаблоны)
+content:
+  tu: "docs/content/tu_content.yaml"    # путь к шаблону Технических Условий
+  ps: "docs/content/ps_content.yaml"    # путь к шаблону Паспорта
+  re: "docs/content/re_content.yaml"    # путь к шаблону Руководства
+  site: "docs/content/api_content.yaml" # путь к шаблону сайта
+
+# Файлы данных (исходные YAML)
+data_files:
+  general: "hardware/general_info.yaml"                 # Общая информация
+  requirements: "hardware/technical_requirements.yaml"  # Технические требования
+  specification: "hardware/specification.yaml"          # Спецификация
+  production: "production/production.yaml"              # Производственные данные 
+
+
+# Количество уровней в содержании 
+toc_settings:
+  max_levels: 2  

@@ -1,0 +1,90 @@
+# production/production.yaml
+# Производственные данные для изделий
+
+manufacturer:
+  company: ООО "АИМ"                
+  legal_address: "[Юридический адрес изготовителя]"
+  contacts:
+    phone: "[Контактный телефон]"
+    email: "[Адрес электронной почты]"
+
+batch:
+  number: "BATCH-2025-001"
+  manufacturing_date: "01.01.2025"
+  quantity: 100
+  assembly_line: "Линия №1"
+  quality_inspector: "Иванов Иван Иванович"
+
+serial_numbers:
+  format: "ESP-CAM-{year}-{number:04d}"
+  current: 1
+  examples:
+    main_product: "ESP-CAM-2025-0001"
+    power_supply: "PS-2025-0001"
+    cables: "CAB-2025-0001"
+
+acceptance:
+  date: "05.01.2025"
+  protocol: "АП-2025-001"
+  inspector: "Петров Петр Петрович"
+  results:
+    electrical: "соответствует"
+    functional: "работоспособно"
+    visual: "без дефектов"
+    ota: "функционирует"
+  conclusion: "годен к эксплуатации"
+
+packaging:
+  date: "05.01.2025"
+  type: "индивидуальная картонная коробка"
+  packer: "Сидоров Сидор Сидорович"
+  inspector: "Кузнецов Кузьма Кузьмич"
+  condition: "отличное"
+
+warranty:
+  period_months: 12
+  conditions: "Гарантия действует при сохранении целостности пломбы"
+  exclusions:
+    - "механические повреждения корпуса"
+    - "попадание влаги внутрь устройства"
+    - "использование нештатного блока питания"
+    - "самостоятельная разборка устройства"
+
+lifespan:
+  service_years: 5
+  storage_years: 2
+  mtbf_hours: 10000
+
+service_centers:
+  - "г. Москва, ул. Сервисная, 10, тел: +7 (495) 111-22-33"
+  - "г. Санкт-Петербург, пр. Ремонтный, 5, тел: +7 (812) 444-55-66"
+
+manufacturer_registration:
+  ogrn: "1234567890123"
+  inn: "1234567890"
+  kpp: "123456789"
+  bank_details: "ПАО Сбербанк, р/с 40702810123456789012, БИК 044525225"
+
+additional_equipment:
+  mounting_brackets:
+    note: "Приобретаются отдельно под конкретную модель счетчика"
+    example: "КР-01 для счетчика ABC-123"
+    availability: "есть в наличии"
+
+disposal:
+  method: "передача специализированным организациям"
+  components:
+    - "корпус (АБС-пластик)"
+    - "электронная плата"
+    - "камера OV2640"
+    - "защитное стекло"
+
+pricing:
+  product_price: 8900
+  currency: "руб."
+  brackets_price: 1500
+  purchase_terms:
+    - "самовывоз со склада"
+    - "доставка по договоренности"
+    - "предоплата 100%"
+    - "НДС включен"

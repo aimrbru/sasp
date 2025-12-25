@@ -1,0 +1,458 @@
+# docs/content/api_content.yaml
+# шаблон Справочник по API
+
+
+sections:
+  - id: api_general
+    name: Общие сведения об API
+    subsections:
+      - id: api_overview
+        name: Обзор API
+        points:
+          - id: api_description
+            name: Назначение API
+            blocks:
+              - text: >
+                  API устройства esp_cam_blufi предоставляет программный интерфейс
+                  для удалённого управления, конфигурации и мониторинга устройства
+                  съёма показаний с приборов учёта.
+                  
+              - text: Основные возможности API включают
+              - list:
+                  style: bullet
+                  items:
+                    - Управление настройками устройства
+                    - Работа с изображениями и данными
+                    - Конфигурация параметров распознавания
+                    - Управление режимами работы
+
+      - id: data_formats
+        name: Форматы данных
+        points:
+          - id: json_format
+            name: Формат JSON
+            blocks:
+              - text: Все запросы и ответы API (кроме бинарных изображений) используют формат JSON
+              - list:
+                  style: alpha
+                  items:
+                    - Поля чувствительны к регистру
+                    - Строковые значения заключаются в двойные кавычки
+                    - Булевы значения передаются как числа (0/1)
+                    - Числовые значения передаются без кавычек
+
+          - id: data_types
+            name: Типы данных
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - string — строковые значения
+                    - integer — целочисленные значения
+                    - boolean — логические значения (0/1)
+                    - base64 — кодированные изображения
+
+  - id: api_endpoints
+    name: Конечные точки API
+    subsections:
+      - id: get_requests
+        name: Основные GET-запросы
+        points:
+          - id: load_settings
+            name: Получение текущих настроек
+            blocks:
+              - text: |
+                  GET /load_settings
+              - text: Ответ (JSON)
+              - list:
+                  style: bullet
+                  items:
+                    - >
+                      {
+                        "device1_id": "45264441",
+                        "device1_type": "cold",
+                        "device1_x1": 136,
+                        "device1_y1": 440,
+                        "device1_x2": 520,
+                        "device1_y2": 568,
+                        "device2_id": "45264391",
+                        "device2_type": "hot",
+                        "device2_x1": 1032,
+                        "device2_y1": 156,
+                        "device2_x2": 1416,
+                        "device2_y2": 284,
+                        "sleep_enabled": false,
+                        "sleep_seconds": 600,
+                        "ocr_enabled": false,
+                        "copy_to_server": false,
+                        "server_path": "http://192.168.1.50/upload.php",
+                        "agc_gain": 3,
+                        "aec_value": 500,
+                        "flash_duty": 150
+                      }
+
+          - id: take_init_image
+            name: Тестовое изображение
+            blocks:
+              - text: |
+                  GET /take_init_image
+              - text: Ответ
+              - list:
+                  style: alpha
+                  items:
+                    - Бинарный JPEG файл
+
+          - id: web_interface
+            name: Веб-интерфейс
+            blocks:
+              - text: |
+                  GET /
+              - text: Ответ
+              - list:
+                  style: bullet
+                  items:
+                    - HTML страница веб-интерфейса
+
+      - id: post_configuration
+        name: POST-запросы для конфигурации
+        points:
+          - id: save_common_settings
+            name: Сохранение общих настроек
+            blocks:
+              - text: |
+                  POST /save_common_settings
+                  Content-Type: application/json
+              - list:
+                  style: numeric
+                  items:
+                    - >
+                      {
+                        "ocr_enabled": 1,       
+                        "sleep_enabled": 1,        
+                        "sleep_seconds": 600,
+                        "copy_to_server": 1,     
+                        "server_path": "http://192.168.1.50/upload.php",
+                        "agc_gain": 3,
+                        "aec_value": 500,
+                        "flash_duty": 150
+                      }
+              - text: Ответ при успехе
+              - list:
+                  style: roman
+                  items:
+                    - {"status":"success"}
+
+          - id: save_device_id
+            name: Сохранение ID и типа счетчика
+            blocks:
+              - text: |
+                  POST /save_device_id
+                  Content-Type: application/json
+              - list:
+                  style: numeric
+                  items:
+                    - >
+                      {
+                        "key": "device1",   
+                        "type": "cold",    
+                        "id": "45264441"
+                      }
+              - text: Ответы
+              - list:
+                  style: alpha
+                  items:
+                    - При успехе: {"status":"success"}
+                    - При ошибке: {"status":"error","message":"Bad Request"}
+
+          - id: save_coordinates
+            name: Сохранение координат ROI
+            blocks:
+              - text: |
+                  POST /save_coordinates
+                  Content-Type: application/json
+              - list:
+                  style: numeric
+                  items:
+                    - >
+                      {
+                        "device": "device1"
+                        "x1": 136,
+                        "y1": 440,
+                        "x2": 520,
+                        "y2": 568
+                      }
+              - text: Ответ при успехе
+              - list:
+                  style: roman
+                  items:
+                    - {"status":"success"}
+
+      - id: image_processing
+        name: Работа с изображениями и данными
+        points:
+          - id: get_images
+            name: Получение изображений с данными
+            blocks:
+              - text: |
+                  POST /get_images
+                  Content-Type: application/json
+              - list:
+                  style: numeric
+                  items:
+                    - >
+                      {
+                        "action": "process_enabled"
+                      }
+              - text: Ответ при process_enabled
+              - list:
+                  style: bullet
+                  items:
+                    - >
+                      {
+                        "devices": {
+                          "device1": {
+                            "device_image": "base64_encoded_jpeg_string",
+                            "device_data": {
+                              "device_id": "45264441",
+                              "device_type": "cold",
+                              "timestamp": 1766500164,
+                              "text": "N/A"
+                            }
+                          },
+                          "device2": {
+                            "device_image": "base64_encoded_jpeg_string",
+                            "device_data": {
+                              "device_id": "45264391",
+                              "device_type": "hot",
+                              "timestamp": 1766500164,
+                              "text": "N/A"
+                            }
+                          }
+                        }
+                      }
+
+      - id: device_control
+        name: Управление устройством
+        points:
+          - id: action_endpoint
+            name: Запуск полного цикла работы
+            blocks:
+              - text: |
+                  POST /action
+                  Content-Type: application/json
+              - list:
+                  style: bullet
+                  items:
+                    - {} 
+              - text: Ответ
+              - list:
+                  style: roman
+                  items:
+                    - {"status":"success"}
+
+          - id: restart
+            name: Перезагрузка устройства
+            blocks:
+              - text: |
+                  POST /restart
+                  Content-Type: application/json
+              - text: Ответ
+              - list:
+                  style: roman
+                  items:
+                    - {"status":"restarting"}
+
+      - id: websocket
+        name: WebSocket интерфейс
+        points:
+          - id: ws_endpoint
+            name: Реальный мониторинг
+            blocks:
+              - text: Подключение
+              - list:
+                  style: alpha
+                  items:
+                    - const socket = new WebSocket('ws://192.168.1.21/ws')
+              - text: Сообщения при подключении
+              - list:
+                  style: bullet
+                  items:
+                    - "I (89987437) WEB_SERVER: Client connected"
+
+  - id: error_handling
+    name: Обработка ошибок
+    subsections:
+      - id: error_codes
+        name: Коды ошибок и ответы
+        points:
+          - id: not_found
+            name: Несуществующий путь (404)
+            blocks:
+              - text: |
+                  GET /nonexistent
+              - text: Ответ
+              - list:
+                  style: bullet
+                  items:
+                    - Nothing matches the given URI
+                    - Content-Type: text/html
+
+          - id: method_not_allowed
+            name: Неподдерживаемый метод (405)
+            blocks:
+              - text: |
+                  POST /
+              - text: Ответ
+              - list:
+                  style: bullet
+                  items:
+                    - HTTP/1.1 405 Method Not Allowed
+                    - Content-Type: text/html
+                    - Content-Length: 45
+
+          - id: validation_error
+            name: Ошибка валидации данных
+            blocks:
+              - text: Пример запроса
+              - list:
+                  style: numeric
+                  items:
+                    - |
+                      POST /save_device_id
+                      Content-Type: application/json
+                      
+                      {"type": "invalid", "id": "d"}
+              - text: Ответ
+              - list:
+                  style: roman
+                  items:
+                    - {"status":"error","message":"Bad Request"}
+
+  - id: system_limits
+    name: Системные ограничения
+    subsections:
+      - id: unsupported_endpoints
+        name: Отсутствующие эндпоинты
+        points:
+          - id: monitoring_endpoints
+            name: Мониторинговые эндпоинты
+            blocks:
+              - list:
+                  style: alpha
+                  items:
+                    - /status — не реализован
+                    - /heap — не реализован
+                    - /uptime — не реализован
+
+          - id: service_endpoints
+            name: Сервисные эндпоинты
+            blocks:
+              - list:
+                  style: alpha
+                  items:
+                    - /ota — не реализован
+                    - /blufi — не реализован
+                    - /spiffs — не реализован
+
+  - id: reference_data
+    name: Справочные данные
+    subsections:
+      - id: json_fields
+        name: Поля JSON
+        points:
+          - id: field_reference
+            name: Справочник полей
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - device[1|2]_id — string — ID счетчика — "45264441"
+                    - device[1|2]_type — string — Тип счетчика — "cold", "hot", "electric"
+                    - device[1|2]_x[1|2], device[1|2]_y[1|2] — integer — Координаты ROI — 136, 440
+                    - sleep_enabled — boolean — Режим сна включен — false
+                    - sleep_seconds — integer — Интервал сна (сек) — 600
+                    - ocr_enabled — boolean — OCR включен — false
+                    - copy_to_server — boolean — Отправка на сервер — false
+                    - server_path — string — URL сервера — "http://server.com/api"
+                    - agc_gain — integer — Усиление камеры (0-30) — 3
+                    - aec_value — integer — Экспозиция (0-1200) — 500
+                    - flash_duty — integer — Мощность вспышки (0-1024) — 150
+
+          - id: meter_types
+            name: Типы счетчиков
+            blocks:
+              - list:
+                  style: roman
+                  items:
+                    - "cold"
+                    - "hot"
+                    - "electric"
+
+  - id: usage_examples
+    name: Примеры использования
+    subsections:
+      - id: api_scenario
+        name: Пример рабочего сценария через API
+        points:
+          - id: bash_example
+            name: Сценарий в bash
+            blocks:
+              - text: Последовательность команд
+              - list:
+                  style: numeric
+                  items:
+                    - "# 1. Получение текущих настроек"
+                    - "SETTINGS=$(curl -s http://192.168.1.21/load_settings)"
+                    - ""
+                    - "# 2. Изменение параметров счетчика 1"
+                    - "curl -X POST http://192.168.1.21/save_device_id \\"
+                    - "  -H \"Content-Type: application/json\" \\"
+                    - "  -d '{\"key\": \"device1\", \"type\": \"hot\", \"id\": \"999888\"}'"
+                    - ""
+                    - "# 3. Настройка ROI для счетчика 2"
+                    - "curl -X POST http://192.168.1.21/save_coordinates \\"
+                    - "  -H \"Content-Type: application/json\" \\"
+                    - "  -d '{\"device\": \"device2\", \"x1\": 100, \"y1\": 200, \"x2\": 400, \"y2\": 300}'"
+                    - ""
+                    - "# 4. Включение OCR и настройка сна"
+                    - "curl -X POST http://192.168.1.21/save_common_settings \\"
+                    - "  -H \"Content-Type: application/json\" \\"
+                    - "  -d '{\"ocr_enabled\": 1, \"sleep_enabled\": 1, \"sleep_seconds\": 3600}'"
+                    - ""
+                    - "# 5. Тестовый снимок"
+                    - "curl -o test_image.jpg http://192.168.1.21/take_init_image"
+                    - ""
+                    - "# 6. Запуск полного цикла работы"
+                    - "curl -X POST http://192.168.1.21/action"
+                    - ""
+                    - "# 7. Получение результатов"
+                    - "curl -X POST http://192.168.1.21/get_images \\"
+                    - "  -H \"Content-Type: application/json\" \\"
+                    - "  -d '{\"action\": \"process_enabled\"}'"
+
+  - id: important_notes
+    name: Важные замечания
+    subsections:
+      - id: api_constraints
+        name: Ограничения и особенности API
+        points:
+          - id: response_formats
+            name: Форматы ответов
+            blocks:
+              - text: |
+                  Все ответы в JSON кроме бинарных изображений
+              - text: |
+                  Стандартная структура ответа: {"status": "success"} или {"status": "error", "message": "..."}
+              - text: |
+                  Изображения возвращаются в base64 при использовании /get_images
+
+          - id: validation_and_security
+            name: Валидация и безопасность
+            blocks:
+              - list:
+                  style: alpha
+                  items:
+                    - Валидация выполняется на сервере (возвращает "Bad Request" при ошибках)
+                    - WebSocket используется только для логов подключения
+                    - Системные мониторинговые эндпоинты (/status, /heap, /uptime) не реализованы
+                    - OTA и BLUFI API доступны только через соответствующие протоколы, не через HTTP

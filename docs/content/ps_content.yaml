@@ -1,0 +1,416 @@
+# docs/content/ps_content.yaml
+# Шаблон паспорта по ГОСТ
+
+sections:
+  - id: "title_page"
+    name: "Титульный лист"
+    content:
+      - id: "company_name"
+        type: "text"
+        value: "{{ manufacturer.company }}"
+     
+      - id: "okpd_code"
+        type: "text"
+        value: "{{ product.okpd }}"
+      - type: "blank_line"
+        count: 10
+      
+      - id: "product_name"
+        type: "text"
+        value: |
+          {{ product.full_name }}
+      - type: "blank_line"
+        count: 1
+      
+      - type: "text"
+        value: "Паспорт"
+      
+      - type: "blank_line"
+        count: 1
+      
+      - id: "product_code"
+        type: "text"
+        value: |
+          {{ product.code }}.ПС
+      
+      - type: "blank_line"
+        count: 3
+      
+      - type: "bottom_info"
+        value: "{{ manufacturer.city }} {{ manufacturer.responsible.document_date }}"
+
+  - id: "table_of_contents"
+    name: "Содержание"
+    is_toc_section: true
+    content: []
+
+  - id: "main_info"
+    name: "Основные сведения об изделии и технические данные"
+    subsections:
+      - id: "basic_info"
+        name: "Основные сведения"
+        blocks:
+            - text: |
+                  Основные сведения об изделии приведены в таблице {{table_counter_next}}
+            - table:
+                  name: "Основные сведения"
+                  headers: ["Параметр", "Значение"]
+                  rows:
+                    - cells:
+                        - "Наименование изделия"
+                        - "{{ product.full_name }}"
+                    - cells:
+                        - "Обозначение изделия"
+                        - "{{ product.code }}"
+                    - cells:
+                        - "Дата изготовления"
+                        - "{{ batch.manufacturing_date }}"
+                    - cells:
+                        - "Изготовитель"
+                        - "{{ manufacturer.company }}"
+
+                    - cells:
+                        - "Заводской номер"
+                        - "{{ serial_numbers.examples.main_product }}"
+                    - cells:
+                        - "Сертификат соответствия"
+                        - "{{ regulatory.certificate.number }} от {{ regulatory.certificate.issue_date }}, срок действия до {{ regulatory.certificate.valid_until }}, выдан {{ regulatory.certificate.issued_by }}"
+                    - cells:
+                        - "Стандарты соответствия"
+                        - "{{ regulatory.compliance_standards }}"
+      
+      - id: "technical_data"
+        name: "Технические данные"
+        blocks:
+            - text: |
+                  Технические данные приведены приведены в таблице {{table_counter_next}}        
+            - table:
+                  name: "Технические данные"
+                  headers: ["Параметр", "Значение"]
+                  rows:
+                    - cells:
+                        - "{{ specifications.microcontroller.type.description }}"
+                        - "{{ specifications.microcontroller.type.value }}"
+                    - cells:
+                        - "{{ specifications.microcontroller.frequency_mhz.description }}"
+                        - "{{ specifications.microcontroller.frequency_mhz.value }} {{ specifications.microcontroller.frequency_mhz.unit }}"
+                    - cells:
+                        - "{{ specifications.microcontroller.cores.description }}"
+                        - "{{ specifications.microcontroller.cores.value }} {{ specifications.microcontroller.cores.unit }}"
+                    - cells:
+                        - "{{ specifications.camera.sensor.description }}"
+                        - "{{ specifications.camera.sensor.value }}"
+                    - cells:
+                        - "{{ specifications.camera.resolution_mp.description }}"
+                        - "{{ specifications.camera.resolution_mp.value }} {{ specifications.camera.resolution_mp.unit }}"
+                    - cells:
+                        - "{{ specifications.camera.format.description }}"
+                        - "{{ specifications.camera.format.value }}"
+                    - cells:
+                        - "{{ specifications.camera.focus_type.description }}"
+                        - "{{ specifications.camera.focus_type.value }}"
+                    - cells:
+                        - "Объём встроенной flash-памяти"
+                        - "от {{ specifications.memory.flash_mb_options.min.value }} до {{ specifications.memory.flash_mb_options.max.value }} {{ specifications.memory.flash_mb_options.min.unit }}"
+                    - cells:
+                        - "{{ specifications.memory.filesystem.description }}"
+                        - "{{ specifications.memory.filesystem.value }}"
+                    - cells:
+                        - "{{ specifications.wireless.wifi_standard.description }}"
+                        - "{{ specifications.wireless.wifi_standard.value }}"
+                    - cells:
+                        - "{{ specifications.wireless.bluetooth.description }}"
+                        - "{{ specifications.wireless.bluetooth.value }}"
+                    - cells:
+                        - "{{ specifications.power.voltage_v.description }}"
+                        - "{{ specifications.power.voltage_v.value }} {{ specifications.power.voltage_v.unit }}"
+                    - cells:
+                        - "{{ specifications.power.current_active_ma.description }}"
+                        - "{{ specifications.power.current_active_ma.value }} {{ specifications.power.current_active_ma.unit }}"
+                    - cells:
+                        - "Минимальный ток источника питания"
+                        - "{{ specifications.power.supply_min_ma.value }} {{ specifications.power.supply_min_ma.unit }}"
+                    - cells:
+                        - "{{ specifications.power.connection.description }}"
+                        - "{{ specifications.power.connection.value }}"
+                    - cells:
+                        - "Габаритные размеры (Д×Ш×В)"
+                        - "{{ specifications.physical.dimensions_mm.length.value }}×{{ specifications.physical.dimensions_mm.width.value }}×{{ specifications.physical.dimensions_mm.height.value }} {{ specifications.physical.dimensions_mm.length.unit }}"
+                    - cells:
+                        - "{{ specifications.physical.weight_grams.description }}"
+                        - "{{ specifications.physical.weight_grams.value }} {{ specifications.physical.weight_grams.unit }}"
+                    - cells:
+                        - "{{ specifications.physical.housing.description }}"
+                        - "{{ specifications.physical.housing.value }}"
+                    - cells:
+                        - "{{ specifications.physical.sealing.description }}"
+                        - "{{ specifications.physical.sealing.value }}"
+                    - cells:
+                        - "Диапазон рабочих температур"
+                        - "от {{ specifications.environmental.operating_temperature_c.min.value }} до +{{ specifications.environmental.operating_temperature_c.max.value }} {{ specifications.environmental.operating_temperature_c.min.unit }}"
+                    - cells:
+                        - "Диапазон температур хранения"
+                        - "от {{ specifications.environmental.storage_temperature_c.min.value }} до +{{ specifications.environmental.storage_temperature_c.max.value }} {{ specifications.environmental.storage_temperature_c.min.unit }}"
+                    - cells:
+                        - "Максимальная влажность"
+                        - "{{ specifications.environmental.humidity_max_percent.value }} {{ specifications.environmental.humidity_max_percent.unit }} (без конденсата)"
+                    - cells:
+                        - "{{ specifications.environmental.placement.description }}"
+                        - "{{ specifications.environmental.placement.value }}"
+                    - cells:
+                        - "{{ specifications.environmental.lighting_requirements.description }}"
+                        - "{{ specifications.environmental.lighting_requirements.value }}"
+                    - cells:
+                        - "{{ specifications.safety.class.description }}"
+                        - "{{ specifications.safety.class.value }}"
+                    - cells:
+                        - "{{ specifications.safety.supply_requirements.description }}"
+                        - "{{ specifications.safety.supply_requirements.value }}"
+                    - cells:
+                        - "{{ specifications.features.ota_support.description }}"
+                        - "{{ specifications.features.ota_support.display_text }}"
+                    - cells:
+                        - "{{ specifications.features.deep_sleep.description }}"
+                        - "{{ specifications.features.deep_sleep.display_text }}"
+                    - cells:
+                        - "{{ specifications.features.max_meters.description }}"
+                        - "{{ specifications.features.max_meters.value }} {{ specifications.features.max_meters.unit }}"
+                    - cells:
+                        - "{{ specifications.features.ocr_service.description }}"
+                        - "{{ specifications.features.ocr_service.value }}"
+
+
+  - id: "completeness"
+    name: "Комплектность"
+    subsections:
+      - id: "delivery_set"
+        name: "Комплект поставки"
+        blocks:
+            - text: |
+                  Комплектность поставки приведена приведены в таблице {{table_counter_next}}           
+            - table:
+                  name: "Комплектность поставки"
+                  headers: ["Обозначение изделия", "Наименование изделия", "Количество", "Заводской номер", "Примечание"]
+                  rows:
+                    - cells:
+                        - "{{ product.code }}"
+                        - "{{ product.full_name }}"
+                        - "1 шт."
+                        - "{{ serial_numbers.examples.main_product }}"
+                        - "Основное изделие"
+                    - cells:
+                        - "PS-5V"
+                        - "Блок питания 5 В"
+                        - "1 шт."
+                        - "{{ serial_numbers.examples.power_supply }}"
+                        - "Опционально"
+                    - cells:
+                        - "CAB-DC"
+                        - "Кабель питания"
+                        - "1 шт."
+                        - "{{ serial_numbers.examples.cables }}"
+                        - "Длина 1 м"
+                    - cells:
+                        - "{{ product.code }}.РЕ"
+                        - "Руководство по эксплуатации"
+                        - "1 экз."
+                        - "–"
+                        - "В электронной форме"
+                    - cells:
+                        - "{{ product.code }}.ПС"
+                        - "Паспорт"
+                        - "1 экз."
+                        - "–"
+                        - "Настоящий документ"
+
+      - id: "limited_resource"
+        name: "Изделия с ограниченным ресурсом"
+        points:
+          - id: "limited_resource_list"
+            name: "Изделия с ограниченным ресурсом:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "светодиод вспышки: срок службы 3 года"
+
+      - id: "additional_equipment"
+        name: "Дополнительное оборудование"
+        points:
+          - id: "additional_equipment_info"
+            name: "Дополнительное оборудование"
+            blocks:
+              - text: |
+                  Крепления для конкретной модели счетчика приобретаются отдельно и не входят в стандартную комплектацию.
+                
+  - id: "lifespan_warranty"
+    name: "Ресурсы, сроки службы и хранения и гарантии изготовителя"
+    subsections:
+      - id: "lifespan"
+        name: "Ресурсы, сроки службы и хранения"
+        points:
+          - id: "lifespan_details"
+            name: "Ресурсы и сроки"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "гарантийный срок эксплуатации: {{ warranty.period_months }} месяцев с даты продажи"
+                    - "наработка на отказ: не менее {{ lifespan.mtbf_hours }} часов"
+                    - "срок службы изделия: {{ lifespan.service_years }} лет"
+                    - "срок хранения в упаковке изготовителя: {{ lifespan.storage_years }} лет"
+
+      - id: "warranty"
+        name: "Гарантии изготовителя"
+        points:
+          - id: "warranty_terms"
+            name: "Условия гарантии"
+            blocks:
+              - text: "Изготовитель гарантирует соответствие изделия требованиям технической документации при соблюдении условий эксплуатации, транспортирования и хранения."
+              - text: "Гарантия не распространяется в случаях:"
+              - list:
+                  style: bullet
+                  items:
+                    - "механические повреждения корпуса;"
+                    - "попадание влаги внутрь устройства;"
+                    - "использование нештатного блока питания;"
+                    - "самостоятельная разборка устройства."
+          - id: "service_addr"
+            name: "Адреса сервисных центров:"
+            blocks:                    
+              - list:
+                  style: bullet
+                  items:
+                    - "г. Москва, ул. Сервисная, 0, тел: +7 (495) 000-22-33;"
+                    - "г. Санкт-Петербург, пр. Ремонтный, 0, тел: +7 (812) 000-55-66."
+
+  - id: "preservation"
+    name: "Консервация"
+    points:
+      - id: "preservation_table"
+        name: "Консервация"
+        blocks:
+          - text: |
+                  Сведения о консервации приведены в таблице {{table_counter_next}}.        
+          - table:
+              name: "Консервация"
+              headers: ["Дата", "Наименование работы", "Срок действия, годы", "Должность, фамилия и подпись"]
+              rows:
+                - cells:
+                    - "{{ batch.manufacturing_date }}"
+                    - "Первичная консервация"
+                    - "2"
+                    - " "
+
+  - id: "packaging"
+    name: "Свидетельство об упаковывании"
+    points:
+      - id: "packaging_info"
+        name: "Свидетельство об упаковывании"
+        blocks:
+          - text: "Изделие упаковано в соответствии с требованиями технической документации. Упаковка обеспечивает сохранность изделия при транспортировании и хранении в течение установленного срока."
+          - text: "Состояние упаковки на момент отгрузки: исправное."
+          - text: "Ответственные лица:"
+          - list:
+              style: bullet
+              items:
+                - "упаковщик: ___________________;"
+                - "контролер ОТК: ______________________."
+          - text: "Дата упаковывания: {{ packaging.date }}"
+
+  - id: "acceptance"
+    name: "Свидетельство о приемке"
+    points:
+      - id: "acceptance_info"
+        name: "Свидетельство о приемке"
+        blocks:
+          - text: "Изделие прошло приемо-сдаточные испытания и признано годным к эксплуатации."
+          - text: "Результаты испытаний:"
+          - list:
+              style: bullet
+              items:
+                - "проверка электрических параметров: соответствуют;"
+                - "проверка функциональности: соответствуют;"
+                - "визуальный контроль корпуса и пломбы: соответствуют;"
+                - "проверка OTA-функционала: соответствуют."
+          - text: "Заключение: изделие годно."
+          - text: "Ответственные лица:"
+          - list:
+              style: bullet
+              items:
+                - "представитель ОТК: __________________;"
+                - "начальник сборочного цеха: _______________."
+          - text: "Дата приемки: {{ acceptance.date }}"
+
+ 
+
+  - id: "pre_installation"
+    name: "Требования к проверке перед установкой"
+    points:
+      - id: "pre_installation_checklist"
+        name: "Проверка перед установкой"
+        blocks:
+          - list:
+              style: bullet
+              items:
+                - "Проверить целостность упаковки, корпуса и пломбы."
+                - "Проверить наличие всех компонентов по ведомости комплектности."
+                - "Визуально осмотреть корпус на отсутствие механических повреждений."
+                - "Проверить соответствие напряжения блока питания ({{ specifications.power.voltage_v.value }} В)."
+                - "Приобрести совместимые крепления для выбранной модели счетчика."
+
+  - id: "disposal"
+    name: "Сведения об утилизации"
+    subsections:
+      - id: "disposal_safety"
+        name: "Меры безопасности при утилизации"
+        points:
+          - id: "disposal_safety_rules"
+            name: "Меры безопасности"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "Перед утилизацией необходимо отключить изделие от всех источников питания."
+                    - "Запрещается пытаться разбирать корпус, изделие сдается на утилизацию в сборе."
+                    - "Изделие не содержит опасных веществ в количествах, требующих специальной утилизации."
+
+      - id: "disposal_preparation"
+        name: "Подготовка к утилизации"
+        points:
+          - id: "disposal_preparation_steps"
+            name: "Подготовка к утилизации"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "отключить устройство от счетчика (снять с креплений)."
+                    - "отсоединить блок питания и все кабели."
+                    - "сдать целое, неразобранное изделие в пункт приема."
+
+      - id: "disposal_methods"
+        name: "Методы утилизации"
+        points:
+          - id: "disposal_methods_list"
+            name: "Методы утилизации"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "сдача в специализированные пункты приема электронных отходов."
+                    - "передача организациям, имеющим лицензию на утилизацию электронной техники."
+
+      - id: "disposal_parts"
+        name: "Перечень утилизируемых составных частей"
+        points:
+          - id: "disposal_components"
+            name: "Составные части для утилизации"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "корпус: АБС-пластик"
+                    - "плата: электронная плата"
+                    - "камера: камера OV2640"
+                    - "стекло: защитное стекло"
+

@@ -1,0 +1,695 @@
+# hardware/technical_requirements.yaml
+# Все параметры представлены в виде объектов с описанием на русском языке
+
+# Раздел: Габариты и масса
+dimensions:
+  length:
+    value: 60.0
+    unit: "мм"
+    description: "Номинальная длина корпуса"
+  length_tolerance:
+    value: 0.5
+    unit: "мм"
+    description: "Допуск по длине (±)"
+  width:
+    value: 40.0
+    unit: "мм"
+    description: "Номинальная ширина корпуса"
+  width_tolerance:
+    value: 0.5
+    unit: "мм"
+    description: "Допуск по ширине (±)"
+  height:
+    value: 20.0
+    unit: "мм"
+    description: "Номинальная высота корпуса"
+  height_tolerance:
+    value: 0.5
+    unit: "мм"
+    description: "Допуск по высоте (±)"
+  max_weight:
+    value: 100.0
+    unit: "г"
+    description: "Максимальная масса изделия с корпусом"
+
+# Раздел: Электропитание
+power:
+  nominal_voltage:
+    value: 5.0
+    unit: "В"
+    description: "Номинальное напряжение питания постоянного тока"
+  voltage_tolerance:
+    value: 0.25
+    unit: "В"
+    description: "Допуск по напряжению (±)"
+  current_consumption:
+    active_mode:
+      value: 300
+      unit: "мА"
+      description: "Потребляемый ток в активном режиме"
+    deep_sleep:
+      value: 100
+      unit: "мкА"
+      description: "Потребляемый ток в режиме глубокого сна"
+    blufi_mode:
+      value: 150
+      unit: "мА"
+      description: "Потребляемый ток в режиме настройки (BLUFI)"
+
+# Раздел: Вычислительные характеристики
+hardware:
+  cpu_frequency:
+    value: 240
+    unit: "МГц"
+    description: "Рабочая частота процессора"
+  memory:
+    flash_options:
+      value: [4, 16]
+      unit: "МБ"
+      description: "Возможные объёмы Flash-памяти (в зависимости от модификации)"
+    ram:
+      value: 520
+      unit: "КБ"
+      description: "Объём оперативной памяти (SRAM)"
+    psram:
+      value: 8
+      unit: "МБ"
+      description: "Объём внешней PSRAM"
+
+# Раздел: Камера и обработка
+camera:
+  sensor_resolution:
+    width:
+      value: 1600
+      unit: "пикс"
+      description: "Ширина сенсора камеры"
+    height:
+      value: 1200
+      unit: "пикс"
+      description: "Высота сенсора камеры"
+    standard:
+      value: "UXGA"
+      unit: ""
+      description: "Стандарт разрешения сенсора"
+  output_format:
+    value: "JPEG"
+    unit: ""
+    description: "Формат выходного изображения"
+  jpeg_quality_range:
+    min:
+      value: 0
+      unit: ""
+      description: "Минимальное значение качества сжатия JPEG"
+    max:
+      value: 63
+      unit: ""
+      description: "Максимальное значение качества сжатия JPEG"
+  roi_size_range:
+    min_width:
+      value: 128
+      unit: "пикс"
+      description: "Минимальная ширина области распознавания (ROI)"
+    min_height:
+      value: 64
+      unit: "пикс"
+      description: "Минимальная высота области распознавания (ROI)"
+    max_width:
+      value: 800
+      unit: "пикс"
+      description: "Максимальная ширина области распознавания (ROI)"
+    max_height:
+      value: 400
+      unit: "пикс"
+      description: "Максимальная высота области распознавания (ROI)"
+  performance:
+    min_recognition_accuracy:
+      value: 98
+      unit: "%"
+      description: "Минимальная точность распознавания цифр"
+    max_processing_time:
+      value: 60
+      unit: "с"
+      description: "Максимальное время полного цикла обработки"
+
+# Раздел: Беспроводные интерфейсы
+wireless:
+  wifi:
+    standard:
+      value: "IEEE 802.11 b/g/n"
+      unit: ""
+      description: "Стандарт Wi-Fi"
+    frequency:
+      value: 2.4
+      unit: "ГГц"
+      description: "Рабочая частота Wi-Fi"
+  bluetooth:
+    standard:
+      value: "BLE 4.2"
+      unit: ""
+      description: "Версия Bluetooth Low Energy"
+    purpose:
+      value: "Только для первичной настройки"
+      unit: ""
+      description: "Назначение Bluetooth-интерфейса"
+
+# Раздел: Функциональные параметры
+functional:
+  max_meters_supported:
+    value: 2
+    unit: "шт."
+    description: "Максимальное количество подключаемых счётчиков"
+  data_protocols:
+    values: ["HTTP", "HTTPS"]
+    unit: ""
+    description: "Поддерживаемые протоколы передачи данных"
+  data_format:
+    value: "JSON"
+    unit: ""
+    description: "Формат передаваемых данных"
+  firmware_framework:
+    value: "ESP-IDF Framework"
+    unit: ""
+    description: "Базовая среда разработки прошивки"
+
+# Раздел: Климатические и механические условия
+environmental:
+  climate_code:
+    value: "УХЛ4"
+    unit: ""
+    description: "Климатическое исполнение по ГОСТ 15150-69"
+  temperature:
+    operation_range:
+      min:
+        value: 0
+        unit: "°C"
+        description: "Минимальная температура эксплуатации"
+      max:
+        value: 40
+        unit: "°C"
+        description: "Максимальная температура эксплуатации"
+    storage_range:
+      min:
+        value: -20
+        unit: "°C"
+        description: "Минимальная температура хранения"
+      max:
+        value: 60
+        unit: "°C"
+        description: "Максимальная температура хранения"
+    limit_range:
+      min:
+        value: -20
+        unit: "°C"
+        description: "Минимальная предельная температура"
+      max:
+        value: 60
+        unit: "°C"
+        description: "Максимальная предельная температура"
+  humidity:
+    max_percent:
+      value: 80
+      unit: "%"
+      description: "Максимальная относительная влажность"
+    at_temperature:
+      value: 25
+      unit: "°C"
+      description: "Температура, при которой указана влажность"
+  pressure:
+    min:
+      value: 84.0
+      unit: "кПа"
+      description: "Минимальное атмосферное давление"
+    max:
+      value: 106.7
+      unit: "кПа"
+      description: "Максимальное атмосферное давление"
+  vibration:
+    frequency_range:
+      min:
+        value: 5
+        unit: "Гц"
+        description: "Минимальная частота вибрации"
+      max:
+        value: 150
+        unit: "Гц"
+        description: "Максимальная частота вибрации"
+    acceleration:
+      value: 0.5
+      unit: "g"
+      description: "Максимальное ускорение при вибрации"
+  shock:
+    acceleration:
+      value: 10
+      unit: "g"
+      description: "Ускорение при ударе"
+    duration:
+      value: 11
+      unit: "мс"
+      description: "Длительность удара"
+    waveform:
+      value: "полусинус"
+      unit: ""
+      description: "Форма импульса удара"
+  ingress_protection:
+    value: "IP20"
+    unit: ""
+    description: "Степень защиты корпуса по ГОСТ 14254"
+  fall_height:
+    value: 0.5
+    unit: "м"
+    description: "Высота падения для испытания на прочность"
+
+# Раздел: Конструктивные требования (для раздела design_requirements)
+manufacturing:
+  standardization_ratio:
+    value: 70
+    unit: "%"
+    description: "Минимальный коэффициент использования стандартных деталей"
+  assembly_ratio:
+    value: 0.80
+    unit: ""
+    description: "Минимальный коэффициент сборности"
+  max_assembly_man_hours:
+    value: 0.5
+    unit: "нормо-час"
+    description: "Максимальная трудоёмкость сборки"
+  case_material:
+    value: "ABS-пластик"
+    unit: ""
+    description: "Материал корпуса"
+  secondary_material_grade:
+    value: "ABS-777D"
+    unit: ""
+    description: "Допустимая марка вторичного АБС"
+  pcb_material:
+    value: "FR-4"
+    unit: ""
+    description: "Материал основной печатной платы"
+  pcb_thickness:
+    value: 1.6
+    unit: "мм"
+    description: "Толщина печатной платы"
+  case_color_ral:
+    value: "RAL 7035"
+    unit: ""
+    description: "Цвет корпуса (светло-серый)"
+  gold_coating_thickness:
+    value: 0.2
+    unit: "мкм"
+    description: "Толщина золотого покрытия контактов"
+  gold_consumption_max:
+    value: 0.002
+    unit: "г"
+    description: "Максимальный расход золота на изделие"
+  case_hole_diameters:
+    lens:
+      value: 6.0
+      unit: "мм"
+      description: "Диаметр отверстия для объектива"
+    flash:
+      value: 3.0
+      unit: "мм"
+      description: "Диаметр отверстия для светодиода вспышки"
+
+# Раздел: Надёжность
+reliability:
+  mtbf:
+    value: 10000
+    unit: "час"
+    description: "Наработка на отказ"
+  recovery_time:
+    software:
+      value: 5
+      unit: "мин"
+      description: "Среднее время восстановления после ПО-сбоя"
+    hardware:
+      value: 72
+      unit: "час"
+      description: "Среднее время восстановления после аппаратного сбоя"
+  availability_factor:
+    value: 0.99
+    unit: ""
+    description: "Коэффициент готовности"
+  service_life:
+    value: 5
+    unit: "лет"
+    description: "Срок службы изделия"
+  shelf_life:
+    value: 3
+    unit: "лет"
+    description: "Срок сохранности в упаковке"
+  ota_success_rate:
+    value: 99
+    unit: "%"
+    description: "Вероятность успешного OTA-обновления"
+
+# Раздел: Время выполнения операций
+timing:
+  ota_update_max:
+    value: 5
+    unit: "мин"
+    description: "Максимальное время OTA-обновления"
+  reboot_recovery_max:
+    value: 5
+    unit: "мин"
+    description: "Максимальное время восстановления после перезагрузки"
+
+# Раздел: Электробезопасность и ЭМС
+safety_emc:
+  protection_class:
+    value: "II"
+    unit: ""
+    description: "Класс защиты по ГОСТ Р МЭК 61140"
+  insulation_test:
+    voltage:
+      value: 1500
+      unit: "В"
+      description: "Испытательное напряжение изоляции"
+    frequency:
+      value: 50
+      unit: "Гц"
+      description: "Частота испытательного напряжения"
+    duration:
+      value: 1
+      unit: "с"
+      description: "Длительность испытания изоляции"
+  insulation_resistance:
+    value: 20
+    unit: "МОм"
+    description: "Минимальное сопротивление изоляции (при 500 В)"
+  leakage_current:
+    value: 0.25
+    unit: "мА"
+    description: "Максимальный ток утечки"
+  esd_immunity:
+    contact:
+      value: 4
+      unit: "кВ"
+      description: "Устойчивость к контактному разряду"
+    air:
+      value: 8
+      unit: "кВ"
+      description: "Устойчивость к воздушному разряду"
+  emi_emission_class:
+    value: "B"
+    unit: ""
+    description: "Класс излучаемых помех по ГОСТ Р 51317.3.2"
+  rf_power:
+    wifi_max:
+      value: 100
+      unit: "мВт"
+      description: "Максимальная мощность излучения Wi-Fi"
+  sar:
+    value: 0.08
+    unit: "Вт/кг"
+    description: "Удельный коэффициент поглощения (SAR)"
+
+# Раздел: Пожаробезопасность
+flammability:
+  material_group:
+    combustibility:
+      value: "Г1"
+      unit: ""
+      description: "Горючесть (трудногорючие)"
+    flammability:
+      value: "В1"
+      unit: ""
+      description: "Воспламеняемость (трудновоспламеняемые)"
+    smoke_production:
+      value: "Д2"
+      unit: ""
+      description: "Дымообразующая способность (умеренная)"
+  autoignition_temp_min:
+    value: 400
+    unit: "°C"
+    description: "Минимальная температура самовоспламенения"
+
+# Раздел: Эргономика
+ergonomics:
+  web_ui:
+    min_resolution:
+      width:
+        value: 1024
+        unit: "пикс"
+        description: "Минимальная ширина экрана для веб-интерфейса"
+      height:
+        value: 768
+        unit: "пикс"
+        description: "Минимальная высота экрана для веб-интерфейса"
+    touch_target_min_size:
+      value: 8.0
+      unit: "мм"
+      description: "Минимальный размер интерактивного элемента"
+    min_contrast_ratio:
+      value: 4.5
+      unit: "к 1"
+      description: "Минимальная контрастность цветовой схемы"
+
+# Раздел: Энергопотребление
+energy:
+  power_consumption:
+    standby:
+      value: 0.5
+      unit: "Вт"
+      description: "Потребляемая мощность в режиме ожидания"
+    active:
+      value: 1.5
+      unit: "Вт"
+      description: "Потребляемая мощность в активном режиме"
+    ota:
+      value: 2.0
+      unit: "Вт"
+      description: "Потребляемая мощность в режиме OTA"
+  energy_efficiency_class:
+    value: "A"
+    unit: ""
+    description: "Класс энергоэффективности"
+  recycled_plastic_min_percent:
+    value: 30
+    unit: "%"
+    description: "Минимальное содержание вторичного пластика в корпусе"
+  battery_life:
+    value: 3
+    unit: "лет"
+    description: "Срок службы от автономного источника"
+
+# Раздел: Технологичность
+manufacturing_technology:
+  standardization_ratio:
+    value: 0.70
+    unit: ""
+    description: "Минимальный коэффициент использования стандартных деталей"
+  assembly_ratio:
+    value: 0.80
+    unit: ""
+    description: "Минимальный коэффициент сборности"
+  max_assembly_man_hours:
+    value: 0.5
+    unit: "нормо-час"
+    description: "Максимальная трудоёмкость сборки"
+
+# Раздел: Экономное использование ресурсов
+resource_efficiency:
+  power_consumption:
+    standby:
+      value: 0.5
+      unit: "Вт"
+      description: "Потребляемая мощность в режиме ожидания"
+    active:
+      value: 1.5
+      unit: "Вт"
+      description: "Потребляемая мощность в активном режиме"
+    ota:
+      value: 2.0
+      unit: "Вт"
+      description: "Потребляемая мощность в режиме OTA"
+  recycled_plastic_min_percent:
+    value: 30
+    unit: "%"
+    description: "Минимальное содержание вторичного пластика в корпусе"
+  battery_life:
+    value: 3
+    unit: "лет"
+    description: "Срок службы от автономного источника"
+
+# Раздел: Контроль и приёмка
+quality_control:
+  sampling_for_periodic_tests:
+    value: 2
+    unit: "шт."
+    description: "Количество изделий для периодических испытаний"
+  max_defect_rate_percent:
+    value: 2.0
+    unit: "%"
+    description: "Максимально допустимый процент брака в партии"
+  max_case_damage_rate_percent:
+    value: 0.5
+    unit: "%"
+    description: "Максимальный процент брака по корпусу"
+  ota_sample_rate_percent:
+    value: 5.0
+    unit: "%"
+    description: "Процент выборки для проверки OTA"
+
+# Раздел: Хранение и транспортировка
+storage_transport:
+  storage_temp_range:
+    min:
+      value: -20
+      unit: "°C"
+      description: "Минимальная температура хранения"
+    max:
+      value: 40
+      unit: "°C"
+      description: "Максимальная температура хранения"
+  storage_humidity_max_percent:
+    value: 80
+    unit: "%"
+    description: "Максимальная относительная влажность при хранении"
+  storage_pressure_range:
+    min:
+      value: 84.0
+      unit: "кПа"
+      description: "Минимальное атмосферное давление при хранении"
+    max:
+      value: 106.7
+      unit: "кПа"
+      description: "Максимальное атмосферное давление при хранении"
+  storage_requirements:
+    max_stack_height:
+      value: 5
+      unit: "коробок"
+      description: "Максимальная высота штабеля при складировании"
+    min_distance_from_heaters:
+      value: 1.0
+      unit: "м"
+      description: "Минимальное расстояние от отопительных приборов"
+    environmental_protection:
+      values: ["защита от прямых солнечных лучей", "защита от агрессивных паров и аэрозолей", "отдельное складирование от тяжелых и острых предметов"]
+      unit: ""
+      description: "Требования к защите при складировании"
+  transport_temp_range:
+    min:
+      value: -20
+      unit: "°C"
+      description: "Минимальная температура транспортирования"
+    max:
+      value: 50
+      unit: "°C"
+      description: "Максимальная температура транспортирования"
+  transport_humidity_max_percent:
+    value: 95
+    unit: "%"
+    description: "Максимальная влажность при транспортировании"
+  at_transport_temp:
+    value: 35
+    unit: "°C"
+    description: "Температура для указанной влажности при транспортировке"
+  acclimatization_hours:
+    value: 24
+    unit: "час"
+    description: "Время выдержки после транспортирования"
+  max_pallet_height_boxes:
+    value: 5
+    unit: "коробок"
+    description: "Максимальная высота штабеля"
+  desiccant_quantity_per_unit:
+    value: 3.0
+    unit: "г"
+    description: "Количество силикагеля на одно изделие в упаковке"
+  transport_conditions:
+    allowed_transport_types:
+      values: ["автомобильный", "железнодорожный", "воздушный"]
+      unit: ""
+      description: "Разрешенные виды транспорта"
+    special_requirements:
+      values: ["запрещается бросать", "запрещается кантовать", "запрещается подвергать ударным нагрузкам"]
+      unit: ""
+      description: "Специальные требования при транспортировке"
+  preservation_methods:
+    values: ["очистка корпуса от загрязнений", "проверка целостности пломбы", "упаковка в антистатический пакет с силикагелем", "помещение в герметичную тару"]
+    unit: ""
+    description: "Методы консервации перед хранением"
+  post_transport_handling:
+    acclimatization:
+      temperature_range:
+        min:
+          value: 18
+          unit: "°C"
+          description: "Минимальная температура выдержки после транспортирования"
+        max:
+          value: 25
+          unit: "°C"
+          description: "Максимальная температура выдержки после транспортирования"
+      duration:
+        value: 24
+        unit: "час"
+        description: "Время выдержки при комнатной температуре после транспортирования"
+    inspection_requirements:
+      values: ["визуальный осмотр упаковки", "проверка целостности пломбы", "проверка комплектности", "функциональная проверка"]
+      unit: ""
+      description: "Требования к проверке после транспортирования"
+
+# Раздел: Эксплуатация
+operation:
+  meter_mounting_distance:
+    min:
+      value: 0.3
+      unit: "м"
+      description: "Минимальное расстояние до шкалы счётчика"
+    max:
+      value: 1.0
+      unit: "м"
+      description: "Максимальное расстояние до шкалы счётчика"
+  min_illumination:
+    value: 200
+    unit: "лк"
+    description: "Минимальная рекомендуемая освещённость"
+  control_check_intervals:
+    daily:
+      value: "Проверка связи и статуса"
+      unit: ""
+      description: "Рекомендуемая ежедневная проверка"
+    weekly:
+      value: "Очистка защитного стекла объектива"
+      unit: ""
+      description: "Рекомендуемая еженедельная проверка"
+    monthly:
+      value: "Проверка качества распознавания, анализ логов"
+      unit: ""
+      description: "Рекомендуемая ежемесячная проверка"
+    quarterly:
+      value: "Проверка актуальности прошивки, резервное копирование конфигурации"
+      unit: ""
+      description: "Рекомендуемая ежеквартальная проверка"
+
+# Раздел: Прочее
+miscellaneous:
+  sound_pressure_max:
+    value: 40
+    unit: "дБА"
+    description: "Максимальный уровень звукового давления"
+  heat_dissipation_max:
+    value: 5.0
+    unit: "Вт"
+    description: "Максимальное тепловыделение"
+  voc_emission_max:
+    value: 0.05
+    unit: "мг/м³"
+    description: "Максимальная концентрация ЛОС"
+  case_surface_temp_max:
+    value: 45.0
+    unit: "°C"
+    description: "Максимальная температура поверхности корпуса"
+  internal_temp_max:
+    value: 60.0
+    unit: "°C"
+    description: "Максимальная температура внутри корпуса"
+  desiccant_quantity:
+    value: 3.0
+    unit: "г"
+    description: "Количество силикагеля в упаковке"
+  warranty_period:
+    value: 12
+    unit: "месяцев"
+    description: "Гарантийный срок"

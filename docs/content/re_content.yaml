@@ -1,0 +1,1141 @@
+# docs/content/re_content.yaml
+# Шаблон руководства по эксплуатации по ГОСТ
+sections:
+  - id: "title_page"
+    name: "Титульный лист"
+    content:
+      - id: "company_name"
+        type: "text"
+        value: "{{ developer.company }}"
+      - type: "blank_line"
+        count: 10
+      - id: "product_name"
+        type: "text"
+        value: |
+          {{ product.full_name }}
+      - type: "blank_line"
+        count: 1
+      - type: "text"
+        value: "Руководство по эксплуатации"
+      - type: "blank_line"
+        count: 1
+      - id: "product_code"
+        type: "text"
+        value: |
+          {{ product.code }}.РЭ
+      - type: "blank_line"
+        count: 1
+      - type: "bottom_info"
+        value: " "
+
+  - id: "table_of_contents"
+    name: "Содержание"
+    is_toc_section: true
+    content: []
+
+  - id: "intro"
+    name: "  "
+    blocks:
+      - text: |
+          Настоящее руководство по эксплуатации (далее — РЭ) содержит сведения, необходимые для правильной и безопасной эксплуатации системы автоматизированного считывания показаний счетчиков «{{ product.full_name }}», {{ product.code }}.
+      - text: |
+          РЭ распространяется на все модификации системы «{{ product.name }}», выполненные на базе модуля ESP32-CAM с камерой OV2640, если иное не оговорено в технической документации на конкретную модификацию.
+      - text: |
+          Требуемый уровень подготовки пользователя:
+      - list:
+          style: bullet
+          items:
+            - "умение следовать текстовым или визуальным пошаговым инструкции в соответствии с РЭ;"
+            - "наличие базовых навыков работы с мобильным устройством или компьютером (открытие веб-страниц, использование приложений);"
+            - "умение подключать устройство к домашней Wi-Fi-сети (знание имени сети и пароля)."
+      - text: |
+          Изделие относится к устройствам с питанием от источника постоянного тока {{ power.nominal_voltage.value }} {{ power.nominal_voltage.unit }}.
+      - text: |
+          Опасными факторами при эксплуатации являются:
+      - list:
+          style: bullet
+          items:
+            - "электрический ток: использование нештатного, неисправного или неподходящего по параметрам блока питания может привести к поражению электрическим током, возгоранию или повреждению устройства;"
+            - "перегрев: необходимо обеспечить вентиляцию устройства при эксплуатации, запрещается накрывать устройство, размещать вблизи источников тепла;"
+            - "повреждение корпуса: запрещается разбирать корпус устройства, ремонт должен производиться только в сервисном центре."
+      - text:
+          Для полноценной работы системы требуется стабильное подключение к сети Интернет для связи с удаленным OCR-сервером.
+      - text: |
+          В настоящем документе использованы следующие сокращения:
+      - list:
+              style: no_bullet
+              items:
+                - "РЭ — руководство по эксплуатации"
+                - "ТУ — технические условия"
+                - "OCR — оптическое распознавание символов (от англ. Optical Character Recognition)"
+                - "Wi-Fi — беспроводная локальная сеть стандарта IEEE 802.11"
+                - "BLE — Bluetooth Low Energy"
+                - "BLUFI — Bluetooth Network Provisioning (режим настройки Wi-Fi через Bluetooth, используемый в ESP32)"
+                - "OTA — обновление «по воздуху» (от англ. Over-The-Air)"
+                - "ROI — область интереса (от англ. Region of Interest)"
+                - "SPIFFS — файловая система для микроконтроллеров ESP32 (SPI Flash File System)"
+                - "HTTP — протокол передачи гипертекста (от англ. HyperText Transfer Protocol)"
+                - "HTTPS — защищённая версия HTTP (с шифрованием)"
+                - "API — программный интерфейс приложения (от англ. Application Programming Interface)"
+                - "UART — универсальный асинхронный приёмопередатчик (от англ. Universal Asynchronous Receiver-Transmitter)"
+              
+
+  # РАЗДЕЛ 1: ОПИСАНИЕ И РАБОТА
+  - id: "description_and_operation"
+    name: "Описание и работа"
+    subsections:
+      - id: "product_description"
+        name: "Описание и работа изделия"
+        subsections:
+          - id: "purpose"
+            name: "Назначение и область применения "
+            blocks:
+                  - text: |
+                      Система «{{ product.name }}» предназначена для автоматического считывания числовых показаний бытовых счетчиков (воды, электричества, газа) с помощью встроенной камеры, их распознавания методом OCR и передачи данных на сервер в системах учета коммунальных ресурсов.
+                  - text: |
+                      Область применения изделия:
+                  - list:
+                      style: bullet
+                      items:
+                        - "системы автоматического сбора показаний счетчиков в многоквартирных домах;"
+                        - "умные дома и системы мониторинга энергопотребления;"
+                        - "промышленный учет ресурсов на предприятиях;"
+                        - "дистанционный мониторинг объектов недвижимости."
+
+          - id: "technical_characteristics"
+            name: "Технические характеристики"
+            blocks:
+                  - text: |
+                      Технические характеристики устройства приведены в таблице {{table_counter_next}}.
+                  - table:
+                      name: "Технические характеристики"
+                      headers:
+                        - "Характеристика"
+                        - "Значение"
+                      rows:
+                        - cells:
+                            - "{{ specifications.microcontroller.type.description }}"
+                            - "{{ specifications.microcontroller.type.value }}"
+                        - cells:
+                            - "{{ specifications.microcontroller.frequency_mhz.description }}"
+                            - "{{ specifications.microcontroller.frequency_mhz.value }} {{ specifications.microcontroller.frequency_mhz.unit }}"
+                        - cells:
+                            - "{{ specifications.microcontroller.cores.description }}"
+                            - "{{ specifications.microcontroller.cores.value }}"
+                        - cells:
+                            - "{{ specifications.camera.sensor.description }}"
+                            - "{{ specifications.camera.sensor.value }}"
+                        - cells:
+                            - "{{ specifications.camera.resolution_mp.description }}"
+                            - "{{ specifications.camera.resolution_mp.value }} {{ specifications.camera.resolution_mp.unit }}"
+                        - cells:
+                            - "{{ specifications.camera.format.description }}"
+                            - "{{ specifications.camera.format.value }}"
+                        - cells:
+                            - "{{ specifications.camera.focus_type.description }}"
+                            - "{{ specifications.camera.focus_type.value }}"
+                        - cells:
+                            - "Объём встроенной flash-памяти"
+                            - "от {{ specifications.memory.flash_mb_options.min.value }} до {{ specifications.memory.flash_mb_options.max.value }} {{ specifications.memory.flash_mb_options.min.unit }}"
+                        - cells:
+                            - "{{ specifications.memory.filesystem.description }}"
+                            - "{{ specifications.memory.filesystem.value }}"
+                        - cells:
+                            - "{{ specifications.wireless.wifi_standard.description }}"
+                            - "{{ specifications.wireless.wifi_standard.value }}"
+                        - cells:
+                            - "{{ specifications.wireless.bluetooth.description }}"
+                            - "{{ specifications.wireless.bluetooth.value }}"
+                        - cells:
+                            - "{{ specifications.power.voltage_v.description }}"
+                            - "{{ specifications.power.voltage_v.value }} {{ specifications.power.voltage_v.unit }}"
+                        - cells:
+                            - "{{ specifications.power.current_active_ma.description }}"
+                            - "{{ specifications.power.current_active_ma.value }} {{ specifications.power.current_active_ma.unit }}"
+                        - cells:
+                            - "{{ specifications.power.supply_min_ma.description }}"
+                            - "{{ specifications.power.supply_min_ma.value }} {{ specifications.power.supply_min_ma.unit }}"
+                        - cells:
+                            - "{{ specifications.power.connection.description }}"
+                            - "{{ specifications.power.connection.value }}"
+                        - cells:
+                            - "Габаритные размеры (Д×Ш×В)"
+                            - "{{ specifications.physical.dimensions_mm.length.value }}×{{ specifications.physical.dimensions_mm.width.value }}×{{ specifications.physical.dimensions_mm.height.value }} {{ specifications.physical.dimensions_mm.length.unit }}"
+                        - cells:
+                            - "{{ specifications.physical.weight_grams.description }}"
+                            - "{{ specifications.physical.weight_grams.value }} {{ specifications.physical.weight_grams.unit }}"
+                        - cells:
+                            - "{{ specifications.physical.housing.description }}"
+                            - "{{ specifications.physical.housing.value }}"
+                        - cells:
+                            - "{{ specifications.physical.sealing.description }}"
+                            - "{{ specifications.physical.sealing.value }}"
+                        - cells:
+                            - "Диапазон рабочих температур"
+                            - "от {{ specifications.environmental.operating_temperature_c.min.value }} до +{{ specifications.environmental.operating_temperature_c.max.value }} {{ specifications.environmental.operating_temperature_c.min.unit }}"
+                        - cells:
+                            - "Диапазон температур хранения"
+                            - "от {{ specifications.environmental.storage_temperature_c.min.value }} до +{{ specifications.environmental.storage_temperature_c.max.value }} {{ specifications.environmental.storage_temperature_c.min.unit }}"
+                        - cells:
+                            - "Максимальная влажность"
+                            - "{{ specifications.environmental.humidity_max_percent.value }} {{ specifications.environmental.humidity_max_percent.unit }} (без конденсата)"
+                        - cells:
+                            - "{{ specifications.environmental.placement.description }}"
+                            - "{{ specifications.environmental.placement.value }}"
+                        - cells:
+                            - "{{ specifications.environmental.lightingquirements.description }}"
+                            - "{{ specifications.environmental.lightingquirements.value }}"
+                        - cells:
+                            - "{{ specifications.safety.class.description }}"
+                            - "{{ specifications.safety.class.value }}"
+                        - cells:
+                            - "{{ specifications.safety.supplyquirements.description }}"
+                            - "{{ specifications.safety.supplyquirements.value }}"
+                        - cells:
+                            - "{{ specifications.features.ota_support.description }}"
+                            - "{{ specifications.features.ota_support.display_text }}"
+                        - cells:
+                            - "{{ specifications.features.deep_sleep.description }}"
+                            - "{{ specifications.features.deep_sleep.display_text }}"
+                        - cells:
+                            - "{{ specifications.features.max_meters.description }}"
+                            - "{{ specifications.features.max_meters.value }} {{ specifications.features.max_meters.unit }}"
+                        - cells:
+                            - "{{ specifications.features.ocr_service.description }}"
+                            - "{{ specifications.features.ocr_service.value }}"
+                  - text: |
+                      Технические характеристики могут незначительно отличаться в зависимости от модификации и конкретной версии прошивки.
+
+          - id: "kit"
+            name: "Состав изделия"
+            points:
+              - id: "kit_contents"
+                name: "В состав изделия должны входить"
+                blocks:
+                  - list:
+                      style: bullet
+                      items:
+                        - "устройство «{{ product.name }}» в защитном корпусе — 1 шт.;"
+                        - "блок питания {{ specifications.power.voltage_v.value }} {{ specifications.power.voltage_v.unit }} DC {{ specifications.power.supply_min_ma.value }} {{ specifications.power.supply_min_ma.unit }} — 1 шт.;"
+                        - "комплект соединительных проводов — 1 компл.;"
+                        - "эксплуатационная документация (паспорт, руководство по эксплуатации) — 1 экз.;"
+                        - "гарантийный талон — 1 экз."
+              - id: "kit_additional"
+                name: "Крепления для монтажа на счетчики приобретаются отдельно и не входят в стандартную комплектацию"
+              - id: "assembly_overview"
+                name: "Внешний вид устройства показан на рисунке {{image_counter_next}}."
+                blocks:
+                  - image:
+                      path: "docs/media/images/assembly_overview.svg"
+                      caption: "Внешний вид устройства"
+                      width: "12cm"
+
+          - id: "operation_principle"
+            name: "Устройство и работа"
+            points:
+              - id: "structure_components"
+                name: "Конструкция устройства включает следующие основные компоненты:"
+                blocks:
+                  - list:
+                      style: bullet
+                      items:
+                        - "корпус с расположенным внутри электронными компонентами;"
+                        - "крепление для монтажа на счетчики (приобретается отдельно)."
+              - id: "work_principle"
+                name: "Изделие работает следующим образом"
+                blocks:
+                  - list:
+                      style: alpha
+                      items:
+                        - "после подачи питания происходит загрузка системы;"
+                        - "устройство переходит в режим настройки сети (режим BLUFI) для настройки Wi-Fi;"
+                        - "после настройки Wi-Fi запускается встроенный веб-сервер для возможности управления через веб-интерфейс;"
+                        - "по внутреннему расписанию или внешней команде через веб-интерфейс производится фотографирование шкалы счетчика;"
+                        - "заданная область изображения (ROI) обрабатывается и отправляется на внешний сервис распознавания изображения (OCR-сервер);"
+                        - "фото счётчика и числовые показания сохраняются в памяти устройства и при необходимости отправляются на указанный удалённый сервер;"
+                        - "после цикла работы система переходит в режим глубокого сна для экономии энергии."
+              - id: "control_methods"
+                name: "Управление изделием осуществляется дистанционно:"
+                blocks:
+                  - list:
+                      style: bullet
+                      items:
+                        - "через Bluetooth (для первичной настройки сети);"
+                        - "через встроенный веб-сервер по Wi-Fi (для настройки параметров устройства)."
+
+          - id: "tools_and_equipment"
+            name: "Средства измерения, инструмент и принадлежности"
+            points:
+              - id: "tools_warnings"
+                name: "Предупреждения:"
+                blocks:
+                  - list:
+                      style: bullet
+                      items:
+                        - "разборка корпуса пользователем запрещена и аннулирует гарантию;"
+                        - "все сервисные операции (кроме очистки объектива) выполняются удаленно или в сервисном центре."
+              - id: "tools_list"
+                name: "Для технического обслуживания и ремонта рекомендуется использовать"
+                blocks:
+                  - list:
+                      style: bullet
+                      items:
+                        - "мультиметр — для измерения электрических параметров;"
+                        - "паяльная станция — для ремонта в сервисном центре;"
+                        - "набор отверток;"
+                        - "программатор (USB-UART адаптер) — для перепрошивки;"
+                        - "климатическая камера — для испытаний (в сервисном центре);"
+                        - "контрольный OTA-сервер — для проверки обновлений."
+
+          - id: "marking"
+            name: "Маркировка и пломбирование"
+            points:
+              - id: "marking_content"
+                name: "На корпусе изделия должна быть нанесена маркировка лазерной гравировкой, содержащая"
+                blocks:
+                  - list:
+                      style: bullet
+                      items:
+                        - "товарный знак изготовителя;"
+                        - "наименование изделия: «{{ product.name }}»;"
+                        - "обозначение: {{ product.code }};"
+                        - "серийный номер;"
+                        - "дата изготовния в формате ММ.ГГГГ;"
+                        - "напряжение питания: {{ specifications.power.voltage_v.value }}{{ specifications.power.voltage_v.unit }} DC;"
+                        - "знак соответствия РСТ;"
+                        - "предупреждение: «Не разбирать. Ремонт только в сервисном центре»."
+              - id: "sealing_content"
+                name: "Корпус должен быть опломбирован антивандальной пломбой, содержащей"
+                blocks:
+                  - list:
+                      style: bullet
+                      items:
+                        - "уникальный номер пломбы;"
+                        - "логотип изготовителя;"
+                        - "надпись: «Warranty void if removed»."
+              - id: "sealing_warning"
+                name: "Нарушение пломбы аннулирует гарантийные обязательства"
+                blocks: []
+
+          - id: "packaging"
+            name: "Упаковка"
+            points:
+              - id: "packaging_content"
+                name: "Изделие поставляется в следующей упаковке:"
+                blocks:
+                  - list:
+                      style: bullet
+                      items:
+                        - "потребительская тара: пластиковый ударопрочный кейс с замком и ложементом для корпуса;"
+                        - "транспортная тара: трехслойная картонная коробка марки Т-24 по ГОСТ 7376-89;"
+                        - "амортизация: пенополиэтиленовые вкладыши или воздушно-пузырчатая пленка."
+
+      - id: "components_description"
+        name: "Описание и работа составных частей изделия"
+        subsections:
+          - id: "components_list"
+            name: "Описание составных частей изделия"
+            blocks:
+                  - text: |
+                      Основными составными частями являются:
+                  - list:
+                      style: bullet
+                      items:
+                        - "корпус с отверстиями для объектива камеры и светодиодной вспышки;"
+                        - "электронный модуль с поддержкой Wi-Fi и Bluetooth на базе микроконтроллера {{ specifications.microcontroller.type.value }}, включающий в себя микроконтроллер, память, антенну, светодиод вспышки;"
+                        - "камера {{ specifications.camera.sensor.value }} с разрешением {{ specifications.camera.resolution_mp.value }} {{ specifications.camera.resolution_mp.unit }}."
+
+          - id: "components_operation"
+            name: "Описание работы составных частей"
+            blocks:
+                  - text: |
+                      Работа составных частей заключается в следующем. Модуль камеры захватывает изображение счетчика под управлением микроконтроллера, который обрабатывает кадр, передает данные для распознавания и управляет коммуникацией через Wi-Fi/Bluetooth; светодиодная вспышка обеспечивает подсветку в условиях недостаточной освещенности.
+                  - text: |
+                      Схема взаимодействия компонентов устройства показана на рисунке {{image_counter_next}}.
+                  - image:
+                      path: "docs/media/diagrams/structural_diagram.svg"
+                      caption: "Схема взаимодействия компонентов"
+                      width: "18cm"
+                      height: "10cm"
+                  
+
+  # РАЗДЕЛ 2: ИСПОЛЬЗОВАНИЕ ПО НАЗНАЧЕНИЮ
+  - id: "usage"
+    name: "Использование по назначению"
+    subsections:
+      - id: "operating_limits"
+        name: "Эксплуатационные ограничения"
+        subsections:
+        blocks:
+            - text: |
+                Изделие должно эксплуатироваться с соблюдением следующих ограничений:
+            - list:
+                      style: bullet
+                      items:
+                        - "устройство должно эксплуатироваться только внутри помещений;"
+                        - "диапазон рабочих температур должен составлять от 0°C до +40°C;"
+                        - "запрещается эксплуатация в условиях повышенной влажности (конденсат), запыленности, а также вблизи источников сильных электромагнитных помех;"
+                        - "для распознавания необходима сеть Wi-Fi с доступом в Интернет;"
+                        - "запрещается разбирать корпус устройства, все настройки должны выполняться удаленно."
+
+      - id: "preparation"
+        name: "Подготовка изделия к использованию"
+        points:
+          - id: "safety_preparation"
+            name: "Меры безопасности при подготовке изделия"
+            blocks:
+              - text: |
+                  Перед началом работы необходимо убедиться, что блок питания отключен от устройства и от сети 220 В.
+
+          - id: "external_inspection"
+            name: "Внешний осмотр"
+            blocks:
+              - text: |
+                  Поскольку корпус устройства является неразборным, внешний осмотр сводится к проверке:
+              - list:
+                  style: bullet
+                  items:
+                    - "целостности корпуса и пломбы: отсутствие трещин, сколов, вмятин, пломба на месте и не нарушена;"
+                    - "чистоты оптических элементов: отсутствие загрязнений, пыли, паутины на защитном стекле объектива камеры и отверстии для вспышки;"
+                    - "отсутствия повреждений изоляции кабеля блока питания."
+
+          - id: "connections"
+            name: "Указания о взаимосвязи с другими изделиями"
+            blocks:
+              - text: |
+                  Для нормальной работы устройства необходимо:
+              - list:
+                  style: bullet
+                  items:
+                    - "наличие креплений для монтажа на счетчик (приобретаются отдельно);"
+                    - "подключение к блоку питания {{ specifications.power.voltage_v.value }} {{ specifications.power.voltage_v.unit }} DC;"
+                    - "наличие сети Wi-Fi (роутера) с доступом в интернет (для связи с удаленным OCR-сервером и для OTA-обновлений);"
+                    - "наличие смартфона с установленным приложением EspBlufi."
+
+
+          - id: "mounting_and_check"
+            name: "Установка и проверка крепления"
+            points:
+              - id: "mounting_check"
+                name: "Установка и проверка крепления устройства производится следующим образом:"
+                blocks:
+                  - list:
+                      style: alpha
+                      items: 
+                        - "закрепить устройство на счётчик с помощью креплений как указано в руководстве по эксплуатации к конкретной модели крепления;"
+                        - "проверить надёжность фиксирования устройства на счётчике;"
+                        - "креплениями отрегулировать расстояние от камеры устройства до шкалы счетчика в пределах 10-15 см."
+
+              - id: "readiness_confirmation"
+                name: "Устройство считается готовым к настройке и эксплуатации при выполнении всех пунктов внешнего осмотра и установки."
+                blocks: []
+
+
+          - id: "power_check"
+            name: "Проверка подачи питания и индикация"
+            points:
+              - id: "power_indication"
+                name: "Единственным видимым внешним признаком успешного запуска является однократная вспышка через 5-7 секунд после после подачи питания на устройство."
+              - id: "no_indication"
+                name: "При отсутствии вспышки при исправном блоке питания необходимо обратиться в техподдержку;"
+              - id: "readiness"
+                name: "При наличии вспышки через 5-7 секунд после подачи питания изделие к работе."
+
+          - id: "preparation_troubleshooting"
+            name: "Перечень возможных неисправностей при подготовке и рекомендации по действиям"
+            blocks:
+              - text: |
+                  Перечень возможных неисправностей при подготовке к работе и рекомендации по их устранению переведены в таблице {{table_counter_next}}.
+              - table:
+                  name: "Неисправности при подготовке к работе"
+                  headers:
+                    - "Симптом/Проблема"
+                    - "Возможная причина"
+                    - "Рекомендуемые действия"
+                  rows:
+                    - cells:
+                        - "Вспышка не загорается при включении"
+                        - "Отсутствие питания, неисправный блок питания, повреждение устройства"
+                        - "Проверить подключение питания, заменить блок питания, обратиться в сервисный центр"
+                    - cells:
+                        - "Устройство не обнаруживается в приложении EspBlufi"
+                        - "Bluetooth выключен на смартфоне, устройство не в режиме BLUFI, расстояние слишком велико"
+                        - "Включить Bluetooth на смартфоне, перезагрузить устройство, приблизиться к устройству"
+                    - cells:
+                        - "Не удается подключиться к Wi-Fi сети"
+                        - "Неверный пароль, слабый сигнал Wi-Fi, несовместимость с роутером"
+                        - "Проверить пароль, переместить устройство ближе к роутеру, проверить настройки роутера"
+                    - cells:
+                        - "Не удается получить доступ к веб-интерфейсу"
+                        - "Неверный IP-адрес, устройство не подключено к сети, проблемы с браузером"
+                        - "Проверить IP-адрес в роутера, проверить подключение устройства к сети, использовать другой браузер"                
+
+      - id: "device_usage"
+        name: "Использование изделия"
+        points:
+          - id: "operation_procedure"
+            name: "Порядок действий при настройке доступа к устройству"
+            points:
+              - id: "install_blufi"
+                name: "Установить на смартфон приложение EspBlufi в соответствии с инструкцией по его установке и использованию."
+              - id: "blufi_connect"
+                name: "Настроить доступ к устройству по Wi-Fi соединению, для этого:"
+                blocks:
+                  - list:
+                      style: alpha
+                      items:
+                        - "подключить блок питания к устройству (убедиться в наличии вспышки через 5–7 секунд после подачи питания);"
+                        - "открыть на смартфоне приложение EspBlufi и запустить функцию поиска устройств;"
+                        - "выбрать из списка устройство с именем, начинающимся на \"BLUFI_\" как показано на рисунке {{image_counter_next}};"
+                        - "после подключения к устройству настроить учётные данные для Wi-Fi в соответствии с инструкцией по работе с приложением EspBlufi."
+
+                  - image:
+                      path: "docs/media/screenshots/screenshot_blufi_discovery.png"
+                      caption: "Обнаружение устройства в приложении EspBlufi"
+                      width: "12cm"
+
+              - id: "device_access"
+                name: "Открыть веб-интерфейс устройства, для этого ввести полученный устройством IP-адрес в адресную строку браузера."
+                blocks:
+                  - text: |
+                      При успешном соединении откроется главная страница веб-интерфейса управления устройством как показано на рисунке {{image_counter_next}}.
+                  - image:
+                      path: "docs/media/screenshots/screenshot_main_interface.png"
+                      caption: "Главная страница веб-интерфейса управления устройством"
+                      width: "12cm"
+
+              - id: "device_control"
+                name: "Все управление устройством осуществляется дистанционно через встроенный веб-интерфейс."     
+
+          - id: "control_content"
+            name: "Настройка и управление устройством через веб-интерфейс"
+            points:
+              - id: "ui_description"
+                name: "Главная страница веб-интерфейса содержит следующие элементы (сверху вниз):"
+                blocks:
+                  - list:
+                      style: bullet
+                      items:
+                        - "кнопка «Init» - инициализация системы, загрузка начального изображения с камеры;"
+                        - "кнопка «Action» - запуск цикла получения изображений и выполнения распознавания показаний счетчиков;"
+                        - "кнопка настроек (⚙) - открывает окно настроек камеры;"
+                        - "переключатель «OCR enabled» - включает/выключает распознавание текста на изображениях;"
+                        - "переключатель «Sleep enabled» - включает/выключает режим сна устройства;"
+                        - "ссылка «Sleep (sec.):» - открывает модальное окно для настройки длительности сна (в секундах);"
+                        - "переключатель «Copy to server» - включает/выключает копирование данных на сервер;"
+                        - "ссылка «Server path:» - открывает модальное окно для настройки пути к серверу;"
+                        - "секции параметров счётчиков;"
+                        - "секции предпросмотра изображений - отображают вырезанные области с камеры для каждого счетчика;"
+                        - "секция отображения полного изображения с камеры;"
+                        - "внизу расположена секция, отображающая системные сообщения в реальном времени."
+              - id: "settings_stages"
+                name: "Основные этапы настройки в веб-интерфейсе:"    
+                blocks:                
+                  - list:
+                      style: alpha
+                      items:
+                        - "настроить зоны распознавания (ROI) для каждого счётчика;"
+                        - "настроить параметры камеры;"
+                        - "настроить параметры счетчика;"
+                        - "настроить общие параметры."     
+              - id: "roi_settings"
+                name: "Настройка зоны распознавания"
+                blocks:
+                  - text: |
+                        Настройка зоны распознавания производится следующим образом:
+                  - list:
+                      style: bullet
+                      items:
+                        - "нажать кнопку «Init» для получения изображения с камеры;"
+                        - "при необходимости настроить параметры камеры как указано ниже;"
+                        - "на изображении выделить прямоугольную область для первого счетчика (перетаскиванием);"
+                        - "при необходимости отрегулировать размер области (за угол в правом нижнем углу прямоугольника);"
+                        - "нажать на ссылку «Save coordinates» под превью изображения;"
+                        - "подтвердить сохранение координат в открывшемся модальном окне;"
+                        - "выделить аналогичную область для второго счетчика (автоматически выбирается противоположная сторона холста);"
+                        - "нажать кнопку «Action» для проверки корректности выделенных областей;"
+                        - "убедиться, что в блоках данных отображаются распознанные показания счетчиков как показано на рисунке {{image_counter_next}};"
+                  - image:
+                      path: "docs/media/screenshots/screenshot_roi_setup.png"
+                      caption: "Настройка зоны распознавания"
+                      width: "12cm"
+
+              - id: "camera_settings"
+                name: "Настройка параметров камеры"
+                blocks:
+                  - text: |
+                      Для настройки камеры необходимо нажать на кнопку ⚙ (в правом верхнем углу). Откроется модальное окно, как показано на рисунке {{image_counter_next}}, где можно выбрать следующие настройки: 
+                  - list:
+                      style: bullet
+                      items:
+                        - "AGC Gain (усиление автоматической регулировки усиления): 0-30;"
+                        - "AEC Value (значение автоматической экспозиции): 0-1200;"
+                        - "Flash Duty (продолжительность вспышки): 0-100;"
+                  - image:
+                      path: "docs/media/screenshots/screenshot_camera_settings_modal.png"
+                      caption: "Окно настроек камеры"
+                      width: "12cm"
+
+              - id: "meter_settings"
+                name: "Настройка параметров счётчика"
+                blocks:
+                  - text: |
+                      Для настройки параметров счётчика нажать на ссылку «Meter». Откроется модальное окно, как показано на рисунке {{image_counter_next}}, где можно выбрать следующие настройки: 
+                  - list:
+                      style: bullet
+                      items:
+                        - "Type (тип счётчика): горячая/холодная вода или электричество;"
+                        - "ID (номер счётчика)."
+                  - image:
+                      path: "docs/media/screenshots/screenshot_meter_settings_modal.png"
+                      caption: "Настройка параметров счетчика"
+                      width: "12cm"
+
+              - id: "ocr_settings"
+                name: "Распознавание текста (OCR)"
+                blocks:
+                  - text: |
+                      Для включения или отключения функции распознавания текста используется переключатель «OCR enabled»:
+                  - list:
+                      style: bullet
+                      items:
+                        - "включить - система будет выполнять распознавание текста на изображениях счетчиков;"
+                        - "выключить - распознавание отключается, данные счетчиков не будут обрабатываться."
+
+              - id: "sleep_settings"
+                name: "Настройка режима сна"
+                blocks:
+                  - text: |
+                      Для управления энергосбережением используются два элемента в разделе общих настроек:
+                  - list:
+                      style: bullet
+                      items:
+                        - "переключатель «Sleep enabled» - включает или выключает режим сна устройства;"
+                        - "ссылка «Sleep (sec.):» - открывает модальное окно для настройки длительности сна в секундах (минимальное значение - 30 секунд) как показано на рисунке {{image_counter_next}}."
+                  - image:
+                      path: "docs/media/screenshots/screenshot_sleep_settings_modal.png"
+                      caption: "настройки режима сна"
+                      width: "12cm"
+
+              - id: "server_settings"
+                name: "Настройка копирования на сервер"
+                blocks:
+                  - text: |
+                      Для настройки отправки данных на удаленный сервер используются два элемента в разделе общих настроек:
+                  - list:
+                      style: bullet
+                      items:
+                        - "переключатель «Copy to server» - включает или выключает копирование данных (автоматически отключается, если путь к серверу не задан);"
+                        - "ссылка «Server path:» - открывает модальное окно для указания пути к серверу, куда будут сохраняться данные как показано на рисунке {{image_counter_next}}."
+                  - image:
+                      path: "docs/media/screenshots/screenshot_server_path_modal.png"
+                      caption: "настройки копирования на сервер"
+                      width: "12cm"
+
+          - id: "operability_check"
+            name: "Проверка работы устройства"
+            points:
+              - id: "check_methods"
+                name: "Проверка работоспособности выполняется следующими методами:"
+                blocks:
+                  - list:
+                      style: bullet
+                      items:
+                        - "ручная проверка работы через веб-интерфейс;"
+                        - "проверка работы в автоматическом режиме."
+
+              - id: "image_processing"
+                name: "Проверка работы через веб-интерфейс"
+                blocks:
+                  - text: |
+                      Для проверки работы всех функции устройства используется кнопка «Action». При нажатии на кнопку запускается рабочий цикл, в результате которого происходит получение изображений с обоих счётчиков как показано на рисунке {{image_counter_next}}.
+                  - text: |
+                      При включенном переключателе «OCR enabled» также отображаются в текстовом виде показания обоих счётчиков как показано на рисунке {{image_counter_next}}.
+                  - text: |
+                  - image:
+                      path: "docs/media/screenshots/screenshot_action_ocr_off.png"
+                      caption: "Работа системы при выключенном переключателе «OCR enabled»"
+                      width: "12cm"              
+                  - image:
+                      path: "docs/media/screenshots/screenshot_action_ocr_on.png"
+                      caption: "Работа системы при включенном переключателе «OCR enabled»"
+                      width: "12cm"                                
+
+          - id: "software_interfaces_overview"
+            name: "Программные интерфейсы"
+            points:
+              - id: "software_interfaces_intro"
+                name: "Для интеграции с внешними системами автоматизации устройство предоставляет программные интерфейсы. Полная документация по API доступна в отдельном документе «Справочник по API»."
+
+              - id: "software_interfaces_capabilities"
+                name: "Основные возможности API"
+                blocks:
+                  - list:
+                      style: bullet
+                      items:
+                        - "Получение данных: текущие настройки устройства; изображения со счетчиков; результаты распознавания; системная информация"
+                        - "Управление устройством: изменение настроек счетчиков; настройка параметров камеры; запуск циклов работы; перезагрузка устройства"
+              - id: "software_interfaces_examples"
+                name: "Примеры использования"
+                blocks:
+                  - list:
+                      style: bullet
+                      items:
+                        - "Интеграция с системами умного дома для автоматического сбора показаний"
+                        - "Автоматизированные скрипты для регулярного мониторинга и архивирования данных"
+                        - "Корпоративные системы учета для централизованного сбора показаний"
+
+          - id: "operation_troubleshooting"
+            name: "Возможные неисправности в процессе эксплуатации и рекомендации по действиям"
+            blocks:
+              - text: |
+                  Возможные неисправности в процессе эксплуатации и рекомендации по их устранению приведены в таблице {{table_counter_next}}.
+              - table:
+                  name: "Неисправности в процессе эксплуатации"
+                  headers:
+                    - "Категория проблемы"
+                    - "Симптом/Проблема"
+                    - "Рекомендуемые действия"
+                  rows:
+                    - cells:
+                        - "Питание и запуск"
+                        - "Устройство не включается"
+                        - "Проверить подключение питания, заменить блок питания, обратиться в сервисный центр"
+                    - cells:
+                        - "Питание и запуск"
+                        - "Устройство включается, но не работает"
+                        - "Выполнить перезагрузку, сбросить настройки до заводских, выполнить OTA-обновление"
+                    - cells:
+                        - "Камера и изображение"
+                        - "Нет изображения в веб-интерфейсе"
+                        - "Проверить подключение камеры, перезагрузить устройство, обратиться в сервисный центр"
+                    - cells:
+                        - "Камера и изображение"
+                        - "Изображение размытое, нечёткое или низкого качества"
+                        - "Очистить объектив, настроить фокус и параметры камеры (AEC, AGC), проверить освещение"
+                    - cells:
+                        - "Камера и изображение"
+                        - "Изображение слишком тёмное или светлое"
+                        - "Настроить параметры AEC и AGC в веб-интерфейсе"
+                    - cells:
+                        - "OCR и обработка"
+                        - "Неправильное распознавание цифр"
+                        - "Проверить положение камеры, настроить ROI, улучшить освещение и качество изображения"
+                    - cells:
+                        - "OCR и обработка"
+                        - "Данные не сохраняются или не отправляются на сервер"
+                        - "Проверить подключение к интернету, настройки сервера, состояние файловой системы (освободить место при необходимости)"
+
+          - id: "operation_modes"
+            name: "Режимы работы устройства"
+            blocks:
+              - text: |
+                  Устройство поддерживает следующие режимы работы:
+              - list:
+                  style: bullet
+                  items:
+                    - "режим настройки (BLUFI): активируется при первом запуске, предназначен для настройки Wi-Fi сети;"
+                    - "активный режим: устройство подключено к Wi-Fi сети, веб-сервер запущен, доступно управление через браузер;"
+                    - "режим глубокого сна (Deep Sleep): устройство находится в состоянии пониженного энергопотребления, пробуждается по таймеру;"
+                    - "режим OTA-обновления: выполняется загрузка и установка обновлений (наличие режима зависит от прошивки)."
+
+          - id: "initial_state"
+            name: "Приведение в исходное положение"
+            blocks:
+              - text: |
+                  После цикла работы система автоматически возвращается в состояние ожидания (активный режим или режим глубокого сна в зависимости от настроек).
+              - text: |
+                  Для принудительного возврата в исходное состояние (сброс) необходимо отключить питание и через несколько секунд включить обратно.
+
+          - id: "power_off"
+            name: "Выключение изделия"
+            blocks:
+              - text: |
+                  Для выключения изделия необходимо отключить питание.
+
+      - id: "safety_operation"
+        name: "Меры безопасности при использовании"
+        points:
+          - id: "safety_web_interface"
+            name: "Дополнительные меры при работе с веб-интерфейсом:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "Доступ к веб-интерфейсу открыт в локальной сети, это может привести к несанкционированному доступу, нарушению целостности данных или другим угрозам;"
+                    - "Не используйте устройство в общественных Wi-Fi сетях;"
+                    - "При отправке данных на внешний сервер рекомендуется использовать протокол HTTPS."
+
+      - id: "extreme_conditions"
+        name: "Действия в экстремальных условиях"
+        points:
+          - id: "extreme_conditions_actions"
+            name: "Действия в экстремальных условиях"
+            blocks:
+              - text: |
+                  Действия в экстремальных условиях:
+              - list:
+                  style: bullet
+                  items:
+                    - "при отключении электроэнергии действия не предпринимаются (устройство выключается и автоматически запускается после восстановления питания);"
+                    - "при повреждении корпуса: немедленно отключить питание и обратиться в сервисный центр;"
+                    - "при воздействии жидкостей: немедленно отключить питание, просушить устройство (не разбирая), проверить работоспособность."
+
+      - id: "modified_product"
+        name: "Возможность доработки"
+        points:
+          - id: "modified_product_permissions"
+            name: "Доработка изделия возможна только в следующих пределах"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "адрес OCR-сервера задаётся в конфигурации прошивки (может быть изменен при OTA-обновлении);"
+                    - "параметры камеры и ROI настраиваются через веб-интерфейс;"
+                    - "логика работы может быть модифицирована через OTA-обновления прошивки."
+          - id: "modified_product_prohibitions"
+            name: "Запрещается"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "аппаратные модификации (разборка корпуса, замена компонентов) — только в сервисном центре;"
+                    - "установка несанкционированных прошивок;"
+                    - "изменение конструкции креплений без согласования с производителем."
+
+  # РАЗДЕЛ 3: ТЕХНИЧЕСКОЕ ОБСЛУЖИВАНИЕ
+  - id: "maintenance"
+    name: "Техническое обслуживание"
+    subsections:
+      - id: "general_instructions"
+        name: "Общие указания"
+        points:
+          - id: "maintenance_purpose"
+            name: "Техническое обслуживание проводится для проверки работоспособности и обновления программного обеспечения изделия"
+            blocks: []
+          - id: "maintenance_executors"
+            name: "Техническое обслуживание выполняется:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "квалифицированным персоналом удалённо через веб-интерфейс — для повседневных операций;"
+                    - "в авторизованном сервисном центре — для сложных операций и ремонта."
+          - id: "disassembly_warning"
+            name: "Разборка корпуса пользователем запрещена и аннулирует гарантийные обязательства"
+            blocks: []
+          - id: "personnelquirements"
+            name: "Требуемый уровень подготовки персонала:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "базовые навыки работы с микроконтроллерами (ESP32);"
+                    - "понимание принципов работы Wi-Fi сетей;"
+                    - "знания в области программирования на языке C/C++ для модификации ПО;"
+                    - "работа со средой разработки ESP-IDF или Arduino."
+
+      - id: "safety_measures"
+        name: "Меры безопасности"
+        points:
+          - id: "safety_rules"
+            name: "При проведении технического обслуживания необходимо соблюдать следующие меры безопасности:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "отключить питание перед любыми манипуляциями с устройством;"
+                    - "избегать статического электричества (использовать антистатические браслеты при работе в сервисном центре);"
+                    - "не вскрывать корпус — все операции выполняются удаленно;"
+                    - "использовать только штатное оборудование и инструменты;"
+                    - "соблюдать требования электробезопасности при проведении измерений."
+
+      - id: "maintenance_procedure"
+        name: "Порядок технического обслуживания"
+        points:
+          - id: "maintenance_steps"
+            name: "Техническое обслуживание должно проводиться в следующем порядке:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "внешний осмотр: проверка целостности корпуса и пломбы, чистоты креплений, чистоты объектива;"
+                    - "очистка объектива мягкой салфеткой из микрофибры;"
+                    - "проверка электрических подключений: надежность соединений, отсутствие повреждений изоляции;"
+                    - "проверка работы через веб-интерфейс: получение тестового изображения; выполнение полного цикла работы; проверка OTA-статуса;"
+                    - "проверка состояния файловой системы: свободное место, отсутствие ошибок;"
+                    - "проверка актуальности прошивки: наличие и установка OTA-обновлений."
+
+          - id: "maintenance_features"
+            name: "Особенности технического обслуживания:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "техническое обслуживание проводится квалифицированным персоналом;"
+                    - "разборка корпуса запрещена пользователем;"
+                    - "все настройки и обновления выполняются удаленно через веб-интерфейс;"
+                    - "сервисное обслуживание с вскрытием корпуса производится только в авторизованных сервисных центрах;"
+                    - "рекомендуется вести журнал технического обслуживания с записями о проведенных операциях и результатах проверок."
+
+      - id: "maintenance_check"
+        name: "Проверка работоспособности"
+        points:
+          - id: "maintenance_methods"
+            name: "Проверка работоспособности выполняется следующими методами:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "автоматическая при включении: проверка инициализации всех компонентов системы;"
+                    - "ручная через веб-интерфейс: мониторинг системных логов, проверка статусов подключения;"
+                    - "функциональная проверка: выполнение полного цикла работы (захват, обработка, распознавание);"
+                    - "проверка OTA-функционала: имитация наличия обновлений, проверка процесса обновления;"
+                    - "проверка сохранения данных: убедиться в корректном сохранении данных в файловой системе и/или отправке на сервер."
+
+      - id: "technical_inspection"
+        name: "Техническое освидетельствование"
+        points:
+          - id: "inspection_frequency"
+            name: "Рекомендуется проводить техническое освидетельствование каждые 6 месяцев"
+            blocks: []
+          - id: "inspection_program"
+            name: "Программа технического освидетельствования включает:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "внешний осмотр корпуса и пломбы на отсутствие повреждений;"
+                    - "чистота защитного стекла объектива;"
+                    - "надёжность крепления на счетчике;"
+                    - "проверка работоспособности через веб-интерфейс (выполнение полного цикла);"
+                    - "проверка качества распознавания;"
+                    - "проверка состояния файловой системы;"
+                    - "проверка актуальности прошивки и установка доступных OTA-обновлений."
+
+      - id: "conservation"
+        name: "Консервация (расконсервация)"
+        points:
+          - id: "conservation_procedure"
+            name: "Консервация изделия для длительного хранения:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "отключить питание;"
+                    - "демонтировать с креплений;"
+                    - "очистить от пыли и упаковать в антистатический пакет с силикагелем (2 г на изделие);"
+                    - "поместить в герметичную тару."
+          - id: "deconservation_procedure"
+            name: "Расконсервация изделия:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "осмотреть корпус и пломбу;"
+                    - "выдержать при комнатной температуре (+18...+25°C) в течение 2 часов;"
+                    - "проверить работоспособность."
+
+
+  # РАЗДЕЛ 4: ТЕКУЩИЙ РЕМОНТ
+  - id: "current_repair"
+    name: "Текущий ремонт"
+    subsections:
+      - id: "general_repair_instructions"
+        name: "Общие указания"
+        blocks:
+            - text: |
+                Текущий ремонт выполняется при неисправностях, не требующих замены основных компонентов изделия.
+            - text: |
+                Ремонт с вскрытием корпуса производится только в авторизованном сервисном центре с применением специального оборудования для вскрытия и герметизации корпуса.
+
+      - id: "repair_safety"
+        name: "Меры безопасности"
+        points:
+          - id: "repair_safety_rules"
+            name: "При проведении текущего ремонта необходимо соблюдать следующие меры безопасности:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "отключить питание перед любыми манипуляциями;"
+                    - "не вскрывать корпус — все операции выполняются удаленно;"
+                    - "использовать только штатное оборудование и инструменты;"
+                    - "соблюдать требования электробезопасности;"
+                    - "работать в антистатической зоне при ремонте в сервисном центре."
+
+  # РАЗДЕЛ 5: ХРАНЕНИЕ
+  - id: "storage"
+    name: "Хранение"
+    points:
+      - id: "storage_warehousing"
+        name: "Правила хранения и складирования"
+        points : 
+          - id: "storage_rules"
+            name: "Постановка и снятие с хранения" 
+            blocks:
+             - text: |
+                  Постановка на хранение — по процедуре консервации, снятие — по процедуре расконсервации.
+          - id: "warehousing"
+            name: "Складирование:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "высота штабеля: не более 5 коробок;"
+                    - "расстояние от отопительных приборов: не менее 1 м;"
+                    - "защита от воздействия агрессивных сред;"
+                    - "отдельное складирование от тяжелых и острых предметов."
+          
+      - id: "limited_life_parts"
+        name: "Составные части с ограниченным сроком хранения"
+        blocks:
+          - text: |
+                Составные части с ограниченным сроком хранения:
+          - list:
+              style: bullet
+              items:
+                - "блок питания: от 3 до 5 лет (зависит от производителя и условий эксплуатации);"
+                - "крепёжные элементы: до 5 лет (резинки, уплотнители креплений)."
+      - id: "storage_conditions"
+        name: "Условия хранения"
+        blocks:
+          - text: |
+                Условия хранения:
+          - list:
+              style: bullet
+              items:
+                - "температура: от {{ specifications.environmental.storage_temperature_c.min.value }}°C до +{{ specifications.environmental.storage_temperature_c.max.value }}°C;"
+                - "влажность: не более {{ specifications.environmental.humidity_max_percent.value }}% без конденсата;"
+                - "отсутствие агрессивных паров и аэрозолей;"
+                - "исключить вибрации, удары, давление на корпус;"
+                - "защита от прямых солнечных лучей."
+      
+  # РАЗДЕЛ 6: ТРАНСПОРТИРОВАНИЕ
+  - id: "transportation"
+    name: "Транспортирование"
+    points:
+      - id: "transport_requirements"
+        name: "Требования к транспортированию"
+        blocks:
+          - text: |
+                Требования к транспортированию:
+          - list:
+              style: bullet
+              items:
+                - "в оригинальной или аналогичной упаковке;"
+                - "температура: от –20°C до +50°C;"
+                - "влажность: до 95% при +35°C без конденсата;"
+                - "целостность корпуса и пломбы."
+      - id: "transport_preparation"
+        name: "Подготовка к транспортированию"
+        blocks:
+          - text: |
+                Подготовка к транспортированию:       
+          - list:
+              style: bullet
+              items:
+                - "отключить питание;"
+                - "демонтировать с креплений;"
+                - "упаковать в антистатический пакет и коробку с амортизацией."
+      - id: "transport_characteristics"
+        name: "Транспортные характеристики"
+        blocks:
+          - text: |
+                Транспортные характеристики:            
+          - list:
+              style: bullet
+              items:
+                - "габаритные размеры устройства: {{ specifications.physical.dimensions_mm.length.value }} × {{ specifications.physical.dimensions_mm.width.value }} × {{ specifications.physical.dimensions_mm.height.value }} {{ specifications.physical.dimensions_mm.length.unit }};"
+                - "габаритные размеры в упаковке: ≈ 150 × 100 × 50 {{ specifications.physical.dimensions_mm.length.unit }};"
+                - "масса устройства: ≈ {{ specifications.physical.weight_grams.value }} {{ specifications.physical.weight_grams.unit }};"
+                - "масса в упаковке: ≈ 300 {{ specifications.physical.weight_grams.unit }}."
+      - id: "transport_handling"
+        name: "Обращение после транспортирования"
+        blocks:
+          - text: |
+                Обращение после транспортирования:         
+          - list:
+              style: bullet
+              items:
+                - "визуальный осмотр упаковки на отсутствие повреждений;"
+                - "проверка целостности пломбы на корпусе;"
+                - "выдержка при комнатной температуре (+18...+25°C) в течение 2 часов;"
+                - "проверка комплектности;"
+                - "функциональная проверка (включение, подключение к сети)."
+
+  # РАЗДЕЛ 7: УТИЛИЗАЦИЯ
+  - id: "disposal"
+    name: "Утилизация"
+    subsections:
+      - id: "safety_disposal"
+        name: "Меры безопасности"
+        points:
+          - id: "disposal_safety_rules"
+            name: "При утилизации необходимо соблюдать следующие меры безопасности"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "отключить питание;"
+                    - "сдавать в сборе, разборка запрещена."
+          - id: "disposal_prohibitions"
+            name: "Запрещается"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "самостоятельная разборка корпуса для утилизации;"
+                    - "захоронение на полигонах ТБО;"
+                    - "сжигание в непредназначенных для этого местах;"
+                    - "сброс в канализацию, водоемы или на несанкционированные свалки."
+
+      - id: "preparation_disposal"
+        name: "Подготовка к утилизации"
+        points:
+          - id: "disposal_preparation"
+            name: "Подготовка изделия к утилизации включает"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "демонтировать со счетчика;"
+                    - "отсоединить кабели и блок питания;"
+                    - "сдать целое, неразобранное изделие в пункт приема электронных отходов."
+
+      - id: "disposable_parts"
+        name: "Утилизируемые части"
+        points:
+          - id: "parts_for_disposal"
+            name: "Утилизации подлежат"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "устройство в сборе"
+                    - "блок питания"
+                    - "кабели"
+
+      - id: "methods_disposal"
+        name: "Методы утилизации"
+        points:
+          - id: "disposal_methods"
+            name: "При утилизации могут применяться следующие методы"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "изделие утилизируется как неразборный электронный блок"
+                    - "первичная обработка: измельчение в шредере для электронных отходов вместе с корпусом"
+                    - "переработка: пластиковая фракция — очистка, гранулирование; металлическая фракция — переплавка; электронная фракция — извлечение драгоценных металлов"
+
+      - id: "organizations_disposal"
+        name: "Организации для утилизации"
+        points:
+          - id: "disposal_organizations"
+            name: "Изделие должно передаваться специализированным организациям, имеющим лицензию на утилизацию неразборных электронных устройств"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "имеющим лицензию на утилизацию отходов I–IV классов опасности"

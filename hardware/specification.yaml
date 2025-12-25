@@ -1,0 +1,200 @@
+# hardware/specification.yaml
+# Полная техническая спецификация изделия
+# Только аппаратные и эксплуатационные характеристики (без программных процедур)
+
+specifications:
+  # Микроконтроллер
+  microcontroller:
+    type:
+      value: "ESP32-S"
+      description: "Модель микроконтроллера"
+    frequency_mhz:
+      value: 240
+      unit: "МГц"
+      description: "Максимальная тактовая частота процессора"
+    cores:
+      value: 2
+      unit: "шт"
+      description: "Количество вычислительных ядер"
+
+  # Камера
+  camera:
+    sensor:
+      value: "OV2640"
+      description: "Модель CMOS-матрицы"
+    resolution_mp:
+      value: 2.0
+      unit: "Мп"
+      description: "Максимальное разрешение сенсора"
+    format:
+      value: "JPEG"
+      description: "Формат кодирования изображения"
+    focus_type:
+      value: "фиксированный"
+      description: "Тип фокусировки объектива"
+
+  # Память
+  memory:
+    flash_mb_options:
+      min:
+        value: 4
+        unit: "МБ"
+      max:
+        value: 16
+        unit: "МБ"
+      description: "Объём встроенной flash-памяти"
+    filesystem:
+      value: "SPIFFS"
+      description: "Тип файловой системы для хранения данных"
+
+  # Беспроводные интерфейсы
+  wireless:
+    wifi_standard:
+      value: "802.11 b/g/n"
+      description: "Поддерживаемый стандарт Wi-Fi"
+    bluetooth:
+      value: "Bluetooth Low Energy (BLE)"
+      description: "Тип поддержки Bluetooth"
+
+  # Питание
+  power:
+    voltage_v:
+      value: 5.0
+      unit: "В"
+      description: "Номинальное напряжение питания"
+    current_active_ma:
+      value: 300
+      unit: "мА"
+      description: "Максимальный потребляемый ток в активном режиме"
+    supply_min_ma:
+      value: 500
+      unit: "мА"
+      description: "Минимальный рекомендуемый ток источника питания"
+    connection:
+      value: "через контактные площадки или стабилизированный вход"
+      description: "Способ подключения питания"
+
+  # Физические характеристики
+  physical:
+    dimensions_mm:
+      length:
+        value: 60
+        unit: "мм"
+        description: "Длина устройства"
+      width:
+        value: 40
+        unit: "мм"
+        description: "Ширина устройства"
+      height:
+        value: 20
+        unit: "мм"
+        description: "Высота устройства"
+    weight_grams:
+      value: 80
+      unit: "г"
+      description: "Максимальная масса устройства с корпусом"
+    housing:
+      value: "АБС-пластик, неразборный корпус с отверстиями для объектива и вспышки"
+      description: "Материал и тип корпуса"
+    sealing:
+      value: "пломба на стыке частей корпуса"
+      description: "Тип защитной пломбы"
+
+  # Условия эксплуатации
+  environmental:
+    operating_temperature_c:
+      min:
+        value: 0
+        unit: "°C"
+      max:
+        value: 40
+        unit: "°C"
+      description: "Диапазон рабочих температур"
+    storage_temperature_c:
+      min:
+        value: 10
+        unit: "°C"
+      max:
+        value: 35
+        unit: "°C"
+      description: "Диапазон температур хранения"
+    humidity_max_percent:
+      value: 80
+      unit: "%"
+      description: "Максимальная относительная влажность (без конденсата)"
+    placement:
+      value: "только внутри помещений"
+      description: "Рекомендуемое место установки"
+
+
+  # Безопасность
+  safety:
+    class:
+      value: "устройство с питанием от источника постоянного тока 5 В"
+      description: "Класс электробезопасности"
+    supply_requirements:
+      value: "использование стабилизированного USB-порта или блока питания"
+      description: "Требования к источнику питания"
+
+  # Дополнительные возможности (опциональные — если функции нет, просто удалите строку)
+  features:
+    ota_support:
+      value: true
+      description: "Поддержка обновления прошивки по воздуху (OTA)"
+      display_text: "есть"   # готовый текст для вывода в документе
+    deep_sleep:
+      value: true
+      description: "Наличие режима глубокого сна"
+      display_text: "есть"
+    max_meters:
+      value: 2
+      unit: "шт"
+      description: "Максимальное количество поддерживаемых счётчиков"
+    ocr_service:
+      value: "внешний сервер (адрес задаётся в прошивке)"
+      description: "Способ распознавания показаний"
+
+  # Комплект поставки
+  kit:
+    hardware:
+      - name: "модуль ESP32-CAM в корпусе"
+        quantity: 1
+        unit: "шт"
+      - name: "блок питания 5 В DC ≥500 мА"
+        quantity: 1
+        unit: "шт"
+      - name: "соединительные провода"
+        quantity: 1
+        unit: "комплект"
+    note:
+      value: "Крепления для счётчика приобретаются отдельно в зависимости от модели"
+      description: "Примечание к комплектации"
+
+  # Транспортные характеристики
+  transport_specs:
+    device_dimensions_mm:
+      length:
+        value: 60
+        unit: "мм"
+      width:
+        value: 40
+        unit: "мм"
+      height:
+        value: 20
+        unit: "мм"
+    packaging_dimensions_mm:
+      length:
+        value: 120
+        unit: "мм"
+      width:
+        value: 80
+        unit: "мм"
+      height:
+        value: 40
+        unit: "мм"
+    device_weight_grams:
+      value: 80
+      unit: "г"
+    packaged_weight_grams:
+      value: 150
+      unit: "г"

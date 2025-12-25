@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Руководство пользователя | САСП-2</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        body { font-family: 'Segoe UI', system-ui, sans-serif; }
+        .neon { text-shadow: 0 0 10px #3b82f6, 0 0 20px #3b82f6; }
+        .content h1, .content h2, .content h3 { scroll-margin-top: 80px; }
+        .content table { border-collapse: collapse; width: 100%; }
+        .content th, .content td { border: 1px solid #374151; padding: 0.75rem; }
+        .content th { background-color: #1f2937; }
+        .content img { max-width: 100%; height: auto; border-radius: 0.5rem; margin: 1rem auto; display: block; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        figure { margin: 2rem 0; text-align: center; }
+        figcaption { color: #9ca3af; font-size: 0.875rem; margin-top: 0.5rem; }
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen" x-data="{ tocOpen: false }">
+    <!-- Навигация -->
+    <header class="bg-gray-800 border-b border-blue-600 sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold neon">САСП-2</h1>
+            <ul class="flex space-x-6 text-sm md:text-base">
+                <li><a href="index.html" class="hover:text-blue-400 ">Главная</a></li>
+                <li><a href="user_guide.html" class="hover:text-blue-400 text-blue-400 font-semibold">Руководство пользователя</a></li>
+                <li><a href="maintenance.html" class="hover:text-blue-400 ">Обслуживание</a></li>
+                <li><a href="api.html" class="hover:text-blue-400 ">API</a></li>
+                <li><a href="standards.html" class="hover:text-blue-400 ">ГОСТ / PDF</a></li>
+            </ul>
+            <!-- Кнопка "Оглавление" для мобильных -->
+            <button @click="tocOpen = !tocOpen" class="lg:hidden text-blue-400 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Основной контент -->
+    <main class="container mx-auto px-6 py-12 max-w-7xl">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Оглавление (sticky слева на десктопе) -->
+            <aside class="hidden lg:block lg:col-span-1">
+                <div class="toc sticky top-20 bg-gray-800/80 backdrop-blur-md p-6 rounded-xl border border-blue-700 max-h-[70vh] overflow-y-auto">
+<h3 class="text-xl font-bold mb-4 text-blue-400">Оглавление</h3>
+<ul class="space-y-2">
+<li><a href="#intro" class="hover:text-blue-400 transition">  </a></li>
+<li><a href="#description_and_operation" class="hover:text-blue-400 transition">Описание и работа</a></li>
+<li class="ml-4"><a href="#product_description" class="text-gray-300 hover:text-blue-400 transition">Описание и работа изделия</a></li>
+<li class="ml-4"><a href="#components_description" class="text-gray-300 hover:text-blue-400 transition">Описание и работа составных частей изделия</a></li>
+<li><a href="#usage" class="hover:text-blue-400 transition">Использование по назначению</a></li>
+<li class="ml-4"><a href="#operating_limits" class="text-gray-300 hover:text-blue-400 transition">Эксплуатационные ограничения</a></li>
+<li class="ml-4"><a href="#preparation" class="text-gray-300 hover:text-blue-400 transition">Подготовка изделия к использованию</a></li>
+<li class="ml-4"><a href="#device_usage" class="text-gray-300 hover:text-blue-400 transition">Использование изделия</a></li>
+<li class="ml-4"><a href="#safety_operation" class="text-gray-300 hover:text-blue-400 transition">Меры безопасности при использовании</a></li>
+<li class="ml-4"><a href="#extreme_conditions" class="text-gray-300 hover:text-blue-400 transition">Действия в экстремальных условиях</a></li>
+<li class="ml-4"><a href="#modified_product" class="text-gray-300 hover:text-blue-400 transition">Возможность доработки</a></li>
+<li><a href="#maintenance" class="hover:text-blue-400 transition">Техническое обслуживание</a></li>
+<li class="ml-4"><a href="#general_instructions" class="text-gray-300 hover:text-blue-400 transition">Общие указания</a></li>
+<li class="ml-4"><a href="#safety_measures" class="text-gray-300 hover:text-blue-400 transition">Меры безопасности</a></li>
+<li class="ml-4"><a href="#maintenance_procedure" class="text-gray-300 hover:text-blue-400 transition">Порядок технического обслуживания</a></li>
+<li class="ml-4"><a href="#maintenance_check" class="text-gray-300 hover:text-blue-400 transition">Проверка работоспособности</a></li>
+<li class="ml-4"><a href="#technical_inspection" class="text-gray-300 hover:text-blue-400 transition">Техническое освидетельствование</a></li>
+<li class="ml-4"><a href="#conservation" class="text-gray-300 hover:text-blue-400 transition">Консервация (расконсервация)</a></li>
+<li><a href="#current_repair" class="hover:text-blue-400 transition">Текущий ремонт</a></li>
+<li class="ml-4"><a href="#general_repair_instructions" class="text-gray-300 hover:text-blue-400 transition">Общие указания</a></li>
+<li class="ml-4"><a href="#repair_safety" class="text-gray-300 hover:text-blue-400 transition">Меры безопасности</a></li>
+<li><a href="#disposal" class="hover:text-blue-400 transition">Утилизация</a></li>
+<li class="ml-4"><a href="#safety_disposal" class="text-gray-300 hover:text-blue-400 transition">Меры безопасности</a></li>
+<li class="ml-4"><a href="#preparation_disposal" class="text-gray-300 hover:text-blue-400 transition">Подготовка к утилизации</a></li>
+<li class="ml-4"><a href="#disposable_parts" class="text-gray-300 hover:text-blue-400 transition">Утилизируемые части</a></li>
+<li class="ml-4"><a href="#methods_disposal" class="text-gray-300 hover:text-blue-400 transition">Методы утилизации</a></li>
+<li class="ml-4"><a href="#organizations_disposal" class="text-gray-300 hover:text-blue-400 transition">Организации для утилизации</a></li>
+</ul>
+</div>
+            </aside>
+            <!-- Контент страницы -->
+            <div class="lg:col-span-3">
+                <div class='content'><p class='mb-4 text-gray-300'>Настоящее руководство по эксплуатации (далее — РЭ) содержит сведения, необходимые для правильной и безопасной эксплуатации системы автоматизированного считывания показаний счетчиков «Система автоматизированного считывания показаний счетчиков "САСП-2"», АИМУ.123456.002.</p>
+<p class='mb-4 text-gray-300'>РЭ распространяется на все модификации системы «САСП-2», выполненные на базе модуля ESP32-CAM с камерой OV2640, если иное не оговорено в технической документации на конкретную модификацию.</p>
+<p class='mb-4 text-gray-300'>Требуемый уровень подготовки пользователя:</p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>умение следовать текстовым или визуальным пошаговым инструкции в соответствии с РЭ;</li>
+<li>наличие базовых навыков работы с мобильным устройством или компьютером (открытие веб-страниц, использование приложений);</li>
+<li>умение подключать устройство к домашней Wi-Fi-сети (знание имени сети и пароля).</li>
+</ul>
+<p class='mb-4 text-gray-300'>Изделие относится к устройствам с питанием от источника постоянного тока {{ power.nominal_voltage.value }} {{ power.nominal_voltage.unit }}.<br></p>
+<p class='mb-4 text-gray-300'>Опасными факторами при эксплуатации являются:</p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>электрический ток: использование нештатного, неисправного или неподходящего по параметрам блока питания может привести к поражению электрическим током, возгоранию или повреждению устройства;</li>
+<li>перегрев: необходимо обеспечить вентиляцию устройства при эксплуатации, запрещается накрывать устройство, размещать вблизи источников тепла;</li>
+<li>повреждение корпуса: запрещается разбирать корпус устройства, ремонт должен производиться только в сервисном центре.</li>
+</ul>
+<p class='mb-4 text-gray-300'>Для полноценной работы системы требуется стабильное подключение к сети Интернет для связи с удаленным OCR-сервером.</p>
+<p class='mb-4 text-gray-300'>В настоящем документе использованы следующие сокращения:</p>
+<ul class='list-none pl-0 mb-4 space-y-1'>
+<li>РЭ — руководство по эксплуатации</li>
+<li>ТУ — технические условия</li>
+<li>OCR — оптическое распознавание символов (от англ. Optical Character Recognition)</li>
+<li>Wi-Fi — беспроводная локальная сеть стандарта IEEE 802.11</li>
+<li>BLE — Bluetooth Low Energy</li>
+<li>BLUFI — Bluetooth Network Provisioning (режим настройки Wi-Fi через Bluetooth, используемый в ESP32)</li>
+<li>OTA — обновление «по воздуху» (от англ. Over-The-Air)</li>
+<li>ROI — область интереса (от англ. Region of Interest)</li>
+<li>SPIFFS — файловая система для микроконтроллеров ESP32 (SPI Flash File System)</li>
+<li>HTTP — протокол передачи гипертекста (от англ. HyperText Transfer Protocol)</li>
+<li>HTTPS — защищённая версия HTTP (с шифрованием)</li>
+<li>API — программный интерфейс приложения (от англ. Application Programming Interface)</li>
+<li>UART — универсальный асинхронный приёмопередатчик (от англ. Universal Asynchronous Receiver-Transmitter)</li>
+</ul>
+<h1 id='description_and_operation' class='text-5xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Описание и работа</h1>
+<h2 id='product_description' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Описание и работа изделия</h2>
+<h3 id='purpose' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Назначение и область применения </h3>
+<p class='mb-4 text-gray-300'>Система «САСП-2» предназначена для автоматического считывания числовых показаний бытовых счетчиков (воды, электричества, газа) с помощью встроенной камеры, их распознавания методом OCR и передачи данных на сервер в системах учета коммунальных ресурсов.</p>
+<p class='mb-4 text-gray-300'>Область применения изделия:</p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>системы автоматического сбора показаний счетчиков в многоквартирных домах;</li>
+<li>умные дома и системы мониторинга энергопотребления;</li>
+<li>промышленный учет ресурсов на предприятиях;</li>
+<li>дистанционный мониторинг объектов недвижимости.</li>
+</ul>
+<h3 id='technical_characteristics' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Технические характеристики</h3>
+<p class='mb-4 text-gray-300'>Технические характеристики устройства приведены в таблице .</p>
+<div class='overflow-x-auto mb-6'><table class='w-full border-collapse'>
+<thead><tr class='bg-gray-800'>
+<th class='border border-gray-700 p-3 text-left'>Характеристика</th>
+<th class='border border-gray-700 p-3 text-left'>Значение</th>
+</tr></thead><tbody>
+<tr>
+<td class='border border-gray-700 p-3'>Модель микроконтроллера</td>
+<td class='border border-gray-700 p-3'>ESP32-S</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Максимальная тактовая частота процессора</td>
+<td class='border border-gray-700 p-3'>240 МГц</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Количество вычислительных ядер</td>
+<td class='border border-gray-700 p-3'>2</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Модель CMOS-матрицы</td>
+<td class='border border-gray-700 p-3'>OV2640</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Максимальное разрешение сенсора</td>
+<td class='border border-gray-700 p-3'>2.0 Мп</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Формат кодирования изображения</td>
+<td class='border border-gray-700 p-3'>JPEG</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Тип фокусировки объектива</td>
+<td class='border border-gray-700 p-3'>фиксированный</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Объём встроенной flash-памяти</td>
+<td class='border border-gray-700 p-3'>от 4 до 16 МБ</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Тип файловой системы для хранения данных</td>
+<td class='border border-gray-700 p-3'>SPIFFS</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Поддерживаемый стандарт Wi-Fi</td>
+<td class='border border-gray-700 p-3'>802.11 b/g/n</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Тип поддержки Bluetooth</td>
+<td class='border border-gray-700 p-3'>Bluetooth Low Energy (BLE)</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Номинальное напряжение питания</td>
+<td class='border border-gray-700 p-3'>5.0 В</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Максимальный потребляемый ток в активном режиме</td>
+<td class='border border-gray-700 p-3'>300 мА</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Минимальный рекомендуемый ток источника питания</td>
+<td class='border border-gray-700 p-3'>500 мА</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Способ подключения питания</td>
+<td class='border border-gray-700 p-3'>через контактные площадки или стабилизированный вход</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Габаритные размеры (Д×Ш×В)</td>
+<td class='border border-gray-700 p-3'>60×40×20 мм</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Максимальная масса устройства с корпусом</td>
+<td class='border border-gray-700 p-3'>80 г</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Материал и тип корпуса</td>
+<td class='border border-gray-700 p-3'>АБС-пластик, неразборный корпус с отверстиями для объектива и вспышки</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Тип защитной пломбы</td>
+<td class='border border-gray-700 p-3'>пломба на стыке частей корпуса</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Диапазон рабочих температур</td>
+<td class='border border-gray-700 p-3'>от 0 до +40 °C</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Диапазон температур хранения</td>
+<td class='border border-gray-700 p-3'>от 10 до +35 °C</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Максимальная влажность</td>
+<td class='border border-gray-700 p-3'>80 % (без конденсата)</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Рекомендуемое место установки</td>
+<td class='border border-gray-700 p-3'>только внутри помещений</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>{{ specifications.environmental.lightingquirements.description }}</td>
+<td class='border border-gray-700 p-3'>{{ specifications.environmental.lightingquirements.value }}</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Класс электробезопасности</td>
+<td class='border border-gray-700 p-3'>устройство с питанием от источника постоянного тока 5 В</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>{{ specifications.safety.supplyquirements.description }}</td>
+<td class='border border-gray-700 p-3'>{{ specifications.safety.supplyquirements.value }}</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Поддержка обновления прошивки по воздуху (OTA)</td>
+<td class='border border-gray-700 p-3'>есть</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Наличие режима глубокого сна</td>
+<td class='border border-gray-700 p-3'>есть</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Максимальное количество поддерживаемых счётчиков</td>
+<td class='border border-gray-700 p-3'>2 шт</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Способ распознавания показаний</td>
+<td class='border border-gray-700 p-3'>внешний сервер (адрес задаётся в прошивке)</td>
+</tr>
+</tbody></table></div>
+<p class='mb-4 text-gray-300'>Технические характеристики могут незначительно отличаться в зависимости от модификации и конкретной версии прошивки.</p>
+<h3 id='kit' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Состав изделия</h3>
+<h4 id='kit_contents' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>В состав изделия должны входить</h4>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>устройство «САСП-2» в защитном корпусе — 1 шт.;</li>
+<li>блок питания 5.0 В DC 500 мА — 1 шт.;</li>
+<li>комплект соединительных проводов — 1 компл.;</li>
+<li>эксплуатационная документация (паспорт, руководство по эксплуатации) — 1 экз.;</li>
+<li>гарантийный талон — 1 экз.</li>
+</ul>
+<h4 id='kit_additional' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Крепления для монтажа на счетчики приобретаются отдельно и не входят в стандартную комплектацию</h4>
+<h4 id='assembly_overview' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Внешний вид устройства показан на рисунке .</h4>
+<figure class='my-8'><img src='media/images/assembly_overview.svg' alt='Внешний вид устройства' class='mx-auto rounded-lg shadow-lg' style='width:12cm;' /><figcaption class='text-center text-gray-400 mt-3'>Внешний вид устройства</figcaption></figure>
+<h3 id='operation_principle' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Устройство и работа</h3>
+<h4 id='structure_components' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Конструкция устройства включает следующие основные компоненты:</h4>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>корпус с расположенным внутри электронными компонентами;</li>
+<li>крепление для монтажа на счетчики (приобретается отдельно).</li>
+</ul>
+<h4 id='work_principle' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Изделие работает следующим образом</h4>
+<ul class='list-decimal pl-6 mb-4 space-y-1'>
+<li>после подачи питания происходит загрузка системы;</li>
+<li>устройство переходит в режим настройки сети (режим BLUFI) для настройки Wi-Fi;</li>
+<li>после настройки Wi-Fi запускается встроенный веб-сервер для возможности управления через веб-интерфейс;</li>
+<li>по внутреннему расписанию или внешней команде через веб-интерфейс производится фотографирование шкалы счетчика;</li>
+<li>заданная область изображения (ROI) обрабатывается и отправляется на внешний сервис распознавания изображения (OCR-сервер);</li>
+<li>фото счётчика и числовые показания сохраняются в памяти устройства и при необходимости отправляются на указанный удалённый сервер;</li>
+<li>после цикла работы система переходит в режим глубокого сна для экономии энергии.</li>
+</ul>
+<h4 id='control_methods' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Управление изделием осуществляется дистанционно:</h4>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>через Bluetooth (для первичной настройки сети);</li>
+<li>через встроенный веб-сервер по Wi-Fi (для настройки параметров устройства).</li>
+</ul>
+<h3 id='tools_and_equipment' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Средства измерения, инструмент и принадлежности</h3>
+<h4 id='tools_warnings' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Предупреждения:</h4>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>разборка корпуса пользователем запрещена и аннулирует гарантию;</li>
+<li>все сервисные операции (кроме очистки объектива) выполняются удаленно или в сервисном центре.</li>
+</ul>
+<h4 id='tools_list' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Для технического обслуживания и ремонта рекомендуется использовать</h4>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>мультиметр — для измерения электрических параметров;</li>
+<li>паяльная станция — для ремонта в сервисном центре;</li>
+<li>набор отверток;</li>
+<li>программатор (USB-UART адаптер) — для перепрошивки;</li>
+<li>климатическая камера — для испытаний (в сервисном центре);</li>
+<li>контрольный OTA-сервер — для проверки обновлений.</li>
+</ul>
+<h3 id='marking' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Маркировка и пломбирование</h3>
+<h4 id='marking_content' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>На корпусе изделия должна быть нанесена маркировка лазерной гравировкой, содержащая</h4>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>товарный знак изготовителя;</li>
+<li>наименование изделия: «САСП-2»;</li>
+<li>обозначение: АИМУ.123456.002;</li>
+<li>серийный номер;</li>
+<li>дата изготовния в формате ММ.ГГГГ;</li>
+<li>напряжение питания: 5.0В DC;</li>
+<li>знак соответствия РСТ;</li>
+<li>предупреждение: «Не разбирать. Ремонт только в сервисном центре».</li>
+</ul>
+<h4 id='sealing_content' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Корпус должен быть опломбирован антивандальной пломбой, содержащей</h4>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>уникальный номер пломбы;</li>
+<li>логотип изготовителя;</li>
+<li>надпись: «Warranty void if removed».</li>
+</ul>
+<h4 id='sealing_warning' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Нарушение пломбы аннулирует гарантийные обязательства</h4>
+<h3 id='packaging' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Упаковка</h3>
+<h4 id='packaging_content' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Изделие поставляется в следующей упаковке:</h4>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>потребительская тара: пластиковый ударопрочный кейс с замком и ложементом для корпуса;</li>
+<li>транспортная тара: трехслойная картонная коробка марки Т-24 по ГОСТ 7376-89;</li>
+<li>амортизация: пенополиэтиленовые вкладыши или воздушно-пузырчатая пленка.</li>
+</ul>
+<h2 id='components_description' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Описание и работа составных частей изделия</h2>
+<h3 id='components_list' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Описание составных частей изделия</h3>
+<p class='mb-4 text-gray-300'>Основными составными частями являются:</p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>корпус с отверстиями для объектива камеры и светодиодной вспышки;</li>
+<li>электронный модуль с поддержкой Wi-Fi и Bluetooth на базе микроконтроллера ESP32-S, включающий в себя микроконтроллер, память, антенну, светодиод вспышки;</li>
+<li>камера OV2640 с разрешением 2.0 Мп.</li>
+</ul>
+<h3 id='components_operation' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Описание работы составных частей</h3>
+<p class='mb-4 text-gray-300'>Работа составных частей заключается в следующем. Модуль камеры захватывает изображение счетчика под управлением микроконтроллера, который обрабатывает кадр, передает данные для распознавания и управляет коммуникацией через Wi-Fi/Bluetooth; светодиодная вспышка обеспечивает подсветку в условиях недостаточной освещенности.</p>
+<p class='mb-4 text-gray-300'>Схема взаимодействия компонентов устройства показана на рисунке .</p>
+<figure class='my-8'><img src='media/diagrams/structural_diagram.svg' alt='Схема взаимодействия компонентов' class='mx-auto rounded-lg shadow-lg' style='width:18cm;' /><figcaption class='text-center text-gray-400 mt-3'>Схема взаимодействия компонентов</figcaption></figure>
+<h1 id='usage' class='text-5xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Использование по назначению</h1>
+<h2 id='operating_limits' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Эксплуатационные ограничения</h2>
+<p class='mb-4 text-gray-300'>Изделие должно эксплуатироваться с соблюдением следующих ограничений:</p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>устройство должно эксплуатироваться только внутри помещений;</li>
+<li>диапазон рабочих температур должен составлять от 0°C до +40°C;</li>
+<li>запрещается эксплуатация в условиях повышенной влажности (конденсат), запыленности, а также вблизи источников сильных электромагнитных помех;</li>
+<li>для распознавания необходима сеть Wi-Fi с доступом в Интернет;</li>
+<li>запрещается разбирать корпус устройства, все настройки должны выполняться удаленно.</li>
+</ul>
+<h2 id='preparation' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Подготовка изделия к использованию</h2>
+<h3 id='safety_preparation' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Меры безопасности при подготовке изделия</h3>
+<p class='mb-4 text-gray-300'>Перед началом работы необходимо убедиться, что блок питания отключен от устройства и от сети 220 В.</p>
+<h3 id='external_inspection' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Внешний осмотр</h3>
+<p class='mb-4 text-gray-300'>Поскольку корпус устройства является неразборным, внешний осмотр сводится к проверке:</p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>целостности корпуса и пломбы: отсутствие трещин, сколов, вмятин, пломба на месте и не нарушена;</li>
+<li>чистоты оптических элементов: отсутствие загрязнений, пыли, паутины на защитном стекле объектива камеры и отверстии для вспышки;</li>
+<li>отсутствия повреждений изоляции кабеля блока питания.</li>
+</ul>
+<h3 id='connections' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Указания о взаимосвязи с другими изделиями</h3>
+<p class='mb-4 text-gray-300'>Для нормальной работы устройства необходимо:</p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>наличие креплений для монтажа на счетчик (приобретаются отдельно);</li>
+<li>подключение к блоку питания 5.0 В DC;</li>
+<li>наличие сети Wi-Fi (роутера) с доступом в интернет (для связи с удаленным OCR-сервером и для OTA-обновлений);</li>
+<li>наличие смартфона с установленным приложением EspBlufi.</li>
+</ul>
+<h3 id='mounting_and_check' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Установка и проверка крепления</h3>
+<h4 id='mounting_check' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Установка и проверка крепления устройства производится следующим образом:</h4>
+<ul class='list-decimal pl-6 mb-4 space-y-1'>
+<li>закрепить устройство на счётчик с помощью креплений как указано в руководстве по эксплуатации к конкретной модели крепления;</li>
+<li>проверить надёжность фиксирования устройства на счётчике;</li>
+<li>креплениями отрегулировать расстояние от камеры устройства до шкалы счетчика в пределах 10-15 см.</li>
+</ul>
+<h4 id='readiness_confirmation' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Устройство считается готовым к настройке и эксплуатации при выполнении всех пунктов внешнего осмотра и установки.</h4>
+<h3 id='power_check' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Проверка подачи питания и индикация</h3>
+<h4 id='power_indication' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Единственным видимым внешним признаком успешного запуска является однократная вспышка через 5-7 секунд после после подачи питания на устройство.</h4>
+<h4 id='no_indication' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>При отсутствии вспышки при исправном блоке питания необходимо обратиться в техподдержку;</h4>
+<h4 id='readiness' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>При наличии вспышки через 5-7 секунд после подачи питания изделие к работе.</h4>
+<h3 id='preparation_troubleshooting' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Перечень возможных неисправностей при подготовке и рекомендации по действиям</h3>
+<p class='mb-4 text-gray-300'>Перечень возможных неисправностей при подготовке к работе и рекомендации по их устранению переведены в таблице .</p>
+<div class='overflow-x-auto mb-6'><table class='w-full border-collapse'>
+<thead><tr class='bg-gray-800'>
+<th class='border border-gray-700 p-3 text-left'>Симптом/Проблема</th>
+<th class='border border-gray-700 p-3 text-left'>Возможная причина</th>
+<th class='border border-gray-700 p-3 text-left'>Рекомендуемые действия</th>
+</tr></thead><tbody>
+<tr>
+<td class='border border-gray-700 p-3'>Вспышка не загорается при включении</td>
+<td class='border border-gray-700 p-3'>Отсутствие питания, неисправный блок питания, повреждение устройства</td>
+<td class='border border-gray-700 p-3'>Проверить подключение питания, заменить блок питания, обратиться в сервисный центр</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Устройство не обнаруживается в приложении EspBlufi</td>
+<td class='border border-gray-700 p-3'>Bluetooth выключен на смартфоне, устройство не в режиме BLUFI, расстояние слишком велико</td>
+<td class='border border-gray-700 p-3'>Включить Bluetooth на смартфоне, перезагрузить устройство, приблизиться к устройству</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Не удается подключиться к Wi-Fi сети</td>
+<td class='border border-gray-700 p-3'>Неверный пароль, слабый сигнал Wi-Fi, несовместимость с роутером</td>
+<td class='border border-gray-700 p-3'>Проверить пароль, переместить устройство ближе к роутеру, проверить настройки роутера</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Не удается получить доступ к веб-интерфейсу</td>
+<td class='border border-gray-700 p-3'>Неверный IP-адрес, устройство не подключено к сети, проблемы с браузером</td>
+<td class='border border-gray-700 p-3'>Проверить IP-адрес в роутера, проверить подключение устройства к сети, использовать другой браузер</td>
+</tr>
+</tbody></table></div>
+<h2 id='device_usage' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Использование изделия</h2>
+<h3 id='operation_procedure' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Порядок действий при настройке доступа к устройству</h3>
+<h4 id='install_blufi' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Установить на смартфон приложение EspBlufi в соответствии с инструкцией по его установке и использованию.</h4>
+<h4 id='blufi_connect' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Настроить доступ к устройству по Wi-Fi соединению, для этого:</h4>
+<ul class='list-decimal pl-6 mb-4 space-y-1'>
+<li>подключить блок питания к устройству (убедиться в наличии вспышки через 5–7 секунд после подачи питания);</li>
+<li>открыть на смартфоне приложение EspBlufi и запустить функцию поиска устройств;</li>
+<li>выбрать из списка устройство с именем, начинающимся на "BLUFI_" как показано на рисунке ;</li>
+<li>после подключения к устройству настроить учётные данные для Wi-Fi в соответствии с инструкцией по работе с приложением EspBlufi.</li>
+</ul>
+<figure class='my-8'><img src='media/screenshots/screenshot_blufi_discovery.png' alt='Обнаружение устройства в приложении EspBlufi' class='mx-auto rounded-lg shadow-lg' style='width:12cm;' /><figcaption class='text-center text-gray-400 mt-3'>Обнаружение устройства в приложении EspBlufi</figcaption></figure>
+<h4 id='device_access' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Открыть веб-интерфейс устройства, для этого ввести полученный устройством IP-адрес в адресную строку браузера.</h4>
+<p class='mb-4 text-gray-300'>При успешном соединении откроется главная страница веб-интерфейса управления устройством как показано на рисунке .</p>
+<figure class='my-8'><img src='media/screenshots/screenshot_main_interface.png' alt='Главная страница веб-интерфейса управления устройством' class='mx-auto rounded-lg shadow-lg' style='width:12cm;' /><figcaption class='text-center text-gray-400 mt-3'>Главная страница веб-интерфейса управления устройством</figcaption></figure>
+<h4 id='device_control' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Все управление устройством осуществляется дистанционно через встроенный веб-интерфейс.</h4>
+<h3 id='control_content' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Настройка и управление устройством через веб-интерфейс</h3>
+<h4 id='ui_description' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Главная страница веб-интерфейса содержит следующие элементы (сверху вниз):</h4>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>кнопка «Init» - инициализация системы, загрузка начального изображения с камеры;</li>
+<li>кнопка «Action» - запуск цикла получения изображений и выполнения распознавания показаний счетчиков;</li>
+<li>кнопка настроек (⚙) - открывает окно настроек камеры;</li>
+<li>переключатель «OCR enabled» - включает/выключает распознавание текста на изображениях;</li>
+<li>переключатель «Sleep enabled» - включает/выключает режим сна устройства;</li>
+<li>ссылка «Sleep (sec.):» - открывает модальное окно для настройки длительности сна (в секундах);</li>
+<li>переключатель «Copy to server» - включает/выключает копирование данных на сервер;</li>
+<li>ссылка «Server path:» - открывает модальное окно для настройки пути к серверу;</li>
+<li>секции параметров счётчиков;</li>
+<li>секции предпросмотра изображений - отображают вырезанные области с камеры для каждого счетчика;</li>
+<li>секция отображения полного изображения с камеры;</li>
+<li>внизу расположена секция, отображающая системные сообщения в реальном времени.</li>
+</ul>
+<h4 id='settings_stages' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Основные этапы настройки в веб-интерфейсе:</h4>
+<ul class='list-decimal pl-6 mb-4 space-y-1'>
+<li>настроить зоны распознавания (ROI) для каждого счётчика;</li>
+<li>настроить параметры камеры;</li>
+<li>настроить параметры счетчика;</li>
+<li>настроить общие параметры.</li>
+</ul>
+<h4 id='roi_settings' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Настройка зоны распознавания</h4>
+<p class='mb-4 text-gray-300'>Настройка зоны распознавания производится следующим образом:</p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>нажать кнопку «Init» для получения изображения с камеры;</li>
+<li>при необходимости настроить параметры камеры как указано ниже;</li>
+<li>на изображении выделить прямоугольную область для первого счетчика (перетаскиванием);</li>
+<li>при необходимости отрегулировать размер области (за угол в правом нижнем углу прямоугольника);</li>
+<li>нажать на ссылку «Save coordinates» под превью изображения;</li>
+<li>подтвердить сохранение координат в открывшемся модальном окне;</li>
+<li>выделить аналогичную область для второго счетчика (автоматически выбирается противоположная сторона холста);</li>
+<li>нажать кнопку «Action» для проверки корректности выделенных областей;</li>
+<li>убедиться, что в блоках данных отображаются распознанные показания счетчиков как показано на рисунке ;</li>
+</ul>
+<figure class='my-8'><img src='media/screenshots/screenshot_roi_setup.png' alt='Настройка зоны распознавания' class='mx-auto rounded-lg shadow-lg' style='width:12cm;' /><figcaption class='text-center text-gray-400 mt-3'>Настройка зоны распознавания</figcaption></figure>
+<h4 id='camera_settings' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Настройка параметров камеры</h4>
+<p class='mb-4 text-gray-300'>Для настройки камеры необходимо нажать на кнопку ⚙ (в правом верхнем углу). Откроется модальное окно, как показано на рисунке , где можно выбрать следующие настройки: </p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>AGC Gain (усиление автоматической регулировки усиления): 0-30;</li>
+<li>AEC Value (значение автоматической экспозиции): 0-1200;</li>
+<li>Flash Duty (продолжительность вспышки): 0-100;</li>
+</ul>
+<figure class='my-8'><img src='media/screenshots/screenshot_camera_settings_modal.png' alt='Окно настроек камеры' class='mx-auto rounded-lg shadow-lg' style='width:12cm;' /><figcaption class='text-center text-gray-400 mt-3'>Окно настроек камеры</figcaption></figure>
+<h4 id='meter_settings' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Настройка параметров счётчика</h4>
+<p class='mb-4 text-gray-300'>Для настройки параметров счётчика нажать на ссылку «Meter». Откроется модальное окно, как показано на рисунке , где можно выбрать следующие настройки: </p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>Type (тип счётчика): горячая/холодная вода или электричество;</li>
+<li>ID (номер счётчика).</li>
+</ul>
+<figure class='my-8'><img src='media/screenshots/screenshot_meter_settings_modal.png' alt='Настройка параметров счетчика' class='mx-auto rounded-lg shadow-lg' style='width:12cm;' /><figcaption class='text-center text-gray-400 mt-3'>Настройка параметров счетчика</figcaption></figure>
+<h4 id='ocr_settings' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Распознавание текста (OCR)</h4>
+<p class='mb-4 text-gray-300'>Для включения или отключения функции распознавания текста используется переключатель «OCR enabled»:</p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>включить - система будет выполнять распознавание текста на изображениях счетчиков;</li>
+<li>выключить - распознавание отключается, данные счетчиков не будут обрабатываться.</li>
+</ul>
+<h4 id='sleep_settings' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Настройка режима сна</h4>
+<p class='mb-4 text-gray-300'>Для управления энергосбережением используются два элемента в разделе общих настроек:</p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>переключатель «Sleep enabled» - включает или выключает режим сна устройства;</li>
+<li>ссылка «Sleep (sec.):» - открывает модальное окно для настройки длительности сна в секундах (минимальное значение - 30 секунд) как показано на рисунке .</li>
+</ul>
+<figure class='my-8'><img src='media/screenshots/screenshot_sleep_settings_modal.png' alt='настройки режима сна' class='mx-auto rounded-lg shadow-lg' style='width:12cm;' /><figcaption class='text-center text-gray-400 mt-3'>настройки режима сна</figcaption></figure>
+<h4 id='server_settings' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Настройка копирования на сервер</h4>
+<p class='mb-4 text-gray-300'>Для настройки отправки данных на удаленный сервер используются два элемента в разделе общих настроек:</p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>переключатель «Copy to server» - включает или выключает копирование данных (автоматически отключается, если путь к серверу не задан);</li>
+<li>ссылка «Server path:» - открывает модальное окно для указания пути к серверу, куда будут сохраняться данные как показано на рисунке .</li>
+</ul>
+<figure class='my-8'><img src='media/screenshots/screenshot_server_path_modal.png' alt='настройки копирования на сервер' class='mx-auto rounded-lg shadow-lg' style='width:12cm;' /><figcaption class='text-center text-gray-400 mt-3'>настройки копирования на сервер</figcaption></figure>
+<h3 id='operability_check' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Проверка работы устройства</h3>
+<h4 id='check_methods' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Проверка работоспособности выполняется следующими методами:</h4>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>ручная проверка работы через веб-интерфейс;</li>
+<li>проверка работы в автоматическом режиме.</li>
+</ul>
+<h4 id='image_processing' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Проверка работы через веб-интерфейс</h4>
+<p class='mb-4 text-gray-300'>Для проверки работы всех функции устройства используется кнопка «Action». При нажатии на кнопку запускается рабочий цикл, в результате которого происходит получение изображений с обоих счётчиков как показано на рисунке .</p>
+<p class='mb-4 text-gray-300'>При включенном переключателе «OCR enabled» также отображаются в текстовом виде показания обоих счётчиков как показано на рисунке .</p>
+<p class='mb-4 text-gray-300'></p>
+<figure class='my-8'><img src='media/screenshots/screenshot_action_ocr_off.png' alt='Работа системы при выключенном переключателе «OCR enabled»' class='mx-auto rounded-lg shadow-lg' style='width:12cm;' /><figcaption class='text-center text-gray-400 mt-3'>Работа системы при выключенном переключателе «OCR enabled»</figcaption></figure>
+<figure class='my-8'><img src='media/screenshots/screenshot_action_ocr_on.png' alt='Работа системы при включенном переключателе «OCR enabled»' class='mx-auto rounded-lg shadow-lg' style='width:12cm;' /><figcaption class='text-center text-gray-400 mt-3'>Работа системы при включенном переключателе «OCR enabled»</figcaption></figure>
+<h3 id='software_interfaces_overview' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Программные интерфейсы</h3>
+<h4 id='software_interfaces_intro' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Для интеграции с внешними системами автоматизации устройство предоставляет программные интерфейсы. Полная документация по API доступна в отдельном документе «Справочник по API».</h4>
+<h4 id='software_interfaces_capabilities' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Основные возможности API</h4>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>Получение данных: текущие настройки устройства; изображения со счетчиков; результаты распознавания; системная информация</li>
+<li>Управление устройством: изменение настроек счетчиков; настройка параметров камеры; запуск циклов работы; перезагрузка устройства</li>
+</ul>
+<h4 id='software_interfaces_examples' class='text-2xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Примеры использования</h4>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>Интеграция с системами умного дома для автоматического сбора показаний</li>
+<li>Автоматизированные скрипты для регулярного мониторинга и архивирования данных</li>
+<li>Корпоративные системы учета для централизованного сбора показаний</li>
+</ul>
+<h3 id='operation_troubleshooting' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Возможные неисправности в процессе эксплуатации и рекомендации по действиям</h3>
+<p class='mb-4 text-gray-300'>Возможные неисправности в процессе эксплуатации и рекомендации по их устранению приведены в таблице .</p>
+<div class='overflow-x-auto mb-6'><table class='w-full border-collapse'>
+<thead><tr class='bg-gray-800'>
+<th class='border border-gray-700 p-3 text-left'>Категория проблемы</th>
+<th class='border border-gray-700 p-3 text-left'>Симптом/Проблема</th>
+<th class='border border-gray-700 p-3 text-left'>Рекомендуемые действия</th>
+</tr></thead><tbody>
+<tr>
+<td class='border border-gray-700 p-3'>Питание и запуск</td>
+<td class='border border-gray-700 p-3'>Устройство не включается</td>
+<td class='border border-gray-700 p-3'>Проверить подключение питания, заменить блок питания, обратиться в сервисный центр</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Питание и запуск</td>
+<td class='border border-gray-700 p-3'>Устройство включается, но не работает</td>
+<td class='border border-gray-700 p-3'>Выполнить перезагрузку, сбросить настройки до заводских, выполнить OTA-обновление</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Камера и изображение</td>
+<td class='border border-gray-700 p-3'>Нет изображения в веб-интерфейсе</td>
+<td class='border border-gray-700 p-3'>Проверить подключение камеры, перезагрузить устройство, обратиться в сервисный центр</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Камера и изображение</td>
+<td class='border border-gray-700 p-3'>Изображение размытое, нечёткое или низкого качества</td>
+<td class='border border-gray-700 p-3'>Очистить объектив, настроить фокус и параметры камеры (AEC, AGC), проверить освещение</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>Камера и изображение</td>
+<td class='border border-gray-700 p-3'>Изображение слишком тёмное или светлое</td>
+<td class='border border-gray-700 p-3'>Настроить параметры AEC и AGC в веб-интерфейсе</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>OCR и обработка</td>
+<td class='border border-gray-700 p-3'>Неправильное распознавание цифр</td>
+<td class='border border-gray-700 p-3'>Проверить положение камеры, настроить ROI, улучшить освещение и качество изображения</td>
+</tr>
+<tr>
+<td class='border border-gray-700 p-3'>OCR и обработка</td>
+<td class='border border-gray-700 p-3'>Данные не сохраняются или не отправляются на сервер</td>
+<td class='border border-gray-700 p-3'>Проверить подключение к интернету, настройки сервера, состояние файловой системы (освободить место при необходимости)</td>
+</tr>
+</tbody></table></div>
+<h3 id='operation_modes' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Режимы работы устройства</h3>
+<p class='mb-4 text-gray-300'>Устройство поддерживает следующие режимы работы:</p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>режим настройки (BLUFI): активируется при первом запуске, предназначен для настройки Wi-Fi сети;</li>
+<li>активный режим: устройство подключено к Wi-Fi сети, веб-сервер запущен, доступно управление через браузер;</li>
+<li>режим глубокого сна (Deep Sleep): устройство находится в состоянии пониженного энергопотребления, пробуждается по таймеру;</li>
+<li>режим OTA-обновления: выполняется загрузка и установка обновлений (наличие режима зависит от прошивки).</li>
+</ul>
+<h3 id='initial_state' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Приведение в исходное положение</h3>
+<p class='mb-4 text-gray-300'>После цикла работы система автоматически возвращается в состояние ожидания (активный режим или режим глубокого сна в зависимости от настроек).</p>
+<p class='mb-4 text-gray-300'>Для принудительного возврата в исходное состояние (сброс) необходимо отключить питание и через несколько секунд включить обратно.</p>
+<h3 id='power_off' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Выключение изделия</h3>
+<p class='mb-4 text-gray-300'>Для выключения изделия необходимо отключить питание.</p>
+<h2 id='safety_operation' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Меры безопасности при использовании</h2>
+<h3 id='safety_web_interface' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Дополнительные меры при работе с веб-интерфейсом:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>Доступ к веб-интерфейсу открыт в локальной сети, это может привести к несанкционированному доступу, нарушению целостности данных или другим угрозам;</li>
+<li>Не используйте устройство в общественных Wi-Fi сетях;</li>
+<li>При отправке данных на внешний сервер рекомендуется использовать протокол HTTPS.</li>
+</ul>
+<h2 id='extreme_conditions' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Действия в экстремальных условиях</h2>
+<h3 id='extreme_conditions_actions' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Действия в экстремальных условиях</h3>
+<p class='mb-4 text-gray-300'>Действия в экстремальных условиях:</p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>при отключении электроэнергии действия не предпринимаются (устройство выключается и автоматически запускается после восстановления питания);</li>
+<li>при повреждении корпуса: немедленно отключить питание и обратиться в сервисный центр;</li>
+<li>при воздействии жидкостей: немедленно отключить питание, просушить устройство (не разбирая), проверить работоспособность.</li>
+</ul>
+<h2 id='modified_product' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Возможность доработки</h2>
+<h3 id='modified_product_permissions' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Доработка изделия возможна только в следующих пределах</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>адрес OCR-сервера задаётся в конфигурации прошивки (может быть изменен при OTA-обновлении);</li>
+<li>параметры камеры и ROI настраиваются через веб-интерфейс;</li>
+<li>логика работы может быть модифицирована через OTA-обновления прошивки.</li>
+</ul>
+<h3 id='modified_product_prohibitions' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Запрещается</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>аппаратные модификации (разборка корпуса, замена компонентов) — только в сервисном центре;</li>
+<li>установка несанкционированных прошивок;</li>
+<li>изменение конструкции креплений без согласования с производителем.</li>
+</ul>
+<h1 id='maintenance' class='text-5xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Техническое обслуживание</h1>
+<h2 id='general_instructions' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Общие указания</h2>
+<h3 id='maintenance_purpose' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Техническое обслуживание проводится для проверки работоспособности и обновления программного обеспечения изделия</h3>
+<h3 id='maintenance_executors' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Техническое обслуживание выполняется:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>квалифицированным персоналом удалённо через веб-интерфейс — для повседневных операций;</li>
+<li>в авторизованном сервисном центре — для сложных операций и ремонта.</li>
+</ul>
+<h3 id='disassembly_warning' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Разборка корпуса пользователем запрещена и аннулирует гарантийные обязательства</h3>
+<h3 id='personnelquirements' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Требуемый уровень подготовки персонала:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>базовые навыки работы с микроконтроллерами (ESP32);</li>
+<li>понимание принципов работы Wi-Fi сетей;</li>
+<li>знания в области программирования на языке C/C++ для модификации ПО;</li>
+<li>работа со средой разработки ESP-IDF или Arduino.</li>
+</ul>
+<h2 id='safety_measures' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Меры безопасности</h2>
+<h3 id='safety_rules' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>При проведении технического обслуживания необходимо соблюдать следующие меры безопасности:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>отключить питание перед любыми манипуляциями с устройством;</li>
+<li>избегать статического электричества (использовать антистатические браслеты при работе в сервисном центре);</li>
+<li>не вскрывать корпус — все операции выполняются удаленно;</li>
+<li>использовать только штатное оборудование и инструменты;</li>
+<li>соблюдать требования электробезопасности при проведении измерений.</li>
+</ul>
+<h2 id='maintenance_procedure' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Порядок технического обслуживания</h2>
+<h3 id='maintenance_steps' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Техническое обслуживание должно проводиться в следующем порядке:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>внешний осмотр: проверка целостности корпуса и пломбы, чистоты креплений, чистоты объектива;</li>
+<li>очистка объектива мягкой салфеткой из микрофибры;</li>
+<li>проверка электрических подключений: надежность соединений, отсутствие повреждений изоляции;</li>
+<li>проверка работы через веб-интерфейс: получение тестового изображения; выполнение полного цикла работы; проверка OTA-статуса;</li>
+<li>проверка состояния файловой системы: свободное место, отсутствие ошибок;</li>
+<li>проверка актуальности прошивки: наличие и установка OTA-обновлений.</li>
+</ul>
+<h3 id='maintenance_features' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Особенности технического обслуживания:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>техническое обслуживание проводится квалифицированным персоналом;</li>
+<li>разборка корпуса запрещена пользователем;</li>
+<li>все настройки и обновления выполняются удаленно через веб-интерфейс;</li>
+<li>сервисное обслуживание с вскрытием корпуса производится только в авторизованных сервисных центрах;</li>
+<li>рекомендуется вести журнал технического обслуживания с записями о проведенных операциях и результатах проверок.</li>
+</ul>
+<h2 id='maintenance_check' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Проверка работоспособности</h2>
+<h3 id='maintenance_methods' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Проверка работоспособности выполняется следующими методами:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>автоматическая при включении: проверка инициализации всех компонентов системы;</li>
+<li>ручная через веб-интерфейс: мониторинг системных логов, проверка статусов подключения;</li>
+<li>функциональная проверка: выполнение полного цикла работы (захват, обработка, распознавание);</li>
+<li>проверка OTA-функционала: имитация наличия обновлений, проверка процесса обновления;</li>
+<li>проверка сохранения данных: убедиться в корректном сохранении данных в файловой системе и/или отправке на сервер.</li>
+</ul>
+<h2 id='technical_inspection' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Техническое освидетельствование</h2>
+<h3 id='inspection_frequency' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Рекомендуется проводить техническое освидетельствование каждые 6 месяцев</h3>
+<h3 id='inspection_program' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Программа технического освидетельствования включает:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>внешний осмотр корпуса и пломбы на отсутствие повреждений;</li>
+<li>чистота защитного стекла объектива;</li>
+<li>надёжность крепления на счетчике;</li>
+<li>проверка работоспособности через веб-интерфейс (выполнение полного цикла);</li>
+<li>проверка качества распознавания;</li>
+<li>проверка состояния файловой системы;</li>
+<li>проверка актуальности прошивки и установка доступных OTA-обновлений.</li>
+</ul>
+<h2 id='conservation' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Консервация (расконсервация)</h2>
+<h3 id='conservation_procedure' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Консервация изделия для длительного хранения:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>отключить питание;</li>
+<li>демонтировать с креплений;</li>
+<li>очистить от пыли и упаковать в антистатический пакет с силикагелем (2 г на изделие);</li>
+<li>поместить в герметичную тару.</li>
+</ul>
+<h3 id='deconservation_procedure' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Расконсервация изделия:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>осмотреть корпус и пломбу;</li>
+<li>выдержать при комнатной температуре (+18...+25°C) в течение 2 часов;</li>
+<li>проверить работоспособность.</li>
+</ul>
+<h1 id='current_repair' class='text-5xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Текущий ремонт</h1>
+<h2 id='general_repair_instructions' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Общие указания</h2>
+<p class='mb-4 text-gray-300'>Текущий ремонт выполняется при неисправностях, не требующих замены основных компонентов изделия.</p>
+<p class='mb-4 text-gray-300'>Ремонт с вскрытием корпуса производится только в авторизованном сервисном центре с применением специального оборудования для вскрытия и герметизации корпуса.</p>
+<h2 id='repair_safety' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Меры безопасности</h2>
+<h3 id='repair_safety_rules' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>При проведении текущего ремонта необходимо соблюдать следующие меры безопасности:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>отключить питание перед любыми манипуляциями;</li>
+<li>не вскрывать корпус — все операции выполняются удаленно;</li>
+<li>использовать только штатное оборудование и инструменты;</li>
+<li>соблюдать требования электробезопасности;</li>
+<li>работать в антистатической зоне при ремонте в сервисном центре.</li>
+</ul>
+<h1 id='disposal' class='text-5xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Утилизация</h1>
+<h2 id='safety_disposal' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Меры безопасности</h2>
+<h3 id='disposal_safety_rules' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>При утилизации необходимо соблюдать следующие меры безопасности</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>отключить питание;</li>
+<li>сдавать в сборе, разборка запрещена.</li>
+</ul>
+<h3 id='disposal_prohibitions' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Запрещается</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>самостоятельная разборка корпуса для утилизации;</li>
+<li>захоронение на полигонах ТБО;</li>
+<li>сжигание в непредназначенных для этого местах;</li>
+<li>сброс в канализацию, водоемы или на несанкционированные свалки.</li>
+</ul>
+<h2 id='preparation_disposal' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Подготовка к утилизации</h2>
+<h3 id='disposal_preparation' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Подготовка изделия к утилизации включает</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>демонтировать со счетчика;</li>
+<li>отсоединить кабели и блок питания;</li>
+<li>сдать целое, неразобранное изделие в пункт приема электронных отходов.</li>
+</ul>
+<h2 id='disposable_parts' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Утилизируемые части</h2>
+<h3 id='parts_for_disposal' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Утилизации подлежат</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>устройство в сборе</li>
+<li>блок питания</li>
+<li>кабели</li>
+</ul>
+<h2 id='methods_disposal' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Методы утилизации</h2>
+<h3 id='disposal_methods' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>При утилизации могут применяться следующие методы</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>изделие утилизируется как неразборный электронный блок</li>
+<li>первичная обработка: измельчение в шредере для электронных отходов вместе с корпусом</li>
+<li>переработка: пластиковая фракция — очистка, гранулирование; металлическая фракция — переплавка; электронная фракция — извлечение драгоценных металлов</li>
+</ul>
+<h2 id='organizations_disposal' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Организации для утилизации</h2>
+<h3 id='disposal_organizations' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Изделие должно передаваться специализированным организациям, имеющим лицензию на утилизацию неразборных электронных устройств</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>имеющим лицензию на утилизацию отходов I–IV классов опасности</li>
+</ul></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Мобильное оглавление (модальное) -->
+    <div x-show="tocOpen" class="fixed inset-0 bg-gray-900 bg-opacity-90 z-50 flex items-center justify-center lg:hidden" @click="tocOpen = false">
+        <div class="bg-gray-800 p-6 rounded-xl border border-blue-700 max-h-[80vh] overflow-y-auto w-11/12 max-w-md" @click.stop>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-blue-400">Оглавление</h3>
+                <button @click="tocOpen = false" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="toc sticky top-20 bg-gray-800/80 backdrop-blur-md p-6 rounded-xl border border-blue-700 max-h-[70vh] overflow-y-auto">
+<h3 class="text-xl font-bold mb-4 text-blue-400">Оглавление</h3>
+<ul class="space-y-2">
+<li><a href="#intro" class="hover:text-blue-400 transition">  </a></li>
+<li><a href="#description_and_operation" class="hover:text-blue-400 transition">Описание и работа</a></li>
+<li class="ml-4"><a href="#product_description" class="text-gray-300 hover:text-blue-400 transition">Описание и работа изделия</a></li>
+<li class="ml-4"><a href="#components_description" class="text-gray-300 hover:text-blue-400 transition">Описание и работа составных частей изделия</a></li>
+<li><a href="#usage" class="hover:text-blue-400 transition">Использование по назначению</a></li>
+<li class="ml-4"><a href="#operating_limits" class="text-gray-300 hover:text-blue-400 transition">Эксплуатационные ограничения</a></li>
+<li class="ml-4"><a href="#preparation" class="text-gray-300 hover:text-blue-400 transition">Подготовка изделия к использованию</a></li>
+<li class="ml-4"><a href="#device_usage" class="text-gray-300 hover:text-blue-400 transition">Использование изделия</a></li>
+<li class="ml-4"><a href="#safety_operation" class="text-gray-300 hover:text-blue-400 transition">Меры безопасности при использовании</a></li>
+<li class="ml-4"><a href="#extreme_conditions" class="text-gray-300 hover:text-blue-400 transition">Действия в экстремальных условиях</a></li>
+<li class="ml-4"><a href="#modified_product" class="text-gray-300 hover:text-blue-400 transition">Возможность доработки</a></li>
+<li><a href="#maintenance" class="hover:text-blue-400 transition">Техническое обслуживание</a></li>
+<li class="ml-4"><a href="#general_instructions" class="text-gray-300 hover:text-blue-400 transition">Общие указания</a></li>
+<li class="ml-4"><a href="#safety_measures" class="text-gray-300 hover:text-blue-400 transition">Меры безопасности</a></li>
+<li class="ml-4"><a href="#maintenance_procedure" class="text-gray-300 hover:text-blue-400 transition">Порядок технического обслуживания</a></li>
+<li class="ml-4"><a href="#maintenance_check" class="text-gray-300 hover:text-blue-400 transition">Проверка работоспособности</a></li>
+<li class="ml-4"><a href="#technical_inspection" class="text-gray-300 hover:text-blue-400 transition">Техническое освидетельствование</a></li>
+<li class="ml-4"><a href="#conservation" class="text-gray-300 hover:text-blue-400 transition">Консервация (расконсервация)</a></li>
+<li><a href="#current_repair" class="hover:text-blue-400 transition">Текущий ремонт</a></li>
+<li class="ml-4"><a href="#general_repair_instructions" class="text-gray-300 hover:text-blue-400 transition">Общие указания</a></li>
+<li class="ml-4"><a href="#repair_safety" class="text-gray-300 hover:text-blue-400 transition">Меры безопасности</a></li>
+<li><a href="#disposal" class="hover:text-blue-400 transition">Утилизация</a></li>
+<li class="ml-4"><a href="#safety_disposal" class="text-gray-300 hover:text-blue-400 transition">Меры безопасности</a></li>
+<li class="ml-4"><a href="#preparation_disposal" class="text-gray-300 hover:text-blue-400 transition">Подготовка к утилизации</a></li>
+<li class="ml-4"><a href="#disposable_parts" class="text-gray-300 hover:text-blue-400 transition">Утилизируемые части</a></li>
+<li class="ml-4"><a href="#methods_disposal" class="text-gray-300 hover:text-blue-400 transition">Методы утилизации</a></li>
+<li class="ml-4"><a href="#organizations_disposal" class="text-gray-300 hover:text-blue-400 transition">Организации для утилизации</a></li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="bg-gray-800 border-t border-blue-600 mt-12 py-6">
+        <div class="container mx-auto px-6 text-center text-gray-500 text-sm">
+            <p>Разработчик: ООО &#34;АИМ&#34;, Москва</p>
+            <p>Сгенерировано: 2025-12-25 16:50</p>
+            <p class="mt-2">Версия документации: V1 | Прошивка: ESP-IDF Framework</p>
+        </div>
+    </footer>
+</body>
+</html>

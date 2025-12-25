@@ -1,0 +1,1081 @@
+# docs/content/tu_content.yaml
+# Шаблон технических условий по ГОСТ
+sections:
+  - id: "title_page"
+    name: "Титульный лист"
+    content:
+      - id: "company_name"
+        type: "text"
+        value: "{{ developer.company }}"
+      
+      - type: "blank_line"
+        count: 1
+      
+      - id: "okpd_code"
+        type: "text"
+        value: "{{ product.okpd }}"
+      
+      - id: "approval"
+        type: "text"
+        value: |
+          УТВЕРЖДАЮ
+            ______________________
+            (должность, подпись)
+            ___ ___________ 20__ г.
+      
+      - type: "blank_line"
+        count: 7
+      
+      - id: "product_name"
+        type: "text"
+        value: |
+          {{ product.full_name }}
+      - type: "blank_line"
+        count: 1
+
+      - type: "text"
+        value: "Технические условия"
+      - type: "blank_line"
+        count: 1
+      
+      - id: "product_code"
+        type: "text"
+        value: |
+          {{ product.code }}.ТУ
+      - type: "blank_line"
+        count: 7
+      
+      - type: "bottom_info"
+        value: " "
+
+  - id: "table_of_contents"
+    name: "Содержание"
+   
+    content: []
+    
+  - id: "intro"
+    name: "Вводная часть"
+    blocks:
+      - text: |
+          Настоящие технические условия распространяются на систему автоматизированного считывания показаний счетчиков «{{ product.name }}», {{ product.code }}.
+      - text: |
+          Изделие предназначено для автоматического считывания числовых показаний со шкал бытовых счетчиков (воды, электричества, газа) с помощью камеры, их распознавания и передачи данных на удаленный сервер или локальное хранилище в системах учета коммунальных ресурсов.
+      - text: |    
+          Условия эксплуатации: Климатическое исполнение {{ environmental.climate_code.value }} по ГОСТ 15150-69. Температура окружающей среды от {{ environmental.temperature.operation_range.min.value }}°C до {{ environmental.temperature.operation_range.max.value }}°C. Относительная влажность до {{ environmental.humidity.max_percent.value }}% при температуре +{{ environmental.humidity.at_temperature.value }}°C без конденсата. Вибрационные нагрузки до {{ environmental.vibration.acceleration.value }}g в диапазоне частот {{ environmental.vibration.frequency_range.min.value }}-{{ environmental.vibration.frequency_range.max.value }} Гц. Установка в закрытых помещениях с защитой от прямого воздействия атмосферных осадков и солнечной радиации. Крепление на счетчики осуществляется с помощью совместимых креплений, приобретаемых отдельно.
+      - text: |    
+          Пример записи в конструкторской документации и при заказе: «Система считывания показаний счетчиков «{{ product.name }}» {{ product.code }} с комплектом креплений для [модель счетчика]».
+
+  - id: "technical_requirements"
+    name: "Технические требования"
+    subsections:
+      - id: "basic_parameters"
+        name: "Основные параметры и характеристики (свойства)"
+        blocks:
+          - text: "Система автоматизированного считывания показаний счетчиков «{{ product.name }}» должна соответствовать требованиям настоящих технических условий и комплекта конструкторской документации согласно {{ product.code }} КД."
+
+      - id: "main_parameters"
+        name: "Требования к основным параметрам"
+        points:
+          - id: "dimensions"
+            name: "Изделие должно иметь следующие габаритные размеры: {{ dimensions.length.value }} ±{{ dimensions.length_tolerance.value }} {{ dimensions.length.unit }} × {{ dimensions.width.value }} ±{{ dimensions.width_tolerance.value }} {{ dimensions.width.unit }} × {{ dimensions.height.value }} ±{{ dimensions.height_tolerance.value }} {{ dimensions.height.unit }}."
+          - id: "weight"
+            name: "Масса изделия (с корпусом) должна составлять не более {{ dimensions.max_weight.value }} {{ dimensions.max_weight.unit }}."
+          - id: "power_params"
+            name: "Изделие должно иметь следующие параметры электропитания:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "Номинальное напряжение питания: постоянный ток {{ power.nominal_voltage.value }} ±{{ power.voltage_tolerance.value }} {{ power.nominal_voltage.unit }}"
+                    - "Потребляемый ток:"
+                    - list:
+                        style: bullet
+                        items:
+                          - "в активном режиме: {{ power.current_consumption.active_mode.value }} {{ power.current_consumption.active_mode.unit }};"
+                          - "в режиме глубокого сна: {{ power.current_consumption.deep_sleep.value }} {{ power.current_consumption.deep_sleep.unit }};"
+                          - "в режиме настройки (BLUFI): {{ power.current_consumption.blufi_mode.value }} {{ power.current_consumption.blufi_mode.unit }}"
+          - id: "cpu_frequency"
+            name: "Рабочая частота процессора должна составлять {{ hardware.cpu_frequency.value }} {{ hardware.cpu_frequency.unit }}."
+          - id: "memory"
+            name: "Изделие должно иметь следующий объем памяти:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "Объем Flash-памяти: {{ hardware.memory.flash_options.value[0] }} или {{ hardware.memory.flash_options.value[1] }} {{ hardware.memory.flash_options.unit }} (в зависимости от модификации)"
+                    - "Объем оперативной памяти: {{ hardware.memory.ram.value }} {{ hardware.memory.ram.unit }}"
+          - id: "ota_support"
+            name: "Изделие должно поддерживать OTA-обновления через Wi-Fi соединение."
+
+      - id: "purpose_requirements"
+        name: "Требования назначения"
+        points:
+          - id: "max_meters"
+            name: "Изделие должно обеспечивать подключение и одновременную работу с {{ functional.max_meters_supported.value }} {{ functional.max_meters_supported.unit }}."
+          - id: "camera_resolution"
+            name: "Камера изделия для захвата изображений должна иметь разрешение {{ camera.sensor_resolution.width.value }}×{{ camera.sensor_resolution.height.value }} {{ camera.sensor_resolution.width.unit }} ({{ camera.sensor_resolution.standard.value }})."
+          - id: "output_format"
+            name: "Изделие должно формировать выходные изображения в формате {{ camera.output_format.value }}."
+          - id: "jpeg_quality"
+            name: "Качество сжатия JPEG должно быть регулируемым в диапазоне от {{ camera.jpeg_quality_range.min.value }} до {{ camera.jpeg_quality_range.max.value }}."
+          - id: "roi_size"
+            name: "Размер настраиваемой области распознавания (ROI) должен быть в диапазоне от {{ camera.roi_size_range.min_width.value }}×{{ camera.roi_size_range.min_height.value }} до {{ camera.roi_size_range.max_width.value }}×{{ camera.roi_size_range.max_height.value }} {{ camera.roi_size_range.min_width.unit }}."
+          - id: "recognition_accuracy"
+            name: "Точность распознавания цифр должна быть не менее {{ camera.performance.min_recognition_accuracy.value }} {{ camera.performance.min_recognition_accuracy.unit }} при условии качественного входного изображения."
+          - id: "processing_time"
+            name: "Время полного цикла обработки (захват, обработка, передача) не должно превышать {{ camera.performance.max_processing_time.value }} {{ camera.performance.max_processing_time.unit }}."
+          - id: "ota_update_time"
+            name: "Время выполнения OTA-обновления прошивки не должно превышать {{ timing.ota_update_max.value }} {{ timing.ota_update_max.unit }}."
+          - id: "wireless_interfaces"
+            name: "Изделие должно поддерживать следующие беспроводные интерфейсы:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "Wi-Fi: стандарт {{ wireless.wifi.standard.value }}, рабочая частота {{ wireless.wifi.frequency.value }} {{ wireless.wifi.frequency.unit }}"
+                    - "Bluetooth: {{ wireless.bluetooth.standard.value }} ({{ wireless.bluetooth.purpose.value }})"
+
+      - id: "construction_requirements"
+        name: "Требования к конструкции"
+        points:
+          - id: "case_durability"
+            name: "Прочность корпуса должна обеспечивать целостность изделия при падении с высоты {{ environmental.fall_height.value }} {{ environmental.fall_height.unit }} на бетонный пол."
+          - id: "camera_mount_durability"
+            name: "Конструкция крепления камеры внутри корпуса должна обеспечивать ее работоспособность при вибрации с ускорением до {{ environmental.vibration.acceleration.value }} {{ environmental.vibration.acceleration.unit }}."
+          - id: "temperature_ranges"
+            name: "Изделие должно иметь следующие допустимые температурные режимы:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "Температура хранения: от {{ environmental.temperature.storage_range.min.value }}°C до {{ environmental.temperature.storage_range.max.value }}°C"
+                    - "Температура эксплуатации: от {{ environmental.temperature.operation_range.min.value }}°C до {{ environmental.temperature.operation_range.max.value }}°C"
+          - id: "ingress_protection"
+            name: "Корпус изделия должен обеспечивать степень защиты {{ environmental.ingress_protection.value }} по ГОСТ 14254."
+          - id: "case_design"
+            name: "Корпус должен быть выполнен в неразборной конструкции и опломбирован."
+
+      - id: "compatibility_requirements"
+        name: "Требования по различным видам совместимости"
+        points:
+          - id: "electrical_compatibility"
+            name: "Электрическая совместимость: изделие должно быть совместимо со стандартными блоками питания, обеспечивающими выходное напряжение {{ power.nominal_voltage.value }} {{ power.nominal_voltage.unit }} постоянного тока."
+          - id: "software_compatibility"
+            name: "Программная совместимость: прошивка изделия должна быть разработана на базе {{ functional.firmware_framework.value }} с поддержкой OTA-обновлений."
+          - id: "information_compatibility"
+            name: "Информационная совместимость: изделие должно передавать данные в формате {{ functional.data_format.value }} по протоколам {{ functional.data_protocols.values[0] }}/{{ functional.data_protocols.values[1] }} и поддерживать OTA-протокол для обновлений."
+          - id: "mechanical_compatibility"
+            name: "Механическая совместимость: на корпусе изделия должны быть предусмотрены универсальные точки крепления для совместимых держателей."
+
+      - id: "reliability_requirements"
+        name: "Требования надежности"
+        points:
+          - id: "mtbf"
+            name: "Наработка на отказ изделия должна быть не менее {{ reliability.mtbf.value }} {{ reliability.mtbf.unit }}."
+          - id: "software_recovery"
+            name: "Среднее время восстановления после программного сбоя (перезагрузка) не должно превышать {{ timing.reboot_recovery_max.value }} {{ timing.reboot_recovery_max.unit }}."
+          - id: "hardware_recovery"
+            name: "Среднее время восстановления после аппаратного сбоя (ремонт в сервисном центре) не должно превышать {{ reliability.recovery_time.hardware.value }} {{ reliability.recovery_time.hardware.unit }}."
+          - id: "availability"
+            name: "Коэффициент готовности изделия должен быть не менее {{ reliability.availability_factor.value }}."
+          - id: "service_life"
+            name: "Срок службы изделия устанавливается {{ reliability.service_life.value }} {{ reliability.service_life.unit }}."
+          - id: "shelf_life"
+            name: "Срок сохранности в упаковке изготовителя устанавливается {{ reliability.shelf_life.value }} {{ reliability.shelf_life.unit }}."
+          - id: "ota_reliability"
+            name: "Надежность процедуры OTA-обновления должна обеспечивать вероятность успешного обновления не менее {{ reliability.ota_success_rate.value }}%."
+
+      - id: "radio_protection_requirements"
+        name: "Требования радиоэлектронной защиты"
+        points:
+          - id: "emc_immunity"
+            name: "Изделие должно быть устойчиво к электромагнитным помехам в соответствии с требованиями ГОСТ Р 51317.4.2."
+          - id: "emi_emission"
+            name: "Уровень излучаемых помех изделием должен соответствовать классу {{ safety_emc.emi_emission_class.value }} по ГОСТ Р 51317.3.2."
+          - id: "esd_immunity"
+            name: "Изделие должно быть устойчиво к воздействию электростатического разряда:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "Контактный разряд: ±{{ safety_emc.esd_immunity.contact.value }} {{ safety_emc.esd_immunity.contact.unit }}"
+                    - "Воздушный разряд: ±{{ safety_emc.esd_immunity.air.value }} {{ safety_emc.esd_immunity.air.unit }}"
+          - id: "ota_encryption"
+            name: "Канал передачи данных для OTA-обновлений должен быть защищен шифрованием."
+
+      - id: "environmental_resistance_requirements"
+        name: "Требования стойкости к внешним воздействиям"
+        points:
+          - id: "mechanical_resistance"
+            name: "Изделие должно быть стойким к следующим механическим воздействиям:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "Вибрации: в диапазоне частот {{ environmental.vibration.frequency_range.min.value }}-{{ environmental.vibration.frequency_range.max.value }} {{ environmental.vibration.frequency_range.min.unit }} с ускорением {{ environmental.vibration.acceleration.value }} {{ environmental.vibration.acceleration.unit }}"
+                    - "Удару: с ускорением {{ environmental.shock.acceleration.value }} {{ environmental.shock.acceleration.unit }}, длительностью {{ environmental.shock.duration.value }} {{ environmental.shock.duration.unit }}, формой {{ environmental.shock.waveform.value }}"
+          - id: "climatic_resistance"
+            name: "Изделие должно быть стойким к следующим климатическим воздействиям:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "Температуре: рабочая от {{ environmental.temperature.operation_range.min.value }} до +{{ environmental.temperature.operation_range.max.value }}°C, предельная от {{ environmental.temperature.limit_range.min.value }} до +{{ environmental.temperature.limit_range.max.value }}°C"
+                    - "Относительной влажности: до {{ environmental.humidity.max_percent.value }}% при температуре +{{ environmental.humidity.at_temperature.value }}°C"
+                    - "Атмосферному давлению: в диапазоне {{ environmental.pressure.min.value }}-{{ environmental.pressure.max.value }} {{ environmental.pressure.min.unit }}"
+
+      - id: "ergonomics_requirements"
+        name: "Требования эргономики"
+        points:
+          - id: "web_ui"
+            name: "Управление изделием должно осуществляться через веб-интерфейс, корректно отображаемый на экранах с разрешением не менее {{ ergonomics.web_ui.min_resolution.width.value }}×{{ ergonomics.web_ui.min_resolution.height.value }} {{ ergonomics.web_ui.min_resolution.width.unit }}."
+          - id: "ota_interface"
+            name: "Интерфейс OTA-обновлений должен быть автоматическим и обеспечивать уведомление пользователя о результатах обновления."
+          - id: "touch_target_size"
+            name: "Минимальный размер интерактивных элементов интерфейса при сенсорном управлении должен быть не менее {{ ergonomics.web_ui.touch_target_min_size.value }}×{{ ergonomics.web_ui.touch_target_min_size.value }} {{ ergonomics.web_ui.touch_target_min_size.unit }}."
+          - id: "contrast_ratio"
+            name: "Цветовая схема интерфейса должна обеспечивать контрастность не менее {{ ergonomics.web_ui.min_contrast_ratio.value }}:1."
+
+      - id: "resource_efficiency_requirements"
+        name: "Требования экономного использования ресурсов"
+        points:
+          - id: "power_consumption"
+            name: "Потребляемая мощность изделия не должна превышать:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "В режиме ожидания: {{ energy.power_consumption.standby.value }} {{ energy.power_consumption.standby.unit }}"
+                    - "В активном режиме: {{ energy.power_consumption.active.value }} {{ energy.power_consumption.active.unit }}"
+                    - "В режиме OTA-обновления: {{ energy.power_consumption.ota.value }} {{ energy.power_consumption.ota.unit }}"
+          - id: "recycled_materials"
+            name: "Материалы корпуса должны содержать не менее {{ energy.recycled_plastic_min_percent.value }}% вторичного пластика."
+          - id: "battery_life"
+            name: "При питании от автономного источника (батареи) срок службы до замены/зарядки должен быть не менее {{ energy.battery_life.value }} {{ energy.battery_life.unit }}."
+
+      - id: "manufacturability_requirements"
+        name: "Требования технологичности"
+        points:
+          - id: "standard_parts"
+            name: "Коэффициент использования стандартных деталей в изделии должен быть не менее {{ manufacturing.standardization_ratio.value }}%."
+          - id: "assembly_ratio"
+            name: "Коэффициент сборности изделия должен быть не менее {{ manufacturing.assembly_ratio.value }}."
+          - id: "assembly_labor"
+            name: "Трудоемкость сборки одного изделия не должна превышать {{ manufacturing.max_assembly_man_hours.value }} {{ manufacturing.max_assembly_man_hours.unit }}."
+          - id: "assembly_method"
+            name: "Конструкция корпуса должна предусматривать технологичную сборку методом ультразвуковой сварки."
+
+      - id: "design_requirements"
+        name: "Конструктивные требования"
+        points:
+          - id: "case_material"
+            name: "Корпус изделия должен быть изготовлен из {{ manufacturing.case_material.value }} методом ультразвуковой сварки в неразборном исполнении."
+          - id: "pcb_material"
+            name: "Материал основной печатной платы внутри корпуса – {{ manufacturing.pcb_material.value }}, толщина {{ manufacturing.pcb_thickness.value }} {{ manufacturing.pcb_thickness.unit }}."
+          - id: "case_holes"
+            name: "В корпусе должны быть предусмотрены следующие отверстия:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "Для объектива камеры: диаметром {{ manufacturing.case_hole_diameters.lens.value }} {{ manufacturing.case_hole_diameters.lens.unit }}"
+                    - "Для светодиода вспышки: диаметром {{ manufacturing.case_hole_diameters.flash.value }} {{ manufacturing.case_hole_diameters.flash.unit }}"
+          - id: "mounting_slots"
+            name: "На корпусе должны быть выполнены универсальные пазы для крепления совместимых держателей."
+          - id: "assembly_protection"
+            name: "Конструкция должна обеспечивать защиту от неправильной сборки (неразборная конструкция)."
+          - id: "gold_coating"
+            name: "Контакты разъемов внутри корпуса должны иметь антикоррозионное покрытие золотением толщиной {{ manufacturing.gold_coating_thickness.value }} {{ manufacturing.gold_coating_thickness.unit }}."
+          - id: "case_color"
+            name: "Цвет корпуса должен соответствовать {{ manufacturing.case_color_ral.value }} (светло-серый)."
+          - id: "seal"
+            name: "На стыке частей корпуса должна быть установлена антивандальная пломба."
+
+      - id: "service_life_requirements"
+        name: "Срок службы изделия"
+        points:
+          - id: "service_life_duration"
+            name: "Устанавливается срок службы изделия — {{ reliability.service_life.value }} {{ reliability.service_life.unit }} с даты изготовления."
+          - id: "end_of_life"
+            name: "По истечении срока службы изделие подлежит утилизации в соответствии с разделом «Требования утилизации изделия» настоящих ТУ."
+          - id: "repairability"
+            name: "Ремонтопригодность изделия ограничена: ремонт возможен только в авторизованном сервисном центре с применением специального оборудования для вскрытия и герметизации корпуса."
+
+      - id: "materials_requirements"
+        name: "Требования к сырью, материалам, покупным изделиям"
+        points:
+          - id: "materials_table_intro"
+            name: "Применяемые покупные изделия и материалы должны соответствовать требованиям, указанным в таблице {{table_counter_next}}."
+          - id: "materials_table_content"
+            name: "Требования к покупным изделиям и материалам"
+            blocks:
+              - table:
+                  name: "Требования к покупным изделиям и материалам"
+                  headers:
+                    - "Наименование"
+                    - "Требования"
+                    - "Документ-основание"
+                  rows:
+                    - cells:
+                        - "Электронный модуль в сборе"
+                        - "ESP32-S, PSRAM {{ hardware.memory.psram.value }} {{ hardware.memory.psram.unit }}, Flash {{ hardware.memory.flash_options.value[0] }} или {{ hardware.memory.flash_options.value[1] }} {{ hardware.memory.flash_options.unit }}, камера {{ camera.sensor_resolution.width.value }}×{{ camera.sensor_resolution.height.value }} {{ camera.sensor_resolution.width.unit }}"
+                        - "ТУ на комплектующее"
+                    - cells:
+                        - "Корпус"
+                        - "{{ manufacturing.case_material.value }}, {{ manufacturing.case_color_ral.value }}, неразборный"
+                        - "ТУ 6-05-2212-89"
+                    - cells:
+                        - "Пломба"
+                        - "Антивандальная, с уникальным номером"
+                        - "ТУ 9443-076-07540341-99"
+                    - cells:
+                        - "Припой"
+                        - "POS-61, бессвинцовый"
+                        - "ГОСТ 21931-76"
+                    - cells:
+                        - "Флюс"
+                        - "ЛТИ-120"
+                        - "ТУ 6-02-510-86"
+          - id: "precious_materials"
+            name: "Драгоценные материалы:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "Для покрытия контактов: для покрытия контактов разъемов внутри корпуса используется золото"
+                    - "Расход золота: расход золота не должен превышать {{ manufacturing.gold_consumption_max.value }} {{ manufacturing.gold_consumption_max.unit }} на одно изделие"
+                    - "Учет: учет драгоценных материалов должен вестись в соответствии с Федеральным законом №41-ФЗ"
+          - id: "secondary_materials"
+            name: "Вторичное сырье и отходы:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "Вторичный пластик: допускается использование вторичного АБС-пластика марки не ниже {{ manufacturing.secondary_material_grade.value }} для изготовления корпуса"
+                    - "Отходы производства: отходы производства должны сортироваться и передаваться специализированным организациям для утилизации"
+
+      - id: "completeness_requirements"
+        name: "Комплектность"
+        points:
+          - id: "components_table_intro"
+            name: "В комплект поставки изделия должны входить составные части согласно таблице {{table_counter_next}}."
+          - id: "components_table_content"
+            name: "Составные части изделия"
+            blocks:
+              - table:
+                  name: "Составные части изделия"
+                  headers:
+                    - "Наименование"
+                    - "Количество"
+                  rows:
+                    - cells:
+                        - "Устройство «{{ product.name }}» в защитном корпусе {{ dimensions.length.value }}×{{ dimensions.width.value }}×{{ dimensions.height.value }} {{ dimensions.length.unit }}"
+                        - "1 шт."
+                    - cells:
+                        - "Блок питания {{ power.nominal_voltage.value }}V DC 500 mA"
+                        - "1 шт."
+                    - cells:
+                        - "Комплект соединительных проводов"
+                        - "1 компл."
+          - id: "documentation_table_intro"
+            name: "В комплект поставки изделия должны входить эксплуатационные документы согласно таблице {{table_counter_next}}."
+          - id: "documentation_table_content"
+            name: "Эксплуатационная документация"
+            blocks:
+              - table:
+                  name: "Эксплуатационная документация"
+                  headers:
+                    - "Наименование"
+                    - "Количество"
+                  rows:
+                    - cells:
+                        - "Паспорт"
+                        - "1 экз."
+                    - cells:
+                        - "Руководство по эксплуатации"
+                        - "1 экз."
+                    - cells:
+                        - "Гарантийный талон"
+                        - "1 экз."
+          - id: "packaging_note"
+            name: "Изделие должно поставляться в упаковке, включающей: пластиковый кейс – 1 шт.; антистатический пакет – 1 шт. Примечание – Крепления для монтажа на счетчики приобретаются отдельно и не входят в стандартную комплектацию."
+
+      - id: "marking_requirements_section"
+        name: "Маркировка"
+        points:
+          - id: "product_marking"
+            name: "Маркировка изделия должна наноситься лазерной гравировкой на корпус устройства и содержать следующую информацию:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "товарный знак изготовителя"
+                    - "наименование изделия: «{{ product.name }}»"
+                    - "обозначение: {{ product.designation }}"
+                    - "серийный номер: XXXXXXXX"
+                    - "дата изготовния в формате ММ.ГГГГ"
+                    - "напряжение питания: {{ power.nominal_voltage.value }}V DC"
+                    - "знак соответствия РСТ"
+                    - "предупреждение: «Не разбирать. Ремонт только в сервисном центре»"
+          - id: "seal_marking"
+            name: "Маркировка пломбы должна содержать:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "уникальный номер пломбы"
+                    - "логотип изготовителя"
+                    - "надпись: «Warranty void if removed»"
+          - id: "transport_marking"
+            name: "Транспортная маркировка должна наноситься на транспортную тару и содержать:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "наименование грузоотправителя и грузополучателя"
+                    - "массу брутто/нетто: ХХ кг"
+                    - "габаритные размеры: ХХ×ХХ×ХХ см"
+                    - "манипуляционные знаки: «Хрупкое», «Беречь от влаги», «Верх», «Не бросать»"
+                    - "предупреждение: «Неразборное изделие. Не вскрывать упаковку при получении.»"
+          - id: "safety_signs_marking"
+            name: "На изделии должны быть нанесены знаки безопасности:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "«Высокое напряжение»"
+                    - "«Не разбирать»"
+                    - "«Только сервисный центр»"
+
+      - id: "packaging_requirements_section"
+        name: "Упаковка"
+        points:
+          - id: "pre_packaging"
+            name: "Перед упаковыванием должны быть выполнены следующие операции:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "проверка целостности корпуса и пломбы"
+                    - "очистка корпуса от пыли и загрязнений"
+                    - "проверка комплектности"
+                    - "упаковка изделия в антистатический пакет"
+                    - "размещение изделия в пластиковом кейсе на формованном вкладыше, повторяющем форму корпуса"
+          - id: "packaging_requirements_list"
+            name: "Упаковка должна соответствовать следующим требованиям:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "потребительская тара: пластиковый ударопрочный кейс с замком и ложементом для корпуса"
+                    - "транспортная тара: трехслойная картонная коробка марки Т-24 по ГОСТ 7376-89"
+                    - "для амортизации должны использоваться пенополиэтиленовые вкладыши или воздушно-пузырчатая пленка"
+          - id: "packaging_quantity"
+            name: "Количество изделий в упаковке должно быть: в потребительской таре: 1 изделие; в транспортной таре: 10 изделий."
+          - id: "transport_packaging"
+            name: "Порядок упаковывания в транспортную тару:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "размещение кейса с изделием в транспортной таре"
+                    - "амортизация изделия по всем сторон"
+                    - "заполнение пустот амортизирующим материалом"
+                    - "закрытие и оклеивание транспортной тары усиленным скотчем"
+          - id: "packaging_documents"
+            name: "В транспортную тару должны быть вложены следующие документы: упаковочный лист – 1 экз.; товарная накладная – 1 экз.; сопроводительное письмо – при необходимости; инструкция по проверке целостности пломбы при получении."
+
+  - id: "safety"
+    name: "Требования безопасности"
+    subsections:
+      - id: "electrical_safety"
+        name: "Требования электробезопасности"
+        points:
+          - id: "protection_class"
+            name: "Изделие должно относиться к классу защиты {{ safety_emc.protection_class.value }} по ГОСТ Р МЭК 61140."
+          - id: "electrical_protection"
+            name: "Степень защиты от поражения электрическим током должна обеспечиваться двойной изоляцией и неразборным корпусом."
+          - id: "insulation_test"
+            name: "Испытательное напряжение электрической изоляции должно составлять {{ safety_emc.insulation_test.voltage.value }} {{ safety_emc.inspiration_test.voltage.unit }}, {{ safety_emc.insulation_test.frequency.value }} {{ safety_emc.insulation_test.frequency.unit }}, в течение {{ safety_emc.insulation_test.duration.value }} {{ safety_emc.insulation_test.duration.unit }}."
+          - id: "insulation_resistance"
+            name: "Сопротивление изоляции должно быть не менее {{ safety_emc.insulation_resistance.value }} {{ safety_emc.insulation_resistance.unit }} при испытательном напряжении 500 В."
+          - id: "leakage_current"
+            name: "Ток утечки изделия не должен превышать {{ safety_emc.leakage_current.value }} {{ safety_emc.leakage_current.unit }}."
+          - id: "case_design_safety"
+            name: "Неразборная конструкция корпуса должна предотвращать доступ к токоведущим частям."
+
+      - id: "fire_safety"
+        name: "Требования пожарной безопасности"
+        points:
+          - id: "material_groups"
+            name: "Материалы корпуса должны относиться к следующим группам:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "Горючести: {{ flammability.material_group.combustibility.value }} по ГОСТ 30244"
+                    - "Воспламеняемости: {{ flammability.material_group.flammability.value }} по ГОСТ 30402"
+                    - "Дымообразующей способности: {{ flammability.material_group.smoke_manufacturing.value }} по ГОСТ 12.1.044"
+          - id: "autoignition_temp"
+            name: "Температура самовоспламенения материалов корпуса должна быть не ниже {{ flammability.autoignition_temp_min.value }}°C."
+          - id: "fire_resistance"
+            name: "Конструкция корпуса не должна поддерживать горение."
+
+      - id: "radiation_safety"
+        name: "Требования радиационной безопасности"
+        points:
+          - id: "em_emission"
+            name: "Уровень электромагнитного излучения изделия не должен превышать:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "Мощность излучения в диапазоне Wi-Fi: {{ safety_emc.rf_power.wifi_max.value }} {{ safety_emc.rf_power.wifi_max.unit }}"
+                    - "Удельный коэффициент поглощения (SAR): {{ safety_emc.sar.value }} {{ safety_emc.sar.unit }}"
+          - id: "em_compliance"
+            name: "Параметры излучения должны соответствовать требованиям СанПиН 2.2.4.3359-16."
+
+      - id: "chemical_safety"
+        name: "Требования химической безопасности"
+        points:
+          - id: "rohs_compliance"
+            name: "Изделие должно быть совместимо с требованиями RoHS."
+          - id: "hazardous_substances"
+            name: "Конструкция и материалы не должны содержать свинец, кадмий, ртуть, шестивалентный хром в количествах, превышающих допустимые нормы."
+          - id: "voc_emission"
+            name: "Концентрация летучих органических соединений, выделяемых материалами корпуса, не должна превышать {{ miscellaneous.voc_emission_max.value }} {{ miscellaneous.voc_emission_max.unit }}."
+          - id: "hypoallergenic"
+            name: "Материалы корпуса должны быть гипоаллергенными и не выделять вредных веществ при нагреве до температуры +60°C."
+
+      - id: "maintenance_safety"
+        name: "Требования безопасности при обслуживании"
+        points:
+          - id: "temperature_limits"
+            name: "Температура нагревающихся элементов внутри корпуса не должна превышать {{ miscellaneous.internal_temp_max.value }}°C (температура поверхности корпуса не более {{ miscellaneous.case_surface_temp_max.value }}°C)."
+          - id: "sharp_edges"
+            name: "Конструкция корпуса не должен иметь острых кромок и краев."
+          - id: "connector_design"
+            name: "Конструкция разъемов должна обеспечивать защиту от неправильного подключения (ключевание)."
+          - id: "maintenance_restrictions"
+            name: "Запрещается самостоятельное обслуживание и вскрытие корпуса. Все операции должны выполняться удаленно через интерфейсы или в авторизованном сервисном центре."
+          - id: "ota_safety"
+            name: "Процесс OTA-обновлений должен быть безопасным: прошивка должна иметь цифровую подпись, должен быть предусмотрен механизм отката при ошибке."
+
+      - id: "protective_means_requirements"
+        name: "Требования к защитным средствам"
+        points:
+          - id: "grounding"
+            name: "Изделие не требует защитного заземления (класс защиты II)."
+          - id: "reverse_polarity"
+            name: "Входные цепи питания должны иметь защиту от переполюсовки."
+          - id: "short_circuit"
+            name: "Изделие должно иметь защиту от короткого замыкания и перегрузки по току."
+          - id: "thermal_protection"
+            name: "Силовые элементы изделия должны быть оснащены термозащитой."
+          - id: "ota_security"
+            name: "Канал OTA-обновлений должен быть защищен от несанкционированного доступа."
+
+      - id: "safety_signs_section"
+        name: "Знаки безопасности"
+        points:
+          - id: "safety_signs_list"
+            name: "На корпусе изделия должны быть нанесены следующие знаки безопасности:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "Предупреждающий: «Высокое напряжение»"
+                    - "Запрещающий: «Не разбирать»"
+                    - "Указательный: «Только сервисный центр»"
+                    - "Информационный: «Поддержка OTA-обновлений»"
+
+      - id: "hazard_class"
+        name: "Класс опасности"
+        points:
+          - id: "hazard_class_value"
+            name: "Изделие относится к 1 классу опасности (малоопасные) по ГОСТ 12.1.007-76."
+
+      - id: "special_safety_requirements"
+        name: "Особые требования безопасности"
+        points:
+          - id: "case_integrity"
+            name: "Неразборность корпуса является основным средством защиты. Попытки вскрытия могут привести к поражению электрическим током и аннулируют гарантию."
+          - id: "ota_security_requirements"
+            name: "OTA-обновления должны проходить обязательную проверку цифровой подписи. Установка несанкционированных прошивок должна блокироваться."
+          - id: "mounting_restrictions"
+            name: "Запрещается использование нештатных креплений, которые могут привести к повреждению корпуса изделия."
+
+  - id: "environment"
+    name: "Требования охраны окружающей среды"
+    subsections:
+      - id: "general_environmental_requirements"
+        name: "Общие требования"
+        points:
+          - id: "environmental_compliance"
+            name: "Изделие должно соответствовать требованиям:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "Федерального закона №7-ФЗ «Об охране окружающей среды»"
+                    - "технического регламента Таможенного союза ТР ТС 020/2011 «Электромагнитная совместимость»"
+                    - "директивы RoHS 2011/65/EU"
+                    - "директивы WEEE 2012/19/EU (в части утилизации)"
+
+      - id: "permissible_impacts"
+        name: "Допустимые воздействия"
+        points:
+          - id: "em_emission_limits"
+            name: "Электромагнитные излучения должны находиться в пределах норм, установленных СанПиН 2.2.4.3359-16."
+          - id: "chemical_emissions"
+            name: "В процессе эксплуатации изделие не должно производить химических выбросов вредных веществ."
+          - id: "sound_pressure"
+            name: "Уровень звукового давления, производимого изделием, не должен превышать {{ miscellaneous.sound_pressure_max.value }} {{ miscellaneous.sound_pressure_max.unit }}."
+          - id: "heat_dissipation"
+            name: "Тепловыделение изделия не должно превышать {{ miscellaneous.heat_dissipation_max.value }} {{ miscellaneous.heat_dissipation_max.unit }}."
+          - id: "energy_efficiency"
+            name: "Энергопотребление изделия должно соответствовать классу энергоэффективности {{ energy.energy_efficiency_class.value }}."
+
+      - id: "disposal_requirements"
+        name: "Требования при утилизации"
+        points:
+          - id: "disposal_procedure"
+            name: "В связи с неразборностью корпуса утилизация должна производиться целиком специализированными организациями."
+          - id: "disassembly_prohibition"
+            name: "Запрещается самостоятельная разборка изделия и раздельная утилизация его компонентов."
+          - id: "authorized_disposal"
+            name: "Изделие, отработавшее срок службы, должно передаваться на утилизацию только авторизованным организациям, имеющим лицензию на утилизацию неразборных электронных устройств."
+          - id: "accounting_requirements"
+            name: "Учет и списание изделий должны производиться в соответствии с Федеральным законом №89-ФЗ «Об отходах производства и потребления»."
+
+  - id: "acceptance"
+    name: "Правила приемки"
+    subsections:
+      - id: "general_acceptance_procedure"
+        name: "Общий порядок"
+        points:
+          - id: "batch_acceptance"
+            name: "Изделия должны предъявляться к приемке партиями."
+          - id: "batch_definition"
+            name: "Партией считается количество изделий одного типа, изготовленных по одной технологической документации, предъявляемых к приемке по одному документу."
+          - id: "case_integrity_check"
+            name: "При приемке должно уделяться особое внимание проверке целостности корпуса и пломбы."
+
+      - id: "acceptance_documentation"
+        name: "Документация при приемке"
+        points:
+          - id: "required_documents"
+            name: "При приемке партии изделий должна предоставляться следующая документация:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "паспорт на партию"
+                    - "акт входного контроля"
+                    - "сертификат соответствия"
+                    - "декларация RoHS"
+                    - "акт проверка целостности пломб"
+
+      - id: "test_types"
+        name: "Виды испытаний"
+        points:
+          - id: "test_types_list"
+            name: "Должны проводиться следующие виды испытаний:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "приемо-сдаточные испытания – для 100% изделий партии"
+                    - "периодические испытаний – 1 раз в квартал для {{ quality_control.sampling_for_periodic_tests.value }} {{ quality_control.sampling_for_periodic_tests.unit }} из партии (с последующей утилизацией, так как корпус вскрывается)"
+                    - "типовые испытания – при изменении конструкции, технологии или программного обеспечения (включая OTA-механизм)"
+
+      - id: "acceptance_test_program"
+        name: "Программа приемо-сдаточных испытаний"
+        points:
+          - id: "test_program_intro"
+            name: "Программа приемо-сдаточных испытаний приведена в таблице {{table_counter_next}}."
+          - id: "test_program_table_content"
+            name: "Программа приемо-сдаточных испытаний"
+            blocks:
+              - table:
+                  name: "Программа приемо-сдаточных испытаний"
+                  headers:
+                    - "№"
+                    - "Наименование проверки"
+                    - "Метод контроля"
+                    - "Объем выборки"
+                    - "Критерий приемки"
+                  rows:
+                    - cells:
+                        - "1"
+                        - "Проверка целостности корпуса и пломбы"
+                        - "Визуальный, тактильный"
+                        - "100%"
+                        - "Отсутствие повреждений, пломба на месте"
+                    - cells:
+                        - "2"
+                        - "Проверка комплектности"
+                        - "По ведомости"
+                        - "100%"
+                        - "Полная комплектности"
+                    - cells:
+                        - "3"
+                        - "Проверка электрических параметров"
+                        - "Измерения через штатные разъемы"
+                        - "100%"
+                        - "Соответствие п.1.2"
+                    - cells:
+                        - "4"
+                        - "Функциональная проверка (базовая)"
+                        - "Тестирование через Wi-Fi"
+                        - "100%"
+                        - "Успешный запуск, подключение к сети"
+                    - cells:
+                        - "5"
+                        - "Проверка OTA-функционала (выборочно)"
+                        - "Тестовое обновление"
+                        - "{{ quality_control.ota_sample_rate_percent.value }}% от партии"
+                        - "Успешная проверка наличия/установки обновлений"
+                    - cells:
+                        - "6"
+                        - "Проверка маркировки"
+                        - "Визуальный"
+                        - "100%"
+                        - "Читаемость, соответствие требованиям п.1.16"
+
+      - id: "acceptance_criteria"
+        name: "Критерии приемки"
+        points:
+          - id: "acceptance_conditions"
+            name: "Изделие принимается, если все проверяемые параметры соответствуют требованиям настоящих ТУ."
+          - id: "automatic_rejection"
+            name: "Бракуется автоматически любое изделие с повреждением корпуса или нарушением пломбы."
+          - id: "batch_control"
+            name: "При обнаружении дефекта по какому-либо параметру в одном изделии вся партия подвергается сплошному контролю по данному параметру."
+          - id: "defect_rate"
+            name: "Процент брака в партии не должен превышать {{ quality_control.max_defect_rate_percent.value }}%."
+          - id: "case_damage_rate"
+            name: "Брак по причине повреждения корпуса не должен превышать {{ quality_control.max_case_damage_rate_percent.value }}% от партии."
+
+      - id: "results_documentation"
+        name: "Оформление результатов"
+        points:
+          - id: "test_results"
+            name: "Результаы испытаний должны заноситься в протокол испытаний."
+          - id: "seal_check_report"
+            name: "На проверку целостности корпуса и пломб должен составляться отдельный акт."
+          - id: "acceptance_report"
+            name: "Приемочная комиссия должна оформлять акт приемки партии изделий."
+          - id: "qc_marking"
+            name: "Принятые изделия должны маркироваться клеймом ОТК на упаковке (не на корпусе)."
+
+  - id: "control"
+    name: "Методы контроля"
+    subsections:
+      - id: "case_integrity_control"
+        name: "Метод контроля целостности корпуса и пломбы"
+        points:
+          - id: "control_conditions"
+            name: "Условия контроля: естественное или искусственное освещение не менее 500 лк."
+          - id: "control_equipment"
+            name: "Оборудование: лупа 4-кратная по ГОСТ 25706, измеритель шероховатости."
+          - id: "control_procedure"
+            name: "Порядок контроля:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "визуальный осмотр корпуса на отсутствие сколов, трещин, вмятин"
+                    - "проверка гладкости поверхности ультразвукового шва"
+                    - "проверка наличия и целостности пломбы, соответствия номера"
+                    - "тактильная проверка на отсутствие люфтов крышки (если применимо)"
+          - id: "control_standard"
+            name: "Норма: полное отсутствие видимых и тактильных дефектов. Пломба цела."
+
+      - id: "electrical_parameters_control"
+        name: "Метод контроля электрических параметров"
+        points:
+          - id: "current_meas_method"
+            name: "Потребляемый ток (бесконтактный метод)"
+            blocks:
+              - text: "а) оборудование:"
+              - list:
+                  style: bullet
+                  items:
+                    - "источник питания GW Instek GPS-3303;"
+                    - "токовые клещи;"
+              - text: "б) порядок контроля:"
+              - list:
+                  style: bullet
+                  items:
+                    - "подключение изделия к источнику питания {{ power.nominal_voltage.value }} {{ power.nominal_voltage.unit }} через штатный разъем;"
+                    - "включение изделия;"
+                    - "измерение тока в трех режимах с помощью токовых клещей (без вскрытия корпуса);"
+                    - "сравнение полученных значений с нормами;"
+
+      - id: "ota_functionality_control"
+        name: "Метод контроля OTA-функционала"
+        points:
+          - id: "ota_equipment"
+            name: "Оборудование: контрольный OTA-сервер с тестовыми обновлениями, Wi-Fi сеть."
+          - id: "ota_procedure"
+            name: "Порядок контроля:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "настройка устройства на подключение к контрольному OTA-серверу"
+                    - "имитация наличия обновления"
+                    - "запуск процесса OTA-обновления"
+                    - "контроль процесса: скачивание, проверка подписи, установка, перезагрузка"
+                    - "проверка версии прошивки после обновления"
+                    - "проверка механизма отката при имитации сбоя"
+          - id: "ota_criteria"
+            name: "Критерии: успешное обновление за время не более {{ timing.ota_update_max.value }} {{ timing.ota_update_max.unit }}; цифровая подпись проверяется; механизм отката функционирует."
+
+      - id: "climatic_tests_control"
+        name: "Метод климатических испытаний"
+        points:
+          - id: "humidity_test"
+            name: "Испытание на влагостойкость:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "оборудование: климатическая камера Т-40/100"
+                    - "порядок контроля (для образцов, назначенных на разрушающий контроль): выдержка при температуре +40°C и влажности 93% в течение 48 часов; выдержка при температуре +25°C в течение 2 часов; вскрытие корпуса (образец бракуется) и проверка внутренних компонентов на наличие конденсата, коррозии"
+          - id: "humidity_standard"
+            name: "Норма: отсутствие влаги внутри корпуса, отсутствие коррозии контактов."
+
+      - id: "safety_during_control"
+        name: "Требования безопасности при контроле"
+        points:
+          - id: "safety_prohibitions"
+            name: "Запрещается вскрывать корпус изделий, не назначенных на разрушающий контроль."
+          - id: "equipment_safety"
+            name: "Работа должна проводиться только с исправным контрольно-измерительным оборудованием."
+          - id: "information_security"
+            name: "При работе с OTA-сервером должна обеспечиваться информационная безопасность тестовых ключей."
+          - id: "electrical_safety_control"
+            name: "Должны соблюдаться требования электробезопасности при проведении измерений."
+          - id: "disposal_after_test"
+            name: "Образцы, прошедшие разрушающий контроль, должны утилизироваться в соответствии с разделом «Требования при утилизации» настоящих ТУ."
+
+  - id: "operation"
+    name: "Указания по эксплуатации"
+    subsections:
+      - id: "operation_instructions"
+        name: "Указания по эксплуатации"
+        points:
+          - id: "installation"
+            name: "Установка и монтаж:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "выбор места установки на счетчике с учетом: расстояния до шкалы счетчика: {{ operation.meter_mounting_distance.min.value }}-{{ operation.meter_mounting_distance.max.value }} {{ operation.meter_mounting_distance.min.unit }} (регулируется креплениями); угла обзора: перпендикулярно шкале счетчика; освещенности: не менее {{ operation.min_illumination.value }} {{ operation.min_illumination.unit }}; отсутствия прямого солнечного света на объектив"
+                    - "приобретение совместимых креплений для конкретной модели счетчика"
+                    - "закрепление корпуса устройства на счетчике с помощью креплений"
+                    - "подключение питания {{ power.nominal_voltage.value }} {{ power.nominal_voltage.unit }} DC"
+                    - "настройка через приложение EspBlufi (BLE) или через веб-интерфейс"
+          - id: "usage_ota"
+            name: "Применение по назначению и OTA:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "вход в веб-интерфейс по IP-адресу устройства"
+                    - "настройка параметров камеры (AGC Gain, AEC Value) под условия освещения"
+                    - "задание зон распознавания (ROI) для каждого счетчика"
+                    - "установка типа счетчиков и идентификаторов"
+                    - "включение OCR при необходимости"
+                    - "настройка отправки данных на сервер"
+                    - "в разделе «Обновления» веб-интерфейса: активация автоматической проверки OTA-обновлений; установка расписания проверки (например, еженедельно); разрешение установки обновлений в автоматическом режиме; просмотр истории обновлений"
+          - id: "maintenance_schedule"
+            name: "Техническое обслуживание:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "ежедневно (удаленно): проверка связи и статуса через веб-интерфейс"
+                    - "еженедельно: очистка защитного стекла объектива от пыли (без снятия устройства)"
+                    - "ежемесячно: проверка качества распознавания, анализ логов"
+                    - "ежеквартально: проверка актуальности прошивки, выполнение резервного копирования конфигурации"
+                    - "по необходимости: замена креплений, если счетчик демонтирован/заменен"
+          - id: "special_conditions"
+            name: "Особые условия эксплуатации:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "запрещается эксплуатация при повреждении корпуса или пломбы"
+                    - "запрещается эксплуатация при температуре ниже {{ environmental.temperature.operation_range.min.value }}°C и выше +{{ environmental.temperature.operation_range.max.value }}°C"
+                    - "запрещается попадание жидкостей на устройство и внутрь корпуса через отверстия"
+                    - "требуется стабильное питание {{ power.nominal_voltage.value }} ±{{ power.voltage_tolerance.value }} {{ power.nominal_voltage.unit }}"
+                    - "для OTA-обновлений необходимо наличие сети Wi-Fi с доступом в Интернет"
+                    - "ремонт и обслуживание внутренних компонентов производятся только в авторизованном сервисном центре"
+
+      - id: "storage_transportation"
+        name: "Хранение и транспортирование"
+        points:
+          - id: "storage_conditions"
+            name: "Условия хранения:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "температура: от {{ storage_transport.storage_temp_range.min.value }}°C до +{{ storage_transport.storage_temp_range.max.value }}°C"
+                    - "относительная влажность: не более {{ storage_transport.storage_humidity_max_percent.value }}%"
+                    - "атмосферное давление: {{ storage_transport.storage_pressure_range.min.value }}-{{ storage_transport.storage_pressure_range.max.value }} {{ storage_transport.storage_pressure_range.min.unit }}"
+                    - "защита от прямых солнечных лучей"
+                    - "защита от агрессивных паров и аэрозолей"
+                    - "срок хранение в упаковке изготовителя: {{ reliability.shelf_life.value }} {{ reliability.shelf_life.unit }}"
+          - id: "preservation_methods"
+            name: "Методы консервации:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "очистка корпуса от загрязнений"
+                    - "проверка целостности пломбы"
+                    - "упаковка в антистатический пакет с силикагелем ({{ miscellaneous.desiccant_quantity.value }} {{ miscellaneous.desiccant_quantity.unit }} на изделие)"
+                    - "помещение в герметичную тару"
+          - id: "storage_placement"
+            name: "Складирование:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "высота штабеля: не более {{ storage_transport.max_pallet_height_boxes.value }} {{ storage_transport.max_pallet_height_boxes.unit }}"
+                    - "расстояние от отопительных приборов: не менее {{ storage_transport.storage_requirements.min_distance_from_heaters.value }} {{ storage_transport.storage_requirements.min_distance_from_heaters.unit }}"
+                    - "защита от воздействия агрессивных сред"
+                    - "отдельное складирование от тяжелых и острых предметов"
+          - id: "transportation_requirements"
+            name: "Транспортирование:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "виды транспорта: автомобильный, железнодорожный, воздушный"
+                    - "способ крепления: в транспортной таре с амортизацией, с маркировкой «Верх»"
+                    - "температура транспортирования: от {{ storage_transport.transport_temp_range.min.value }}°C до +{{ storage_transport.transport_temp_range.max.value }}°C"
+                    - "относительная влажность при транспортировании: до {{ storage_transport.transport_humidity_max_percent.value }}% при +{{ storage_transport.at_transport_temp.value }}°C без конденсата"
+                    - "специальные требования: запрещается бросать, кантовать, подвергать ударным нагрузкам"
+          - id: "post_transportation"
+            name: "Обращение после транспортирования:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "визуальный осмотр упаковки на отсутствие повреждений"
+                    - "проверка целостности пломбы на корпусе (при вскрытии потребительской тары)"
+                    - "выдержка при комнатной температуре (+18...+25°C) в течение {{ storage_transport.acclimatization_hours.value }} {{ storage_transport.acclimatization_hours.unit }}"
+                    - "проверка комплектности"
+                    - "функциональная проверка (включение, подключение к сети)"
+
+      - id: "disposal_instructions"
+        name: "Требования утилизации изделия"
+        points:
+          - id: "disposal_preparation"
+            name: "Подготовка к утилизации:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "отключение от всех источников питания"
+                    - "демонтаж со счетчика (снятие с креплений)"
+                    - "отсоединеие блока питания и всех кабелей"
+                    - "сдача целого, неразобранного изделия в пункт приема"
+          - id: "disposal_methods"
+            name: "Методы утилизации:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "изделие должно утилизироваться как неразборный электронный блок"
+                    - "первичная обработка: измельчение в шредере для электронных отходов вместе с корпусом; сепарация полученной массы"
+                    - "переработка: пластиковая фракция — очистка, гранулирование, производство технических изделий; металлическая фракция — переплавка; электронная фракция — извлечение драгоценных металлов, утилизация по классу опасности"
+          - id: "disposal_prohibitions"
+            name: "Запрещается:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "самостоятельная разборка корпуса для утилизации"
+                    - "захоронение на полигонах ТБО"
+                    - "сжигание в непредназначенных для этого местах или установках"
+                    - "сброс в канализацию, водоемы или на несанкционированные свалки"
+          - id: "disposal_organizations"
+            name: "Организации для утилизации:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "изделие должно передаваться специализированным организациям, имеющим лицензию на: обращение с отходами I-IV класса опасности; утилизацию неразборных электронных и электрических устройств; переработку пластиков, содержащих антипирены и стабилизаторы"
+
+  - id: "warranty"
+    name: "Гарантии изготовителя"
+    subsections:
+      - id: "warranty_obligations"
+        name: "Гарантийные обязательства"
+        points:
+          - id: "warranty_basis"
+            name: "Изготовитель гарантирует соответствие изделия требованиям настоящих технических условий при соблюдении условий транспортирования, хранения и эксплуатации, включая использование совместимых креплений."
+
+      - id: "warranty_period"
+        name: "Гарантийный срок"
+        points:
+          - id: "warranty_duration"
+            name: "Гарантийный срок устанавливается {{ miscellaneous.warranty_period.value }} {{ miscellaneous.warranty_period.unit }} с даты продажи конечному потребителю."
+
+      - id: "warranty_conditions"
+        name: "Условия гарантии"
+        points:
+          - id: "defect_correction"
+            name: "Изготовитель обязуется безвозмездно устранять дефекты, возникшие по вине изготовителя, в течение гарантийного срока."
+          - id: "repair_location"
+            name: "Ремонт производится в авторизованных сервисных центрах."
+
+      - id: "warranty_exclusions"
+        name: "Гарантия не распространяется на:"
+        points:
+          - id: "exclusions_list_content"
+            name: "Перечень исключений из гарантии"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "Дефекты, вызванные нарушением правил эксплуатации, транспортирования или хранения."
+                    - "Повреждения корпуса, нарушение пломбы, попытки разборки."
+                    - "Последствия использования несовместимых или нештатных креплений."
+                    - "Неисправности, вызванные OTA-обновлениями, не полученными с официального сервера изготовителя."
+                    - "Последствия стихийных бедствий, действий третьих лиц."
+                    - "Естественный износ."
+                    - "Неисправности, вызванные эксплуатацией вне указанных в ТУ параметров."
+
+      - id: "consumer_rights"
+        name: "Права потребителя"
+        points:
+          - id: "consumer_rights_list"
+            name: "В течение гарантийного срока потребитель имеет право на:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "безвозмездное устранение дефектов в сервисном центре"
+                    - "замену неисправного изделия на аналогичное (при невозможности ремонта)"
+                    - "возврат денежных средств (при невозможности ремонта или замены)"
+
+      - id: "complaint_procedure"
+        name: "Порядок предъявления рекламаций"
+        points:
+          - id: "complaint_steps"
+            name: "Порядок предъявления рекламаций:"
+            blocks:
+              - list:
+                  style: bullet
+                  items:
+                    - "обращение в сервисный центр с изделием, документами и сохраненной пломбой"
+                    - "предоставление описания неисправности"
+                    - "прохождение диагностики"
+                    - "получение заключения о характере дефекта и условиях гарантийного случая"

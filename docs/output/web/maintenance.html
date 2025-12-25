@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Руководство по обслуживанию | САСП-2</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        body { font-family: 'Segoe UI', system-ui, sans-serif; }
+        .neon { text-shadow: 0 0 10px #3b82f6, 0 0 20px #3b82f6; }
+        .content h1, .content h2, .content h3 { scroll-margin-top: 80px; }
+        .content table { border-collapse: collapse; width: 100%; }
+        .content th, .content td { border: 1px solid #374151; padding: 0.75rem; }
+        .content th { background-color: #1f2937; }
+        .content img { max-width: 100%; height: auto; border-radius: 0.5rem; margin: 1rem auto; display: block; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        figure { margin: 2rem 0; text-align: center; }
+        figcaption { color: #9ca3af; font-size: 0.875rem; margin-top: 0.5rem; }
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen" x-data="{ tocOpen: false }">
+    <!-- Навигация -->
+    <header class="bg-gray-800 border-b border-blue-600 sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold neon">САСП-2</h1>
+            <ul class="flex space-x-6 text-sm md:text-base">
+                <li><a href="index.html" class="hover:text-blue-400 ">Главная</a></li>
+                <li><a href="user_guide.html" class="hover:text-blue-400 ">Руководство пользователя</a></li>
+                <li><a href="maintenance.html" class="hover:text-blue-400 text-blue-400 font-semibold">Обслуживание</a></li>
+                <li><a href="api.html" class="hover:text-blue-400 ">API</a></li>
+                <li><a href="standards.html" class="hover:text-blue-400 ">ГОСТ / PDF</a></li>
+            </ul>
+            <!-- Кнопка "Оглавление" для мобильных -->
+            <button @click="tocOpen = !tocOpen" class="lg:hidden text-blue-400 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Основной контент -->
+    <main class="container mx-auto px-6 py-12 max-w-7xl">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Оглавление (sticky слева на десктопе) -->
+            <aside class="hidden lg:block lg:col-span-1">
+                <div class="toc sticky top-20 bg-gray-800/80 backdrop-blur-md p-6 rounded-xl border border-blue-700 max-h-[70vh] overflow-y-auto">
+<h3 class="text-xl font-bold mb-4 text-blue-400">Оглавление</h3>
+<ul class="space-y-2">
+<li><a href="#maintenance" class="hover:text-blue-400 transition">Техническое обслуживание</a></li>
+<li class="ml-4"><a href="#general_instructions" class="text-gray-300 hover:text-blue-400 transition">Общие указания</a></li>
+<li class="ml-4"><a href="#safety_measures" class="text-gray-300 hover:text-blue-400 transition">Меры безопасности</a></li>
+<li class="ml-4"><a href="#maintenance_procedure" class="text-gray-300 hover:text-blue-400 transition">Порядок технического обслуживания</a></li>
+<li class="ml-4"><a href="#maintenance_check" class="text-gray-300 hover:text-blue-400 transition">Проверка работоспособности</a></li>
+<li class="ml-4"><a href="#technical_inspection" class="text-gray-300 hover:text-blue-400 transition">Техническое освидетельствование</a></li>
+<li class="ml-4"><a href="#conservation" class="text-gray-300 hover:text-blue-400 transition">Консервация (расконсервация)</a></li>
+<li><a href="#current_repair" class="hover:text-blue-400 transition">Текущий ремонт</a></li>
+<li class="ml-4"><a href="#general_repair_instructions" class="text-gray-300 hover:text-blue-400 transition">Общие указания</a></li>
+<li class="ml-4"><a href="#repair_safety" class="text-gray-300 hover:text-blue-400 transition">Меры безопасности</a></li>
+<li><a href="#storage" class="hover:text-blue-400 transition">Хранение</a></li>
+<li class="ml-4"><a href="#storage_warehousing" class="text-gray-300 hover:text-blue-400 transition">Правила хранения и складирования</a></li>
+<li class="ml-4"><a href="#limited_life_parts" class="text-gray-300 hover:text-blue-400 transition">Составные части с ограниченным сроком хранения</a></li>
+<li class="ml-4"><a href="#storage_conditions" class="text-gray-300 hover:text-blue-400 transition">Условия хранения</a></li>
+<li><a href="#transportation" class="hover:text-blue-400 transition">Транспортирование</a></li>
+<li class="ml-4"><a href="#transport_requirements" class="text-gray-300 hover:text-blue-400 transition">Требования к транспортированию</a></li>
+<li class="ml-4"><a href="#transport_preparation" class="text-gray-300 hover:text-blue-400 transition">Подготовка к транспортированию</a></li>
+<li class="ml-4"><a href="#transport_characteristics" class="text-gray-300 hover:text-blue-400 transition">Транспортные характеристики</a></li>
+<li class="ml-4"><a href="#transport_handling" class="text-gray-300 hover:text-blue-400 transition">Обращение после транспортирования</a></li>
+<li><a href="#disposal" class="hover:text-blue-400 transition">Утилизация</a></li>
+<li class="ml-4"><a href="#safety_disposal" class="text-gray-300 hover:text-blue-400 transition">Меры безопасности</a></li>
+<li class="ml-4"><a href="#preparation_disposal" class="text-gray-300 hover:text-blue-400 transition">Подготовка к утилизации</a></li>
+<li class="ml-4"><a href="#disposable_parts" class="text-gray-300 hover:text-blue-400 transition">Утилизируемые части</a></li>
+<li class="ml-4"><a href="#methods_disposal" class="text-gray-300 hover:text-blue-400 transition">Методы утилизации</a></li>
+<li class="ml-4"><a href="#organizations_disposal" class="text-gray-300 hover:text-blue-400 transition">Организации для утилизации</a></li>
+</ul>
+</div>
+            </aside>
+            <!-- Контент страницы -->
+            <div class="lg:col-span-3">
+                <div class='content'><h1 id='maintenance' class='text-5xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Техническое обслуживание</h1>
+<h2 id='general_instructions' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Общие указания</h2>
+<h3 id='maintenance_purpose' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Техническое обслуживание проводится для проверки работоспособности и обновления программного обеспечения изделия</h3>
+<h3 id='maintenance_executors' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Техническое обслуживание выполняется:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>квалифицированным персоналом удалённо через веб-интерфейс — для повседневных операций;</li>
+<li>в авторизованном сервисном центре — для сложных операций и ремонта.</li>
+</ul>
+<h3 id='disassembly_warning' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Разборка корпуса пользователем запрещена и аннулирует гарантийные обязательства</h3>
+<h3 id='personnelquirements' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Требуемый уровень подготовки персонала:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>базовые навыки работы с микроконтроллерами (ESP32);</li>
+<li>понимание принципов работы Wi-Fi сетей;</li>
+<li>знания в области программирования на языке C/C++ для модификации ПО;</li>
+<li>работа со средой разработки ESP-IDF или Arduino.</li>
+</ul>
+<h2 id='safety_measures' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Меры безопасности</h2>
+<h3 id='safety_rules' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>При проведении технического обслуживания необходимо соблюдать следующие меры безопасности:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>отключить питание перед любыми манипуляциями с устройством;</li>
+<li>избегать статического электричества (использовать антистатические браслеты при работе в сервисном центре);</li>
+<li>не вскрывать корпус — все операции выполняются удаленно;</li>
+<li>использовать только штатное оборудование и инструменты;</li>
+<li>соблюдать требования электробезопасности при проведении измерений.</li>
+</ul>
+<h2 id='maintenance_procedure' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Порядок технического обслуживания</h2>
+<h3 id='maintenance_steps' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Техническое обслуживание должно проводиться в следующем порядке:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>внешний осмотр: проверка целостности корпуса и пломбы, чистоты креплений, чистоты объектива;</li>
+<li>очистка объектива мягкой салфеткой из микрофибры;</li>
+<li>проверка электрических подключений: надежность соединений, отсутствие повреждений изоляции;</li>
+<li>проверка работы через веб-интерфейс: получение тестового изображения; выполнение полного цикла работы; проверка OTA-статуса;</li>
+<li>проверка состояния файловой системы: свободное место, отсутствие ошибок;</li>
+<li>проверка актуальности прошивки: наличие и установка OTA-обновлений.</li>
+</ul>
+<h3 id='maintenance_features' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Особенности технического обслуживания:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>техническое обслуживание проводится квалифицированным персоналом;</li>
+<li>разборка корпуса запрещена пользователем;</li>
+<li>все настройки и обновления выполняются удаленно через веб-интерфейс;</li>
+<li>сервисное обслуживание с вскрытием корпуса производится только в авторизованных сервисных центрах;</li>
+<li>рекомендуется вести журнал технического обслуживания с записями о проведенных операциях и результатах проверок.</li>
+</ul>
+<h2 id='maintenance_check' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Проверка работоспособности</h2>
+<h3 id='maintenance_methods' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Проверка работоспособности выполняется следующими методами:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>автоматическая при включении: проверка инициализации всех компонентов системы;</li>
+<li>ручная через веб-интерфейс: мониторинг системных логов, проверка статусов подключения;</li>
+<li>функциональная проверка: выполнение полного цикла работы (захват, обработка, распознавание);</li>
+<li>проверка OTA-функционала: имитация наличия обновлений, проверка процесса обновления;</li>
+<li>проверка сохранения данных: убедиться в корректном сохранении данных в файловой системе и/или отправке на сервер.</li>
+</ul>
+<h2 id='technical_inspection' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Техническое освидетельствование</h2>
+<h3 id='inspection_frequency' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Рекомендуется проводить техническое освидетельствование каждые 6 месяцев</h3>
+<h3 id='inspection_program' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Программа технического освидетельствования включает:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>внешний осмотр корпуса и пломбы на отсутствие повреждений;</li>
+<li>чистота защитного стекла объектива;</li>
+<li>надёжность крепления на счетчике;</li>
+<li>проверка работоспособности через веб-интерфейс (выполнение полного цикла);</li>
+<li>проверка качества распознавания;</li>
+<li>проверка состояния файловой системы;</li>
+<li>проверка актуальности прошивки и установка доступных OTA-обновлений.</li>
+</ul>
+<h2 id='conservation' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Консервация (расконсервация)</h2>
+<h3 id='conservation_procedure' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Консервация изделия для длительного хранения:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>отключить питание;</li>
+<li>демонтировать с креплений;</li>
+<li>очистить от пыли и упаковать в антистатический пакет с силикагелем (2 г на изделие);</li>
+<li>поместить в герметичную тару.</li>
+</ul>
+<h3 id='deconservation_procedure' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Расконсервация изделия:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>осмотреть корпус и пломбу;</li>
+<li>выдержать при комнатной температуре (+18...+25°C) в течение 2 часов;</li>
+<li>проверить работоспособность.</li>
+</ul>
+<h1 id='current_repair' class='text-5xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Текущий ремонт</h1>
+<h2 id='general_repair_instructions' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Общие указания</h2>
+<p class='mb-4 text-gray-300'>Текущий ремонт выполняется при неисправностях, не требующих замены основных компонентов изделия.</p>
+<p class='mb-4 text-gray-300'>Ремонт с вскрытием корпуса производится только в авторизованном сервисном центре с применением специального оборудования для вскрытия и герметизации корпуса.</p>
+<h2 id='repair_safety' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Меры безопасности</h2>
+<h3 id='repair_safety_rules' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>При проведении текущего ремонта необходимо соблюдать следующие меры безопасности:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>отключить питание перед любыми манипуляциями;</li>
+<li>не вскрывать корпус — все операции выполняются удаленно;</li>
+<li>использовать только штатное оборудование и инструменты;</li>
+<li>соблюдать требования электробезопасности;</li>
+<li>работать в антистатической зоне при ремонте в сервисном центре.</li>
+</ul>
+<h1 id='storage' class='text-5xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Хранение</h1>
+<h2 id='storage_warehousing' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Правила хранения и складирования</h2>
+<h3 id='storage_rules' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Постановка и снятие с хранения</h3>
+<p class='mb-4 text-gray-300'>Постановка на хранение — по процедуре консервации, снятие — по процедуре расконсервации.</p>
+<h3 id='warehousing' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Складирование:</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>высота штабеля: не более 5 коробок;</li>
+<li>расстояние от отопительных приборов: не менее 1 м;</li>
+<li>защита от воздействия агрессивных сред;</li>
+<li>отдельное складирование от тяжелых и острых предметов.</li>
+</ul>
+<h2 id='limited_life_parts' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Составные части с ограниченным сроком хранения</h2>
+<p class='mb-4 text-gray-300'>Составные части с ограниченным сроком хранения:</p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>блок питания: от 3 до 5 лет (зависит от производителя и условий эксплуатации);</li>
+<li>крепёжные элементы: до 5 лет (резинки, уплотнители креплений).</li>
+</ul>
+<h2 id='storage_conditions' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Условия хранения</h2>
+<p class='mb-4 text-gray-300'>Условия хранения:</p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>температура: от 10°C до +35°C;</li>
+<li>влажность: не более 80% без конденсата;</li>
+<li>отсутствие агрессивных паров и аэрозолей;</li>
+<li>исключить вибрации, удары, давление на корпус;</li>
+<li>защита от прямых солнечных лучей.</li>
+</ul>
+<h1 id='transportation' class='text-5xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Транспортирование</h1>
+<h2 id='transport_requirements' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Требования к транспортированию</h2>
+<p class='mb-4 text-gray-300'>Требования к транспортированию:</p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>в оригинальной или аналогичной упаковке;</li>
+<li>температура: от –20°C до +50°C;</li>
+<li>влажность: до 95% при +35°C без конденсата;</li>
+<li>целостность корпуса и пломбы.</li>
+</ul>
+<h2 id='transport_preparation' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Подготовка к транспортированию</h2>
+<p class='mb-4 text-gray-300'>Подготовка к транспортированию:       </p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>отключить питание;</li>
+<li>демонтировать с креплений;</li>
+<li>упаковать в антистатический пакет и коробку с амортизацией.</li>
+</ul>
+<h2 id='transport_characteristics' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Транспортные характеристики</h2>
+<p class='mb-4 text-gray-300'>Транспортные характеристики:            </p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>габаритные размеры устройства: 60 × 40 × 20 мм;</li>
+<li>габаритные размеры в упаковке: ≈ 150 × 100 × 50 мм;</li>
+<li>масса устройства: ≈ 80 г;</li>
+<li>масса в упаковке: ≈ 300 г.</li>
+</ul>
+<h2 id='transport_handling' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Обращение после транспортирования</h2>
+<p class='mb-4 text-gray-300'>Обращение после транспортирования:         </p>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>визуальный осмотр упаковки на отсутствие повреждений;</li>
+<li>проверка целостности пломбы на корпусе;</li>
+<li>выдержка при комнатной температуре (+18...+25°C) в течение 2 часов;</li>
+<li>проверка комплектности;</li>
+<li>функциональная проверка (включение, подключение к сети).</li>
+</ul>
+<h1 id='disposal' class='text-5xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Утилизация</h1>
+<h2 id='safety_disposal' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Меры безопасности</h2>
+<h3 id='disposal_safety_rules' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>При утилизации необходимо соблюдать следующие меры безопасности</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>отключить питание;</li>
+<li>сдавать в сборе, разборка запрещена.</li>
+</ul>
+<h3 id='disposal_prohibitions' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Запрещается</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>самостоятельная разборка корпуса для утилизации;</li>
+<li>захоронение на полигонах ТБО;</li>
+<li>сжигание в непредназначенных для этого местах;</li>
+<li>сброс в канализацию, водоемы или на несанкционированные свалки.</li>
+</ul>
+<h2 id='preparation_disposal' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Подготовка к утилизации</h2>
+<h3 id='disposal_preparation' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Подготовка изделия к утилизации включает</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>демонтировать со счетчика;</li>
+<li>отсоединить кабели и блок питания;</li>
+<li>сдать целое, неразобранное изделие в пункт приема электронных отходов.</li>
+</ul>
+<h2 id='disposable_parts' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Утилизируемые части</h2>
+<h3 id='parts_for_disposal' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Утилизации подлежат</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>устройство в сборе</li>
+<li>блок питания</li>
+<li>кабели</li>
+</ul>
+<h2 id='methods_disposal' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Методы утилизации</h2>
+<h3 id='disposal_methods' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>При утилизации могут применяться следующие методы</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>изделие утилизируется как неразборный электронный блок</li>
+<li>первичная обработка: измельчение в шредере для электронных отходов вместе с корпусом</li>
+<li>переработка: пластиковая фракция — очистка, гранулирование; металлическая фракция — переплавка; электронная фракция — извлечение драгоценных металлов</li>
+</ul>
+<h2 id='organizations_disposal' class='text-4xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Организации для утилизации</h2>
+<h3 id='disposal_organizations' class='text-3xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>Изделие должно передаваться специализированным организациям, имеющим лицензию на утилизацию неразборных электронных устройств</h3>
+<ul class='list-disc pl-6 mb-4 space-y-1'>
+<li>имеющим лицензию на утилизацию отходов I–IV классов опасности</li>
+</ul></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Мобильное оглавление (модальное) -->
+    <div x-show="tocOpen" class="fixed inset-0 bg-gray-900 bg-opacity-90 z-50 flex items-center justify-center lg:hidden" @click="tocOpen = false">
+        <div class="bg-gray-800 p-6 rounded-xl border border-blue-700 max-h-[80vh] overflow-y-auto w-11/12 max-w-md" @click.stop>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-blue-400">Оглавление</h3>
+                <button @click="tocOpen = false" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="toc sticky top-20 bg-gray-800/80 backdrop-blur-md p-6 rounded-xl border border-blue-700 max-h-[70vh] overflow-y-auto">
+<h3 class="text-xl font-bold mb-4 text-blue-400">Оглавление</h3>
+<ul class="space-y-2">
+<li><a href="#maintenance" class="hover:text-blue-400 transition">Техническое обслуживание</a></li>
+<li class="ml-4"><a href="#general_instructions" class="text-gray-300 hover:text-blue-400 transition">Общие указания</a></li>
+<li class="ml-4"><a href="#safety_measures" class="text-gray-300 hover:text-blue-400 transition">Меры безопасности</a></li>
+<li class="ml-4"><a href="#maintenance_procedure" class="text-gray-300 hover:text-blue-400 transition">Порядок технического обслуживания</a></li>
+<li class="ml-4"><a href="#maintenance_check" class="text-gray-300 hover:text-blue-400 transition">Проверка работоспособности</a></li>
+<li class="ml-4"><a href="#technical_inspection" class="text-gray-300 hover:text-blue-400 transition">Техническое освидетельствование</a></li>
+<li class="ml-4"><a href="#conservation" class="text-gray-300 hover:text-blue-400 transition">Консервация (расконсервация)</a></li>
+<li><a href="#current_repair" class="hover:text-blue-400 transition">Текущий ремонт</a></li>
+<li class="ml-4"><a href="#general_repair_instructions" class="text-gray-300 hover:text-blue-400 transition">Общие указания</a></li>
+<li class="ml-4"><a href="#repair_safety" class="text-gray-300 hover:text-blue-400 transition">Меры безопасности</a></li>
+<li><a href="#storage" class="hover:text-blue-400 transition">Хранение</a></li>
+<li class="ml-4"><a href="#storage_warehousing" class="text-gray-300 hover:text-blue-400 transition">Правила хранения и складирования</a></li>
+<li class="ml-4"><a href="#limited_life_parts" class="text-gray-300 hover:text-blue-400 transition">Составные части с ограниченным сроком хранения</a></li>
+<li class="ml-4"><a href="#storage_conditions" class="text-gray-300 hover:text-blue-400 transition">Условия хранения</a></li>
+<li><a href="#transportation" class="hover:text-blue-400 transition">Транспортирование</a></li>
+<li class="ml-4"><a href="#transport_requirements" class="text-gray-300 hover:text-blue-400 transition">Требования к транспортированию</a></li>
+<li class="ml-4"><a href="#transport_preparation" class="text-gray-300 hover:text-blue-400 transition">Подготовка к транспортированию</a></li>
+<li class="ml-4"><a href="#transport_characteristics" class="text-gray-300 hover:text-blue-400 transition">Транспортные характеристики</a></li>
+<li class="ml-4"><a href="#transport_handling" class="text-gray-300 hover:text-blue-400 transition">Обращение после транспортирования</a></li>
+<li><a href="#disposal" class="hover:text-blue-400 transition">Утилизация</a></li>
+<li class="ml-4"><a href="#safety_disposal" class="text-gray-300 hover:text-blue-400 transition">Меры безопасности</a></li>
+<li class="ml-4"><a href="#preparation_disposal" class="text-gray-300 hover:text-blue-400 transition">Подготовка к утилизации</a></li>
+<li class="ml-4"><a href="#disposable_parts" class="text-gray-300 hover:text-blue-400 transition">Утилизируемые части</a></li>
+<li class="ml-4"><a href="#methods_disposal" class="text-gray-300 hover:text-blue-400 transition">Методы утилизации</a></li>
+<li class="ml-4"><a href="#organizations_disposal" class="text-gray-300 hover:text-blue-400 transition">Организации для утилизации</a></li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="bg-gray-800 border-t border-blue-600 mt-12 py-6">
+        <div class="container mx-auto px-6 text-center text-gray-500 text-sm">
+            <p>Разработчик: ООО &#34;АИМ&#34;, Москва</p>
+            <p>Сгенерировано: 2025-12-25 16:50</p>
+            <p class="mt-2">Версия документации: V1 | Прошивка: ESP-IDF Framework</p>
+        </div>
+    </footer>
+</body>
+</html>
