@@ -3,47 +3,78 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
 
-# КЛЮЧЕВОЕ ИЗМЕНЕНИЕ ▼▼▼
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     
     steps:
       - uses: actions/checkout@v4
 
       - name: Install LibreOffice
-        run: sudo apt-get update && sudo apt-get install -y libreoffice-core
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libreoffice-core libreoffice-writer
+          libreoffice --version
 
       - name: Generate documentation
         run: |
           pip install -r docs/scripts/requirements.txt
-          python docs/scripts/builders/build_docs.py all
-          python docs/scripts/builders/build_site.py
           
-          # Копируем всё что нужно
+          echo "📄 Генерация PDF..."
+          python docs/scripts/builders/build_docs.py all
+          
+          echo "🌐 Генерация сайта..."
+          python docs/scripts/builders/build_site.py
+
+      - name: Prepare files for deployment
+        run: |
+          echo "📋 Подготовка файлов для деплоя..."
+          
+          # 1. Копируем шаблоны
           cp -r docs/templates/web/* docs/output/web/
+          
+          # 2. СОЗДАЕМ ПАПКУ pdf (важно!)
           mkdir -p docs/output/web/pdf
-          cp docs/output/pdf/*.pdf docs/output/web/pdf/ 2>/dev/null || true
+          
+          # 3. Копируем PDF файлы (если есть)
+          echo "📁 Проверяем PDF файлы..."
+          if [ -d "docs/output/pdf" ]; then
+            echo "✅ Папка docs/output/pdf существует"
+            ls -la docs/output/pdf/
+            
+            # Копируем все PDF
+            for pdf in docs/output/pdf/*.pdf; do
+              if [ -f "$pdf" ]; then
+                cp "$pdf" docs/output/web/pdf/
+                echo "✅ Скопирован: $(basename $pdf)"
+              fi
+            done
+          else
+            echo "❌ Папка docs/output/pdf не найдена"
+            # Создаем тестовый файл
+            echo "Тестовый PDF" > docs/output/web/pdf/TEST.pdf
+          fi
+          
+          # 4. Создаем .nojekyll
           touch docs/output/web/.nojekyll
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./docs/output/web
+          
+          # 5. Проверяем результат
+          echo ""
+          echo "📊 ИТОГ:"
+          echo "PDF файлов в web/pdf/:"
+          ls -la docs/output/web/pdf/ || echo "Папка пуста"
+          echo ""
+          echo "Все файлы в output/web/:"
+          ls -la docs/output/web/
 
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/output/web
+          publish_branch: gh-pages
+          force_orphan: true
