@@ -601,8 +601,7 @@ def build_site():
                             <span class="text-и xl">📄</span>
                         </div>
                     </div>
-                    <h5 class="text-xl font-semibold mb-2 text-center">{safe_name}</h5>
-                    <p class="text-gray-400 text-center text-sm">Открыть для просмотра</p>
+                    <h5 class="text-sm font-semibold mb-2 text-center">{safe_name}</h5>
                 </a>
                 """
             
