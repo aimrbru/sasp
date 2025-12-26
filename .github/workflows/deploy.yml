@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Build and Deploy Documentation
 
 on:
   push:
@@ -6,23 +6,19 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages  # ← ЭТО ОБЯЗАТЕЛЬНО
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
+
+      - run: sudo apt-get update && sudo apt-get install -y libreoffice
 
       - name: Install dependencies
         run: |
@@ -31,32 +27,15 @@ jobs:
       - name: Build documentation
         run: |
           python docs/scripts/builders/build_docs.py all
-
-      - name: Prepare web output directory
-        run: |
-          mkdir -p docs/output/web
-
-      - name: Copy HTML templates and assets
-        run: |
-          cp -r docs/templates/web/* docs/output/web/ || echo "No web templates found"
-
-      - name: Copy PDF files
-        run: |
           mkdir -p docs/output/web/pdf
           cp -r docs/output/pdf/*.pdf docs/output/web/pdf/ 2>/dev/null || echo "No PDFs to copy"
-
-      - name: Copy PDF.js viewer
-        run: |
-          mkdir -p docs/output/web/pdfjs
-          cp -r docs/templates/web/pdfjs/* docs/output/web/pdfjs/ 2>/dev/null || echo "PDF.js not found"
-
-      - name: Setup GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/output/web
+          python docs/scripts/builders/build_site.py
+          touch docs/output/web/.nojekyll
+          cp docs/templates/web/pdf_viewer.html docs/output/web/
 
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v4  # ← v4 тоже работает!
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/output/web
+          publish_branch: gh-pages
