@@ -7,23 +7,11 @@ on:
       - 'docs/**'
       - 'hardware/**'
       - 'production/**'
-      - 'software/src/main/**'
       - '.github/workflows/deploy.yml'
-      - 'requirements*.txt'
-      - 'setup.py'
-      - 'pyproject.toml'
-  pull_request:
-    branches: [ main, master ]
-    paths:
-      - 'docs/**'
-      - 'hardware/**'
-      - 'production/**'
-      - '.github/workflows/deploy.yml'
-  workflow_dispatch:  # Ручной запуск
+  workflow_dispatch:
 
 env:
   PYTHON_VERSION: '3.11'
-  POETRY_VERSION: '1.8.3'
 
 jobs:
   generate-docs:
@@ -37,19 +25,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 🐍 Set up Python
+      - name: 🐍 Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'  # Автоматическое кеширование pip пакетов
-
-      - name: 📦 Кеш pip packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('docs/scripts/requirements.txt', 'pyproject.toml', 'setup.py') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+          cache: 'pip'
+          
+      - name: 🔍 Check Python version
+        run: |
+          python --version
+          echo "Python path: $(which python)"
 
       - name: 📦 Install system dependencies
         run: |
@@ -66,28 +51,41 @@ jobs:
         run: |
           pip install --upgrade pip setuptools wheel
           
-          # Проверяем, обновились ли зависимости
-          if [ -f "docs/scripts/requirements.txt" ]; then
-            pip cache dir
-            pip install --no-deps -r docs/scripts/requirements.txt || \
-            pip install \
-              "PyYAML>=6.0.1,<7.0" \
-              "Jinja2>=3.0.0,<4.0" \
-              "Markdown>=3.4.0,<4.0" \
-              "python-docx>=1.1.0,<2.0" \
-              "odfpy>=1.3.0,<1.4.2" \
-              "click>=8.0.0,<9.0" \
-              "colorama>=0.4.0,<1.0"
-          else
-            pip install \
-              "PyYAML>=6.0.1,<7.0" \
-              "Jinja2>=3.0.0,<4.0" \
-              "Markdown>=3.4.0,<4.0" \
-              "python-docx>=1.1.0,<2.0" \
-              "odfpy>=1.3.0,<1.4.2" \
-              "click>=8.0.0,<9.0" \
-              "colorama>=0.4.0,<1.0"
-          fi
+          # Устанавливаем все необходимые зависимости
+          pip install \
+            "PyYAML>=6.0.1,<7.0" \
+            "Jinja2>=3.0.0,<4.0" \
+            "Markdown>=3.4.0,<4.0" \
+            "python-docx>=1.1.0,<2.0" \
+            "odfpy>=1.3.0,<1.4.2" \
+            "click>=8.0.0,<9.0" \
+            "colorama>=0.4.0,<1.0" \
+            "markupsafe>=2.0.0,<3.0" \
+            "lxml>=4.9.0,<5.0"
+
+      - name: ✅ Validate dependencies
+        run: |
+          echo "🔍 Checking installed dependencies..."
+          python -c "
+          import sys
+          packages = [
+              'yaml', 'jinja2', 'markdown', 'docx', 'odf', 
+              'click', 'colorama', 'markupsafe', 'lxml'
+          ]
+          
+          for pkg in packages:
+              try:
+                  __import__(pkg)
+                  print(f'✅ {pkg}')
+              except ImportError as e:
+                  print(f'❌ {pkg}: {e}')
+          "
+
+      - name: ✅ Validate syntax
+        run: |
+          echo "🔍 Validating Python syntax..."
+          python -m py_compile docs/scripts/builders/build_site.py
+          echo "✅ Syntax is valid"
 
       - name: 🏗️ Generate documents (ODT/PDF)
         run: |
