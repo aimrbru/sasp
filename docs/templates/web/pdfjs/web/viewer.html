@@ -21,20 +21,22 @@ Adobe CMap resources are covered by their own copyright but the same license:
 See https://github.com/adobe-type-tools/cmap-resources
 -->
 <html dir="ltr" mozdisallowselectionprint>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="google" content="notranslate">
-    <title>PDF.js viewer</title>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="google" content="notranslate">
+  <title>PDF.js viewer</title>
 
-<!-- This snippet is used in production (included from viewer.html) -->
-<link rel="resource" type="application/l10n" href="locale/locale.properties">
-<script src="../build/pdf.js"></script>
+  <!-- Локализация -->
+  <link rel="resource" type="application/l10n" href="/sasp/pdfjs/web/locale/locale.properties">
 
-    <link rel="stylesheet" href="viewer.css">
+  <!-- PDF.js core -->
+  <script src="/sasp/pdfjs/build/pdf.js"></script>
 
-  <script src="viewer.js"></script>
-  </head>
+  <!-- Стили и скрипты -->
+  <link rel="stylesheet" href="/sasp/pdfjs/web/viewer.css">
+  <script src="/sasp/pdfjs/web/viewer.js"></script>
+</head>
 
   <body tabindex="1">
     <div id="outerContainer">
