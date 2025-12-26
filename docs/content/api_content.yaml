@@ -456,3 +456,13 @@ sections:
                     - WebSocket используется только для логов подключения
                     - Системные мониторинговые эндпоинты (/status, /heap, /uptime) не реализованы
                     - OTA и BLUFI API доступны только через соответствующие протоколы, не через HTTP
+  - id: github_repo
+    name: Репозиторий на GitHub
+    subsections: []
+    points:
+      - id: repo_link
+        name: Исходный код
+        blocks:
+          - text: >
+              Проект доступен на GitHub:  
+              https://github.com/aimrbru/sasp                    

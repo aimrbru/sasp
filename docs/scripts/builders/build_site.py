@@ -480,7 +480,7 @@ def build_site():
         
         if "sections" in api_data:
             api_sections = api_data["sections"]
-            print(f"   ✅ Справочник по API: {len(api_sections)} разделов")
+            print(f"   ✅ Разработчикам: {len(api_sections)} разделов")
         else:
             print(f"   ❌ В api_data нет ключа 'sections'")
             api_sections = []
@@ -548,11 +548,11 @@ def build_site():
         render_page(template, maint_ctx, CONFIG["web_output"] / "maintenance.html")
         print(f"✅ Руководство по обслуживанию: {len(maint_sections)} разделов")
         
-        print("\n🔌 ГЕНЕРАЦИЯ СПРАВОЧНИКА ПО API")
+        print("\n🔌 ГЕНЕРАЦИЯ РАЗРАБОТЧИКАМ")
         api_sections = api_data.get("sections") or []
         api_ctx = context.copy()
         api_ctx.update({
-            "title": "Справочник по API",
+            "title": "Разработчикам",
             "page_id": "api",
             "toc": generate_toc(api_sections, context),
             "content": "<div class='content'>" + 
@@ -560,7 +560,7 @@ def build_site():
                       "</div>"
         })
         render_page(template, api_ctx, CONFIG["web_output"] / "api.html")
-        print(f"✅ Справочник по API: {len(api_sections)} разделов")
+        print(f"✅ Разработчикам: {len(api_sections)} разделов")
         
         print("\n📄 ГЕНЕРАЦИЯ СТРАНИЦЫ PDF ДОКУМЕНТОВ")
         available_pdfs = get_available_pdfs()
