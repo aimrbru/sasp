@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
+          cache: 'pip'  # Кэширование Python пакетов
 
       - name: 📦 Cache apt packages
         uses: actions/cache@v4
@@ -32,15 +32,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-apt-
 
-      - name: 📦 Install system dependencies
+      - name: 📦 Install LibreOffice
         run: |
-          if ! command -v libreoffice &> /dev/null; then
-            echo "Installing LibreOffice..."
-            sudo apt-get update
-            sudo apt-get install -y libreoffice
-          else
-            echo "✅ LibreOffice already installed"
-          fi
+          sudo apt-get update
+          sudo apt-get install -y libreoffice
 
       - name: 📋 Install Python packages
         run: |
@@ -49,30 +44,22 @@ jobs:
 
       - name: 🏗️ Generate documents
         run: |
-          echo "🏗️ Generating GOST documents..."
           python docs/scripts/builders/build_docs.py all
-          echo "✅ Documents generated"
 
-      - name: 📄 Copy PDFs to web folder
+      - name: 📄 Copy PDFs to web
         run: |
-          echo "📄 Copying PDFs..."
           mkdir -p docs/output/web/pdf
-          
           if ls docs/output/pdf/*.pdf 1> /dev/null 2>&1; then
             cp docs/output/pdf/*.pdf docs/output/web/pdf/
-            echo "✅ PDFs copied:"
-            ls -la docs/output/web/pdf/*.pdf
-          else
-            echo "⚠️ No PDFs found"
+            echo "PDFs copied to web/pdf/"
           fi
 
       - name: 🌐 Generate website
         run: |
-          echo "🌐 Generating website..."
           python docs/scripts/builders/build_site.py
           touch docs/output/web/.nojekyll
           
-          # Простой pdf_viewer.html без сложного heredoc
+          # Создаем простой pdf_viewer.html
           echo '<!DOCTYPE html>
 <html>
 <head>
@@ -97,8 +84,7 @@ jobs:
         const file = params.get("file");
         if (file) {
             document.getElementById("title").textContent = decodeURIComponent(file);
-            document.getElementById("viewer").src = 
-                "https://mozilla.github.io/pdf.js/web/viewer.html?file=pdf/" + encodeURIComponent(file);
+            document.getElementById("viewer").src = "https://mozilla.github.io/pdf.js/web/viewer.html?file=pdf/" + encodeURIComponent(file);
         }
     </script>
 </body>
