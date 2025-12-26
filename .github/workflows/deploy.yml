@@ -26,17 +26,13 @@ jobs:
       - name: Build documentation
         run: |
           python docs/scripts/builders/build_docs.py all
-          python docs/scripts/builders/build_site.py
           mkdir -p docs/output/web/pdf
           cp -r docs/output/pdf/*.pdf docs/output/web/pdf/ 2>/dev/null || echo "No PDFs to copy"
-          if [ -d "docs/templates/web/pdfjs" ]; then
-            cp -r docs/templates/web/pdfjs docs/output/web/
-            echo "✅ PDF.js скопирован"
-          else
-            echo "⚠️ Внимание: папка pdfjs не найдена"
-          fi
-          cp docs/templates/web/pdf_viewer.html docs/output/web/
+          python docs/scripts/builders/build_site.py
+          # 🔥 ДОБАВЛЕНА СТРОКА:
+          cp -r docs/templates/web/pdfjs docs/output/web/
           touch docs/output/web/.nojekyll
+          cp docs/templates/web/pdf_viewer.html docs/output/web/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
