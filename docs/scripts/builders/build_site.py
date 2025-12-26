@@ -255,7 +255,9 @@ def simple_render_section(section: dict, level: int = 1, context: dict | None = 
             if isinstance(block, dict):
                 if block.get("type") == "text" and "value" in block:
                     text = render_text(block["value"], context)
-                    html.append(f"<p class='mb-4 text-gray-300 leading-relaxed'>{text.replace('\n', '<br>')}</p>")
+                    # ФИКС: Используем переменную для замены символов
+                    processed_text = text.replace('\n', '<br>')
+                    html.append(f"<p class='mb-4 text-gray-300 leading-relaxed'>{processed_text}</p>")
                 elif block.get("type") == "blank_line":
                     html.append("<br>" * block.get("count", 1))
                 elif block.get("type") == "bottom_info" and "value" in block:
@@ -267,7 +269,9 @@ def simple_render_section(section: dict, level: int = 1, context: dict | None = 
             if isinstance(block, dict):
                 if "text" in block:
                     text = render_text(block["text"], context)
-                    html.append(f"<p class='mb-4 text-gray-300'>{text.replace('\n', '<br>')}</p>")
+                    # ФИКС: Используем переменную
+                    processed_text = text.replace('\n', '<br>')
+                    html.append(f"<p class='mb-4 text-gray-300'>{processed_text}</p>")
                 elif "list" in block:
                     if block["list"].get("style") == "no_bullet":
                         html.append("<ul class='list-none pl-0 mb-4 space-y-1'>")
@@ -488,7 +492,7 @@ def build_site():
                         <h3 class="text-xl font-semibold mb-4">Руководство по обслуживанию</h3>
                         <p class="text-gray-400">ТО, ремонт, хранение, транспортировка</p>
                     </a>
-                    <a href="api.html" class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
+                    <a href="api.html" class="bg-gray800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
                         <h3 class="text-xl font-semibold mb-4">Справочник по API</h3>
                         <p class="text-gray-400">Программный интерфейс устройства</p>
                     </a>
@@ -551,9 +555,12 @@ def build_site():
             pdf_content = "<h3 class='text-4xl font-bold neon mb-12'>ГОСТ-документация</h3>"
             pdf_content += "<div class='grid grid-cols-1 md:grid-cols-3 gap-8'>"
             for name, fname in available_pdfs:
+                # ФИКС: Экранируем кавычки
+                safe_name = name.replace("'", "&apos;").replace('"', "&quot;")
+                safe_fname = fname.replace("'", "&apos;").replace('"', "&quot;")
                 pdf_content += f"""
-                <a href="docs/{fname}" target="_blank" class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
-                    <h3 class="text-2xl font-semibold mb-4">{name}</h3>
+                <a href="docs/{safe_fname}" target="_blank" class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
+                    <h3 class="text-2xl font-semibold mb-4">{safe_name}</h3>
                     <p class="text-gray-400">Открыть PDF</p>
                 </a>
                 """
