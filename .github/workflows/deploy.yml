@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'  # Кэширование Python пакетов
+          cache: 'pip'
 
       - name: 📦 Cache apt packages
         uses: actions/cache@v4
@@ -58,38 +58,12 @@ jobs:
         run: |
           python docs/scripts/builders/build_site.py
           touch docs/output/web/.nojekyll
-          
-          # Создаем простой pdf_viewer.html
-          echo '<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Просмотр PDF</title>
-    <style>
-        body { margin: 0; padding: 20px; background: #0f172a; color: #e2e8f0; font-family: sans-serif; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .title { font-size: 24px; color: #60a5fa; }
-        .btn { padding: 10px 20px; background: #3b82f6; color: white; border-radius: 8px; text-decoration: none; }
-        .viewer { width: 100%; height: calc(100vh - 100px); border: none; border-radius: 12px; }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1 class="title" id="title">PDF Viewer</h1>
-        <a href="standards.html" class="btn">← Назад</a>
-    </div>
-    <iframe id="viewer" class="viewer"></iframe>
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const file = params.get("file");
-        if (file) {
-            document.getElementById("title").textContent = decodeURIComponent(file);
-            document.getElementById("viewer").src = "https://mozilla.github.io/pdf.js/web/viewer.html?file=pdf/" + encodeURIComponent(file);
-        }
-    </script>
-</body>
-</html>' > docs/output/web/pdf_viewer.html
 
+      - name: 📋 Copy PDF viewer template
+        run: |
+          cp docs/templates/web/pdf_viewer.html docs/output/web/
+          echo "✅ PDF viewer template copied"
+        
       - name: 📤 Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
