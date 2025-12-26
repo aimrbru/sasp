@@ -26,14 +26,18 @@ jobs:
       
       - name: Build documentation
         run: |
+          # 1. Генерируем PDF
           python docs/scripts/builders/build_docs.py all
           
+          # 2. Копируем PDF в web папку (ОБЯЗАТЕЛЬНО!)
           mkdir -p docs/output/web/pdf
-          cp -r docs/output/pdf/*.pdf docs/output/web/pdf/ 2>/dev/null || echo "No PDFs"
+          cp -r docs/output/pdf/*.pdf docs/output/web/pdf/ 2>/dev/null || echo "No PDFs to copy"
           
+          # 3. Генерируем сайт
           python docs/scripts/builders/build_site.py
           touch docs/output/web/.nojekyll
           
+          # 4. Копируем viewer
           cp docs/templates/web/pdf_viewer.html docs/output/web/
       
       - uses: peaceiris/actions-gh-pages@v3
@@ -41,5 +45,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/output/web
           publish_branch: gh-pages
-          force_orphan: false
-          enable_jekyll: false
