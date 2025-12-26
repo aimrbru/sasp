@@ -3,18 +3,34 @@ name: Build and Deploy Documentation
 on:
   push:
     branches: [ main, master ]
+    paths:
+      - 'docs/**'
+      - 'hardware/**'
+      - 'production/**'
+      - 'software/src/main/**'
+      - '.github/workflows/deploy.yml'
+      - 'requirements*.txt'
+      - 'setup.py'
+      - 'pyproject.toml'
   pull_request:
     branches: [ main, master ]
+    paths:
+      - 'docs/**'
+      - 'hardware/**'
+      - 'production/**'
+      - '.github/workflows/deploy.yml'
   workflow_dispatch:  # Ручной запуск
 
 env:
-  PYTHON_VERSION: '3.11'  # Используем Python 3.11 вместо 3.9
+  PYTHON_VERSION: '3.11'
+  POETRY_VERSION: '1.8.3'
 
 jobs:
   generate-docs:
     runs-on: ubuntu-latest
     outputs:
       has-artifacts: ${{ steps.check-artifacts.outputs.has-files }}
+    
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
@@ -25,7 +41,15 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
+          cache: 'pip'  # Автоматическое кеширование pip пакетов
+
+      - name: 📦 Кеш pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('docs/scripts/requirements.txt', 'pyproject.toml', 'setup.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
       - name: 📦 Install system dependencies
         run: |
@@ -41,17 +65,29 @@ jobs:
       - name: 📋 Install Python dependencies
         run: |
           pip install --upgrade pip setuptools wheel
-          # Используем более старые версии, совместимые с Python 3.9+
-          pip install \
-            "PyYAML>=6.0.1,<7.0" \
-            "Jinja2>=3.0.0,<4.0" \
-            "Markdown>=3.4.0,<4.0" \
-            "python-docx>=0.8.11,<1.0" \
-            "odfpy>=1.3.0,<1.5" \
-            "click>=8.0.0,<9.0" \
-            "colorama>=0.4.0,<1.0"
-          # Альтернативно можно использовать requirements.txt с корректными версиями
-          pip install -r docs/scripts/requirements.txt || echo "Trying alternative installation..."
+          
+          # Проверяем, обновились ли зависимости
+          if [ -f "docs/scripts/requirements.txt" ]; then
+            pip cache dir
+            pip install --no-deps -r docs/scripts/requirements.txt || \
+            pip install \
+              "PyYAML>=6.0.1,<7.0" \
+              "Jinja2>=3.0.0,<4.0" \
+              "Markdown>=3.4.0,<4.0" \
+              "python-docx>=1.1.0,<2.0" \
+              "odfpy>=1.3.0,<1.4.2" \
+              "click>=8.0.0,<9.0" \
+              "colorama>=0.4.0,<1.0"
+          else
+            pip install \
+              "PyYAML>=6.0.1,<7.0" \
+              "Jinja2>=3.0.0,<4.0" \
+              "Markdown>=3.4.0,<4.0" \
+              "python-docx>=1.1.0,<2.0" \
+              "odfpy>=1.3.0,<1.4.2" \
+              "click>=8.0.0,<9.0" \
+              "colorama>=0.4.0,<1.0"
+          fi
 
       - name: 🏗️ Generate documents (ODT/PDF)
         run: |
@@ -109,14 +145,6 @@ jobs:
         with:
           name: documentation-artifacts
           path: ./_site
-
-      - name: 📁 Verify website structure
-        run: |
-          echo "📂 Website structure:"
-          find ./_site -type f -name "*.html" | head -20
-          echo ""
-          echo "📊 File count:"
-          find ./_site -type f | wc -l
 
       - name: 🚀 Setup Pages
         uses: actions/configure-pages@v4
