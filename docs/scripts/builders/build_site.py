@@ -22,17 +22,13 @@ sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 def load_config_and_validate():
     """Загружает конфигурацию и валидирует все пути"""
-    # 1. Определяем корень проекта
     if 'GITHUB_WORKSPACE' in os.environ:
         PROJECT_ROOT = Path(os.environ['GITHUB_WORKSPACE'])
         print(f"🔧 Режим GitHub Actions. PROJECT_ROOT: {PROJECT_ROOT}")
     else:
-        # ВАЖНО: Используем метод который всегда находит esp_cam_blufi
-        # Способ 1: Ищем вверх по дереву пока не найдём esp_cam_blufi
         script_path = Path(__file__).resolve()
         current = script_path.parent
         
-        # Поднимаемся вверх пока не найдём папку esp_cam_blufi
         while current.name != 'esp_cam_blufi' and current != current.parent:
             current = current.parent
         
@@ -40,14 +36,11 @@ def load_config_and_validate():
             PROJECT_ROOT = current
             print(f"🔧 Локальный режим. Найдена папка проекта: {PROJECT_ROOT}")
         else:
-            # Способ 2: Если не нашли esp_cam_blufi, используем дефолтный путь
-            # docs/scripts/builders/build_site.py -> на 5 уровней вверх
             PROJECT_ROOT = script_path.parent.parent.parent.parent.parent
             print(f"🔧 Локальный режим. Использую расчетный путь: {PROJECT_ROOT}")
         
         print(f"   Script: {script_path}")
     
-    # 2. Проверяем что в корне есть нужные папки
     print(f"📁 Проверяю структуру в {PROJECT_ROOT}:")
     for folder in ['docs', 'hardware', 'software']:
         if (PROJECT_ROOT / folder).exists():
@@ -55,17 +48,10 @@ def load_config_and_validate():
         else:
             print(f"   ❌ {folder}/ не найдена!")
     
-    # 3. Теперь загружаем конфигурацию с правильного пути
     config_path = PROJECT_ROOT / "docs" / "scripts" / "config_paths.yaml"
     print(f"🔍 Ищу конфигурацию: {config_path}")
     
     if not config_path.exists():
-        # Показываем что есть в папке scripts
-        scripts_dir = PROJECT_ROOT / "docs" / "scripts"
-        if scripts_dir.exists():
-            print(f"📄 Файлы в {scripts_dir}:")
-            for f in scripts_dir.iterdir():
-                print(f"   • {f.name}")
         raise FileNotFoundError(f"❌ ФАЙЛ КОНФИГУРАЦИИ НЕ НАЙДЕН: {config_path}")
     
     try:
@@ -74,37 +60,30 @@ def load_config_and_validate():
     except Exception as e:
         raise RuntimeError(f"❌ ОШИБКА ЧТЕНИЯ КОНФИГУРАЦИИ {config_path}: {e}")
     
-    # 3. Строим и валидируем пути
     base_dirs = config.get('base_dirs', {})
     if not base_dirs:
         raise ValueError("❌ СЕКЦИЯ 'base_dirs' ОТСУТСТВУЕТ В КОНФИГУРАЦИИ")
     
-    # Обязательные пути
     required_paths = {}
     
-    # hardware/
     hw_path = PROJECT_ROOT / base_dirs.get('hardware')
     if not hw_path.exists():
         raise FileNotFoundError(f"❌ ПАПКА hardware НЕ НАЙДЕНА: {hw_path}")
     required_paths['hardware'] = hw_path
     
-    # docs/
     docs_path = PROJECT_ROOT / base_dirs.get('docs')
     if not docs_path.exists():
         raise FileNotFoundError(f"❌ ПАПКА docs НЕ НАЙДЕНА: {docs_path}")
     required_paths['docs'] = docs_path
     
-    # docs/output/
     output_path = PROJECT_ROOT / base_dirs.get('output', 'docs/output')
     required_paths['output'] = output_path
     
-    # docs/content/
     content_path = PROJECT_ROOT / base_dirs.get('content', 'docs/content')
     if not content_path.exists():
         raise FileNotFoundError(f"❌ ПАПКА content НЕ НАЙДЕНА: {content_path}")
     required_paths['content'] = content_path
     
-    # 4. Строим полные пути для конфигурации
     config_paths = {
         "PROJECT_ROOT": PROJECT_ROOT,
         "web_output": output_path / "web",
@@ -114,7 +93,6 @@ def load_config_and_validate():
         "templates_dir": PROJECT_ROOT / base_dirs.get('templates', 'docs/templates') / "web",
     }
     
-    # 5. Проверяем файлы данных
     data_files_config = config.get('data_files', {})
     if not data_files_config:
         raise ValueError("❌ СЕКЦИЯ 'data_files' ОТСУТСТВУЕТ В КОНФИГУРАЦИИ")
@@ -127,21 +105,19 @@ def load_config_and_validate():
         config_paths["data_files"][key] = full_path
         print(f"✅ {key}: {full_path}")
     
-    # 6. Проверяем файлы контента
     content_config = config.get('content', {})
     if not content_config:
         raise ValueError("❌ СЕКЦИЯ 'content' ОТСУТСТВУЕТ В КОНФИГУРАЦИИ")
     
     config_paths["content_yaml"] = {}
     for key, rel_path in content_config.items():
-        if key in ['re', 'api']:  # только нужные для сайта
+        if key in ['re', 'api']:
             full_path = PROJECT_ROOT / rel_path
             if not full_path.exists():
                 raise FileNotFoundError(f"❌ ФАЙЛ КОНТЕНТА НЕ НАЙДЕН [{key}]: {full_path}")
             config_paths["content_yaml"][key] = full_path
             print(f"✅ {key}_content: {full_path}")
     
-    # 7. Проверяем templates/web/
     templates_web = config_paths["templates_dir"]
     if not templates_web.exists():
         raise FileNotFoundError(f"❌ ПАПКА ШАБЛОНОВ НЕ НАЙДЕНА: {templates_web}")
@@ -153,7 +129,6 @@ def load_config_and_validate():
     print("✅ ВСЕ ПУТИ ПРОВЕРЕНЫ УСПЕШНО")
     return config_paths
 
-# Загружаем и валидируем конфигурацию
 try:
     CONFIG = load_config_and_validate()
 except Exception as e:
@@ -177,16 +152,13 @@ def load_metadata():
         if not metadata:
             raise ValueError("Файл метаданных пуст")
         
-        # Преобразуем даты для удобного отображения
         dev_date = metadata.get("developer", {}).get("responsible", {}).get("document_date", "")
         if dev_date and str(dev_date).isdigit():
             metadata["developer"]["responsible"]["formatted_date"] = f"{dev_date} г."
         
-        # Добавляем год для копирайта
         current_year = datetime.now().year
         metadata["current_year"] = current_year
         
-        # Форматируем стандарты
         standards = metadata.get("regulatory", {}).get("compliance_standards", [])
         metadata["regulatory"]["formatted_standards"] = ", ".join(standards) if standards else "не указаны"
         
@@ -231,7 +203,7 @@ def get_available_pdfs():
         return available
 
     for pdf_file in pdf_folder.glob("*.pdf"):
-        name = pdf_file.stem  # имя файла без .pdf
+        name = pdf_file.stem
         fname = pdf_file.name
         available.append((name, fname))
         print(f"Найден PDF: {name} ({fname})")
@@ -249,7 +221,7 @@ def render_text(text: str, context: dict) -> str:
         t = Template(text)
         return t.render(**context)
     except UndefinedError:
-        return text  # Если placeholder не найден — оставляем как есть
+        return text
     except Exception as e:
         print(f"Ошибка рендера текста: {e}")
         return text
@@ -257,13 +229,27 @@ def render_text(text: str, context: dict) -> str:
 def simple_render_section(section: dict, level: int = 1, context: dict | None = None) -> str:
     context = context or {}
     html = []
+    
+    if not isinstance(section, dict):
+        return ""
+    
     tag = f"h{level}"
     if "name" in section and section["name"].strip():
         name = render_text(section["name"], context)
         anchor = section.get("id", name.lower().replace(" ", "-").replace(".", ""))
-        html.append(f"<{tag} id='{anchor}' class='text-{6-level}xl font-bold mt-10 mb-6 border-b border-blue-600 pb-2'>{name}</{tag}>")
 
-    # content
+        size_classes = {
+            1: "text-3xl",
+            2: "text-2xl",
+            3: "text-xl",
+            4: "text-lg",
+            5: "text-base",
+            6: "text-sm"
+        }
+        
+        size_class = size_classes.get(level, "text-base")
+        html.append(f"<{tag} id='{anchor}' class='{size_class} font-bold mt-8 mb-4 border-b border-blue-600 pb-2'>{name}</{tag}>")
+
     if "content" in section:
         for block in section.get("content") or []:
             if isinstance(block, dict):
@@ -276,7 +262,6 @@ def simple_render_section(section: dict, level: int = 1, context: dict | None = 
                     value = render_text(block["value"], context)
                     html.append(f"<p class='text-gray-400 mt-8'>{value}</p>")
 
-    # blocks
     if "blocks" in section:
         for block in section.get("blocks") or []:
             if isinstance(block, dict):
@@ -285,7 +270,7 @@ def simple_render_section(section: dict, level: int = 1, context: dict | None = 
                     html.append(f"<p class='mb-4 text-gray-300'>{text.replace('\n', '<br>')}</p>")
                 elif "list" in block:
                     if block["list"].get("style") == "no_bullet":
-                        html.append("<ul class='list-none pl-0 mb-4 space-y-1'>")  # без маркеров
+                        html.append("<ul class='list-none pl-0 mb-4 space-y-1'>")
                     elif block["list"].get("style") == "bullet":
                         html.append("<ul class='list-disc pl-6 mb-4 space-y-1'>")
                     else:
@@ -311,49 +296,109 @@ def simple_render_section(section: dict, level: int = 1, context: dict | None = 
                     width = block["image"].get("width", "auto")
                     html.append(f"<figure class='my-8'><img src='{path}' alt='{caption}' class='mx-auto rounded-lg shadow-lg' style='width:{width};' /><figcaption class='text-center text-gray-400 mt-3'>{caption}</figcaption></figure>")
 
-    # subsections
-    if "subsections" in section:
-        for sub in section.get("subsections") or []:
+    # subsections - безопасно обрабатываем
+    subsections = section.get("subsections")
+    if subsections:
+        for sub in subsections:
             html.append(simple_render_section(sub, level + 1, context))
 
-    # points
-    if "points" in section:
-        for point in section.get("points") or []:
+    # points - безопасно обрабатываем
+    points = section.get("points")
+    if points:
+        for point in points:
             html.append(simple_render_section(point, level + 1, context))
 
     return "\n".join(html)
 
 def generate_toc(sections: list, context: dict) -> str:
-    """Генерирует HTML-оглавление"""
+    """Генерирует HTML-оглавление только с разделами верхнего уровня"""
     if not sections:
-        return "<p class='text-gray-400'>Оглавление отсутствует</p>"
+        return "<p class='text-gray-400 py-4'>Оглавление отсутствует</p>"
 
-    html = ['<div class="toc sticky top-20 bg-gray-800/80 backdrop-blur-md p-6 rounded-xl border border-blue-700 max-h-[70vh] overflow-y-auto">']
-    html.append('<h3 class="text-xl font-bold mb-4 text-blue-400">Оглавление</h3>')
-    html.append('<ul class="space-y-2">')
+    html = ['<ul class="space-y-3">']
 
     for section in sections:
-        name = render_text(section.get("name", "Без названия"), context)
+        if not isinstance(section, dict):
+            continue
+        
+        name = render_text(section.get("name", ""), context)
+        if not name or not name.strip() or name == "  ":
+            continue
+            
+        # Пропускаем технические разделы без значимых названий
+        if len(name) > 100 or ":" in name or ";" in name:  # Пропускаем слишком длинные и списковые названия
+            continue
+            
         anchor = section.get("id", name.lower().replace(" ", "-").replace(".", ""))
-        html.append(f'<li><a href="#{anchor}" class="hover:text-blue-400 transition">{name}</a></li>')
-
-        # subsections
-        if "subsections" in section:
-            for sub in section.get("subsections", []):
-                sub_name = render_text(sub.get("name", "Без названия"), context)
-                sub_anchor = sub.get("id", sub_name.lower().replace(" ", "-").replace(".", ""))
-                html.append(f'<li class="ml-4"><a href="#{sub_anchor}" class="text-gray-300 hover:text-blue-400 transition">{sub_name}</a></li>')
-
-        # points
-        if "points" in section:
-            for point in section.get("points", []):
-                point_name = render_text(point.get("name", "Без названия"), context)
-                point_anchor = point.get("id", point_name.lower().replace(" ", "-").replace(".", ""))
-                html.append(f'<li class="ml-4"><a href="#{point_anchor}" class="text-gray-300 hover:text-blue-400 transition">{point_name}</a></li>')
+        html.append(f'<li><a href="#{anchor}" class="toc-link hover:text-blue-400 transition-all py-2 px-3 rounded-lg block bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700 hover:border-blue-600 font-medium">{name}</a></li>')
 
     html.append('</ul>')
-    html.append('</div>')
     return "\n".join(html)
+
+def has_tag(section: dict, tag: str) -> bool:
+    """Проверяет, имеет ли секция нужный тег"""
+    tags = section.get("site", [])
+    if isinstance(tags, list):
+        return tag in tags
+    return False
+
+def filter_sections_by_tag(sections: list, target_tag: str, preserve_structure: bool = False):
+    """
+    Фильтрует секции по тегу.
+    Секции с пустым тегом site: [] не включаются НИКОГДА.
+    Если у родителя нет тега, но есть дочерние с тегом, дочерние добавляются без родителя.
+    """
+    if sections is None:
+        return []
+    
+    result = []
+    
+    for section in sections:
+        if not isinstance(section, dict):
+            continue
+            
+        section_id = section.get("id", "")
+        
+        if section_id in ["title_page", "table_of_contents"]:
+            continue
+        
+        section_tags = section.get("site", [])
+        has_target = target_tag in section_tags if isinstance(section_tags, list) else False
+        
+        # Обработка дочерних элементов
+        subsections = section.get("subsections")
+        points = section.get("points")
+        
+        processed_subsections = filter_sections_by_tag(subsections, target_tag, preserve_structure) if subsections is not None else []
+        processed_points = filter_sections_by_tag(points, target_tag, preserve_structure) if points is not None else []
+        
+        # Проверяем, есть ли дочерние элементы с нужным тегом
+        has_children_with_tag = bool(processed_subsections or processed_points)
+        
+        # Решаем, что делать с этой секцией
+        if has_target:
+            # Секция имеет целевой тег - включаем её
+            new_section = section.copy()
+            if processed_subsections:
+                new_section["subsections"] = processed_subsections
+            elif "subsections" in new_section:
+                del new_section["subsections"]
+                
+            if processed_points:
+                new_section["points"] = processed_points
+            elif "points" in new_section:
+                del new_section["points"]
+            result.append(new_section)
+        elif has_children_with_tag:
+            # Секция не имеет тега, но имеет дочерних с тегом
+            # Добавляем дочерних напрямую в результат (без родителя)
+            if processed_subsections:
+                result.extend(processed_subsections)
+            if processed_points:
+                result.extend(processed_points)
+        # Если нет тега и нет дочерних с тегом - не включаем ничего
+    
+    return result
 
 def build_site():
     """Основная функция генерации сайта"""
@@ -362,30 +407,47 @@ def build_site():
         print("🚀 НАЧИНАЮ ГЕНЕРАЦИЮ САЙТА ДОКУМЕНТАЦИИ")
         print("=" * 60)
         
-        # 1. Очистка и копирование медиа
         print("\n📦 ПОДГОТОВКА ВЫХОДНОЙ ДИРЕКТОРИИ")
         clean_output()
         copy_media()
         print("✅ Выходная директория подготовлена")
         
-        # 2. Загружаем все необходимые данные
         print("\n📖 ЗАГРУЗКА ДАННЫХ")
         
-        # Метаданные проекта
         metadata = load_metadata()
         print(f"✅ Метаданные загружены: {metadata.get('product', {}).get('name', 'N/A')}")
         
-        # Спецификации
         spec = load_yaml(CONFIG["data_files"]["specification"])
         print(f"✅ Спецификации загружены: {len(spec.get('specifications', {}))} пунктов")
         
-        # Контент документации
         re_data = load_yaml(CONFIG["content_yaml"]["re"])
         api_data = load_yaml(CONFIG["content_yaml"]["api"])
-        print(f"✅ Руководство по эксплуатации: {len(re_data.get('sections', []))} разделов")
-        print(f"✅ Справочник по API: {len(api_data.get('sections', []))} разделов")
         
-        # 3. Подготавливаем контекст для шаблонов
+        # Отладочная информация о структуре данных
+        print(f"\n📊 АНАЛИЗ СТРУКТУРЫ ДАННЫХ:")
+        print(f"   re_data keys: {list(re_data.keys())}")
+        print(f"   api_data keys: {list(api_data.keys())}")
+        
+        if "sections" in re_data:
+            re_sections = re_data["sections"]
+            print(f"   ✅ Руководство по эксплуатации: {len(re_sections)} разделов")
+            print(f"   📋 Первые 3 раздела:")
+            for i, section in enumerate(re_sections[:3]):
+                if isinstance(section, dict):
+                    print(f"     {i}. id='{section.get('id')}', name='{section.get('name')}'")
+                else:
+                    print(f"     {i}. НЕ СЛОВАРЬ: {type(section)}")
+        else:
+            print(f"   ❌ В re_data нет ключа 'sections'")
+            re_sections = []
+        
+        if "sections" in api_data:
+            api_sections = api_data["sections"]
+            print(f"   ✅ Справочник по API: {len(api_sections)} разделов")
+        else:
+            print(f"   ❌ В api_data нет ключа 'sections'")
+            api_sections = []
+        
         print("\n🎨 ПОДГОТОВКА КОНТЕКСТА ДЛЯ ШАБЛОНОВ")
         context = {
             "product": metadata.get("product", {}),
@@ -398,25 +460,15 @@ def build_site():
             "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
         }
         
-        # Выводим информацию о проекте
-        print(f"📋 Проект: {context['product'].get('name', 'N/A')} ({context['product'].get('code', 'N/A')})")
-        print(f"🏢 Разработчик: {context['developer'].get('company', 'N/A')}")
-        print(f"📅 Дата генерации: {context['generated_at']}")
-        
-        # 4. Загружаем шаблон
         print("\n🎭 ЗАГРУЗКА ШАБЛОНОВ")
         env = jinja2.Environment(
             loader=jinja2.FileSystemLoader(CONFIG["templates_dir"]),
             autoescape=True,
         )
         
-        try:
-            template = env.get_template("site_template.html")
-            print("✅ Шаблон сайта загружен")
-        except jinja2.TemplateNotFound as e:
-            raise FileNotFoundError(f"❌ ШАБЛОН НЕ НАЙДЕН: {e}")
+        template = env.get_template("site_template.html")
+        print("✅ Шаблон сайта загружен")
         
-        # 5. Генерация главной страницы
         print("\n🏠 ГЕНЕРАЦИЯ ГЛАВНОЙ СТРАНИЦЫ")
         index_ctx = context.copy()
         index_ctx.update({
@@ -425,19 +477,19 @@ def build_site():
             "toc": "",
             "content": f"""
             <div class="text-center">
-                <h1 class="text-5xl font-bold neon mb-6">{context['product'].get('full_name', 'САСП-2')}</h1>
+                <h3 class="text-3xl font-bold neon mb-6">{context['product'].get('full_name', 'САСП-2')}</h3>
                 <p class="text-xl text-gray-400 mb-8">Разработчик: {context['developer'].get('company', '')}, {context['developer'].get('city', '')}</p>
                 <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
                     <a href="user_guide.html" class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
-                        <h3 class="text-2xl font-semibold mb-4">Руководство пользователя</h3>
+                        <h3 class="text-xl font-semibold mb-4">Руководство пользователя</h3>
                         <p class="text-gray-400">Полное описание эксплуатации изделия</p>
                     </a>
                     <a href="maintenance.html" class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
-                        <h3 class="text-2xl font-semibold mb-4">Руководство по обслуживанию</h3>
+                        <h3 class="text-xl font-semibold mb-4">Руководство по обслуживанию</h3>
                         <p class="text-gray-400">ТО, ремонт, хранение, транспортировка</p>
                     </a>
                     <a href="api.html" class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
-                        <h3 class="text-2xl font-semibold mb-4">Справочник по API</h3>
+                        <h3 class="text-xl font-semibold mb-4">Справочник по API</h3>
                         <p class="text-gray-400">Программный интерфейс устройства</p>
                     </a>
                 </div>
@@ -447,24 +499,9 @@ def build_site():
         render_page(template, index_ctx, CONFIG["web_output"] / "index.html")
         print("✅ Главная страница сгенерирована")
         
-        # 6. Генерация руководства пользователя
-        print("\n📘 ГЕНЕРАЦИЯ РУКОВОДСТВА ПОЛЬЗОВАТЕЛЯ")
-        user_excluded_ids = {
-            "title_page", "table_of_contents", "product_description",
-            "tools_and_equipment", "personnel_requirements",
-            "safety_measures", "safety_rules",
-            "maintenance_procedure", "maintenance_steps", "maintenance_features",
-            "maintenance_check", "maintenance_methods",
-            "technical_inspection", "inspection_frequency", "inspection_program",
-            "conservation", "conservation_procedure", "deconservation_procedure",
-            "repair_safety", "repair_safety_rules",
-            "storage", "storage_warehousing", "storage_rules", "warehousing",
-            "limited_life_parts", "storage_conditions",
-            "transportation", "transport_requirements", "transport_handling"
-        }
-        
+        print("\n📘 ГЕНЕРАЦИЯ РУКОВОДСТВА ПОЛЬЗОВАТЕЛЯ (r)")
         re_sections = re_data.get("sections") or []
-        user_sections = [s for s in re_sections if s.get("id") not in user_excluded_ids]
+        user_sections = filter_sections_by_tag(re_sections, "r", preserve_structure=False)
         
         user_ctx = context.copy()
         user_ctx.update({
@@ -478,21 +515,9 @@ def build_site():
         render_page(template, user_ctx, CONFIG["web_output"] / "user_guide.html")
         print(f"✅ Руководство пользователя: {len(user_sections)} разделов")
         
-        # 7. Генерация руководства по обслуживанию
-        print("\n🔧 ГЕНЕРАЦИЯ РУКОВОДСТВА ПО ОБСЛУЖИВАНИЮ")
-        allowed = {"maintenance", "general_instructions", "maintenance_purpose", "maintenance_executors", 
-                   "disassembly_warning", "personnel_requirements", "safety_measures", "safety_rules", 
-                   "maintenance_procedure", "maintenance_steps", "maintenance_features", "maintenance_check", 
-                   "maintenance_methods", "technical_inspection", "inspection_frequency", "inspection_program", 
-                   "conservation", "conservation_procedure", "deconservation_procedure", "current_repair", 
-                   "general_repair_instructions", "repair_safety", "repair_safety_rules", "storage", 
-                   "storage_warehousing", "storage_rules", "warehousing", "limited_life_parts", "storage_conditions", 
-                   "transportation", "transport_requirements", "transport_preparation", "transport_characteristics", 
-                   "transport_handling", "disposal", "safety_disposal", "disposal_safety_rules", "disposal_prohibitions", 
-                   "preparation_disposal", "disposal_preparation", "disposable_parts", "parts_for_disposal", 
-                   "methods_disposal", "disposal_methods", "organizations_disposal", "disposal_organizations"}
+        print("\n🔧 ГЕНЕРАЦИЯ РУКОВОДСТВА ПО ОБСЛУЖИВАНИЮ (m)")
+        maint_sections = filter_sections_by_tag(re_sections, "m", preserve_structure=True)
         
-        maint_sections = [s for s in re_sections if s.get("id") in allowed]
         maint_ctx = context.copy()
         maint_ctx.update({
             "title": "Руководство по обслуживанию",
@@ -505,7 +530,6 @@ def build_site():
         render_page(template, maint_ctx, CONFIG["web_output"] / "maintenance.html")
         print(f"✅ Руководство по обслуживанию: {len(maint_sections)} разделов")
         
-        # 8. Генерация справочника по API
         print("\n🔌 ГЕНЕРАЦИЯ СПРАВОЧНИКА ПО API")
         api_sections = api_data.get("sections") or []
         api_ctx = context.copy()
@@ -520,12 +544,11 @@ def build_site():
         render_page(template, api_ctx, CONFIG["web_output"] / "api.html")
         print(f"✅ Справочник по API: {len(api_sections)} разделов")
         
-        # 9. Генерация страницы с PDF документами
         print("\n📄 ГЕНЕРАЦИЯ СТРАНИЦЫ PDF ДОКУМЕНТОВ")
         available_pdfs = get_available_pdfs()
         
         if available_pdfs:
-            pdf_content = "<h1 class='text-4xl font-bold neon mb-12'>Нормативная документация</h1>"
+            pdf_content = "<h3 class='text-4xl font-bold neon mb-12'>ГОСТ-документация</h3>"
             pdf_content += "<div class='grid grid-cols-1 md:grid-cols-3 gap-8'>"
             for name, fname in available_pdfs:
                 pdf_content += f"""
@@ -537,7 +560,7 @@ def build_site():
             pdf_content += "</div>"
             print(f"✅ Найдено PDF документов: {len(available_pdfs)}")
         else:
-            pdf_content = "<h1 class='text-4xl font-bold neon mb-12'>Нормативная документация</h1>"
+            pdf_content = "<h3 class='text-4xl font-bold neon mb-12'>ГОСТ-документация</h3>"
             pdf_content += "<p class='text-gray-400 text-center'>PDF-документы отсутствуют</p>"
             print("⚠️ PDF документы не найдены")
         
@@ -551,12 +574,10 @@ def build_site():
         render_page(template, pdf_ctx, CONFIG["web_output"] / "standards.html")
         print("✅ Страница PDF документов сгенерирована")
         
-        # 10. Итоговый отчёт
         print("\n" + "=" * 60)
         print("✅ САЙТ УСПЕШНО СГЕНЕРИРОВАН")
         print("=" * 60)
         
-        # Считаем файлы
         html_files = list(CONFIG["web_output"].glob("*.html"))
         media_files = list(CONFIG["web_output"].rglob("*.*"))
         
@@ -566,7 +587,6 @@ def build_site():
         print(f"   • Всего файлов: {len(media_files)}")
         print(f"\n📁 Выходная директория: {CONFIG['web_output']}")
         
-        # Показываем созданные файлы
         print(f"\n📄 СОЗДАННЫЕ ФАЙЛЫ:")
         for html_file in html_files:
             print(f"   • {html_file.name}")

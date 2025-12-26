@@ -1,36 +1,25 @@
-name: Deploy Documentation
-
-on:
-  push:
-    branches: [main]
-    paths:
-      - 'docs/**'
-      - 'hardware/**'
-
 jobs:
-  build:
+  generate-docs:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
-    
-    - name: Install dependencies
-      run: pip install pyyaml jinja2
-    
-    - name: Generate website
-      run: |
-        # Вход в правильную директорию и запуск
-        cd docs/scripts/builders
-        python build_site.py
-    
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v4
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: docs/output/web
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          
+      - name: Install LibreOffice
+        run: sudo apt-get update && sudo apt-get install -y libreoffice
+        
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+        
+      - name: Generate documents
+        run: python docs/scripts/builders/build_docs.py
+        
+      - name: Upload generated documents
+        uses: actions/upload-artifact@v3
+        with:
+          name: generated-documents
+          path: docs/output/

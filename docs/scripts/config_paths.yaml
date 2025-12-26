@@ -19,7 +19,7 @@ content:
   tu: "docs/content/tu_content.yaml"    # путь к шаблону Технических Условий
   ps: "docs/content/ps_content.yaml"    # путь к шаблону Паспорта
   re: "docs/content/re_content.yaml"    # путь к шаблону Руководства
-  site: "docs/content/api_content.yaml" # путь к шаблону сайта
+  api: "docs/content/api_content.yaml" # путь к шаблону сайта
 
 # Файлы данных (исходные YAML)
 data_files:

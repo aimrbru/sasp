@@ -3,6 +3,7 @@
 sections:
   - id: "title_page"
     name: "Титульный лист"
+    site: []
     content:
       - id: "company_name"
         type: "text"
@@ -31,13 +32,15 @@ sections:
   - id: "table_of_contents"
     name: "Содержание"
     is_toc_section: true
+    site: []
     content: []
 
   - id: "intro"
     name: "  "
+    site: [r]
     blocks:
       - text: |
-          Настоящее руководство по эксплуатации (далее — РЭ) содержит сведения, необходимые для правильной и безопасной эксплуатации системы автоматизированного считывания показаний счетчиков «{{ product.full_name }}», {{ product.code }}.
+          Настоящее руководство по эксплуатации (далее — РЭ) содержит сведения, необходимые для правильной и безопасной эксплуатации системы автоматизированного считывания показаний счетчиков «{{ product.name }}».
       - text: |
           РЭ распространяется на все модификации системы «{{ product.name }}», выполненные на базе модуля ESP32-CAM с камерой OV2640, если иное не оговорено в технической документации на конкретную модификацию.
       - text: |
@@ -83,12 +86,15 @@ sections:
   # РАЗДЕЛ 1: ОПИСАНИЕ И РАБОТА
   - id: "description_and_operation"
     name: "Описание и работа"
+    site: [r]
     subsections:
       - id: "product_description"
         name: "Описание и работа изделия"
+        site: []
         subsections:
           - id: "purpose"
             name: "Назначение и область применения "
+            site: [r]
             blocks:
                   - text: |
                       Система «{{ product.name }}» предназначена для автоматического считывания числовых показаний бытовых счетчиков (воды, электричества, газа) с помощью встроенной камеры, их распознавания методом OCR и передачи данных на сервер в системах учета коммунальных ресурсов.
@@ -104,6 +110,7 @@ sections:
 
           - id: "technical_characteristics"
             name: "Технические характеристики"
+            site: [r]
             blocks:
                   - text: |
                       Технические характеристики устройства приведены в таблице {{table_counter_next}}.
@@ -202,9 +209,11 @@ sections:
 
           - id: "kit"
             name: "Состав изделия"
+            site: []
             points:
               - id: "kit_contents"
                 name: "В состав изделия должны входить"
+                site: [r]
                 blocks:
                   - list:
                       style: bullet
@@ -216,8 +225,10 @@ sections:
                         - "гарантийный талон — 1 экз."
               - id: "kit_additional"
                 name: "Крепления для монтажа на счетчики приобретаются отдельно и не входят в стандартную комплектацию"
+                site: [r]
               - id: "assembly_overview"
                 name: "Внешний вид устройства показан на рисунке {{image_counter_next}}."
+                site: []
                 blocks:
                   - image:
                       path: "docs/media/images/assembly_overview.svg"
@@ -226,9 +237,11 @@ sections:
 
           - id: "operation_principle"
             name: "Устройство и работа"
+            site: []
             points:
               - id: "structure_components"
                 name: "Конструкция устройства включает следующие основные компоненты:"
+                site: [r]
                 blocks:
                   - list:
                       style: bullet
@@ -237,6 +250,7 @@ sections:
                         - "крепление для монтажа на счетчики (приобретается отдельно)."
               - id: "work_principle"
                 name: "Изделие работает следующим образом"
+                site: [r]
                 blocks:
                   - list:
                       style: alpha
@@ -250,6 +264,7 @@ sections:
                         - "после цикла работы система переходит в режим глубокого сна для экономии энергии."
               - id: "control_methods"
                 name: "Управление изделием осуществляется дистанционно:"
+                site: [r]
                 blocks:
                   - list:
                       style: bullet
@@ -259,9 +274,11 @@ sections:
 
           - id: "tools_and_equipment"
             name: "Средства измерения, инструмент и принадлежности"
+            site: [m]
             points:
               - id: "tools_warnings"
                 name: "Предупреждения:"
+                site: [r]
                 blocks:
                   - list:
                       style: bullet
@@ -270,6 +287,7 @@ sections:
                         - "все сервисные операции (кроме очистки объектива) выполняются удаленно или в сервисном центре."
               - id: "tools_list"
                 name: "Для технического обслуживания и ремонта рекомендуется использовать"
+                site: [m]
                 blocks:
                   - list:
                       style: bullet
@@ -283,9 +301,11 @@ sections:
 
           - id: "marking"
             name: "Маркировка и пломбирование"
+            site: [m]
             points:
               - id: "marking_content"
-                name: "На корпусе изделия должна быть нанесена маркировка лазерной гравировкой, содержащая"
+                name: "На корпусе изделия должна быть нанесена маркировка, содержащая:"
+                site: [r,m]
                 blocks:
                   - list:
                       style: bullet
@@ -299,7 +319,8 @@ sections:
                         - "знак соответствия РСТ;"
                         - "предупреждение: «Не разбирать. Ремонт только в сервисном центре»."
               - id: "sealing_content"
-                name: "Корпус должен быть опломбирован антивандальной пломбой, содержащей"
+                name: "Корпус должен быть опломбирован антивандальной пломбой, содержащей:"
+                site: [r,m]
                 blocks:
                   - list:
                       style: bullet
@@ -309,13 +330,16 @@ sections:
                         - "надпись: «Warranty void if removed»."
               - id: "sealing_warning"
                 name: "Нарушение пломбы аннулирует гарантийные обязательства"
+                site: [m]
                 blocks: []
 
           - id: "packaging"
             name: "Упаковка"
+            site: [m]
             points:
               - id: "packaging_content"
                 name: "Изделие поставляется в следующей упаковке:"
+                site: [r,m]
                 blocks:
                   - list:
                       style: bullet
@@ -326,9 +350,11 @@ sections:
 
       - id: "components_description"
         name: "Описание и работа составных частей изделия"
+        site: []
         subsections:
           - id: "components_list"
             name: "Описание составных частей изделия"
+            site: [r]
             blocks:
                   - text: |
                       Основными составными частями являются:
@@ -341,6 +367,7 @@ sections:
 
           - id: "components_operation"
             name: "Описание работы составных частей"
+            site: [r]
             blocks:
                   - text: |
                       Работа составных частей заключается в следующем. Модуль камеры захватывает изображение счетчика под управлением микроконтроллера, который обрабатывает кадр, передает данные для распознавания и управляет коммуникацией через Wi-Fi/Bluetooth; светодиодная вспышка обеспечивает подсветку в условиях недостаточной освещенности.
@@ -356,9 +383,11 @@ sections:
   # РАЗДЕЛ 2: ИСПОЛЬЗОВАНИЕ ПО НАЗНАЧЕНИЮ
   - id: "usage"
     name: "Использование по назначению"
+    site: [r]
     subsections:
       - id: "operating_limits"
         name: "Эксплуатационные ограничения"
+        site: [r]
         subsections:
         blocks:
             - text: |
@@ -374,15 +403,18 @@ sections:
 
       - id: "preparation"
         name: "Подготовка изделия к использованию"
+        site: [r]
         points:
           - id: "safety_preparation"
             name: "Меры безопасности при подготовке изделия"
+            site: [r]
             blocks:
               - text: |
                   Перед началом работы необходимо убедиться, что блок питания отключен от устройства и от сети 220 В.
 
           - id: "external_inspection"
             name: "Внешний осмотр"
+            site: [r]
             blocks:
               - text: |
                   Поскольку корпус устройства является неразборным, внешний осмотр сводится к проверке:
@@ -395,6 +427,7 @@ sections:
 
           - id: "connections"
             name: "Указания о взаимосвязи с другими изделиями"
+            site: [r]
             blocks:
               - text: |
                   Для нормальной работы устройства необходимо:
@@ -409,9 +442,11 @@ sections:
 
           - id: "mounting_and_check"
             name: "Установка и проверка крепления"
+            site: []
             points:
               - id: "mounting_check"
                 name: "Установка и проверка крепления устройства производится следующим образом:"
+                site: [r]
                 blocks:
                   - list:
                       style: alpha
@@ -422,21 +457,27 @@ sections:
 
               - id: "readiness_confirmation"
                 name: "Устройство считается готовым к настройке и эксплуатации при выполнении всех пунктов внешнего осмотра и установки."
+                site: []
                 blocks: []
 
 
           - id: "power_check"
             name: "Проверка подачи питания и индикация"
+            site: [r]
             points:
               - id: "power_indication"
                 name: "Единственным видимым внешним признаком успешного запуска является однократная вспышка через 5-7 секунд после после подачи питания на устройство."
+                site: [r]
               - id: "no_indication"
                 name: "При отсутствии вспышки при исправном блоке питания необходимо обратиться в техподдержку;"
+                site: [r]
               - id: "readiness"
                 name: "При наличии вспышки через 5-7 секунд после подачи питания изделие к работе."
+                site: [r]
 
           - id: "preparation_troubleshooting"
             name: "Перечень возможных неисправностей при подготовке и рекомендации по действиям"
+            site: [r]
             blocks:
               - text: |
                   Перечень возможных неисправностей при подготовке к работе и рекомендации по их устранению переведены в таблице {{table_counter_next}}.
@@ -466,14 +507,18 @@ sections:
 
       - id: "device_usage"
         name: "Использование изделия"
+        site: [r]
         points:
           - id: "operation_procedure"
             name: "Порядок действий при настройке доступа к устройству"
+            site: [r]
             points:
               - id: "install_blufi"
                 name: "Установить на смартфон приложение EspBlufi в соответствии с инструкцией по его установке и использованию."
+                site: [r]
               - id: "blufi_connect"
                 name: "Настроить доступ к устройству по Wi-Fi соединению, для этого:"
+                site: [r]
                 blocks:
                   - list:
                       style: alpha
@@ -490,6 +535,7 @@ sections:
 
               - id: "device_access"
                 name: "Открыть веб-интерфейс устройства, для этого ввести полученный устройством IP-адрес в адресную строку браузера."
+                site: [r]
                 blocks:
                   - text: |
                       При успешном соединении откроется главная страница веб-интерфейса управления устройством как показано на рисунке {{image_counter_next}}.
@@ -499,13 +545,16 @@ sections:
                       width: "12cm"
 
               - id: "device_control"
-                name: "Все управление устройством осуществляется дистанционно через встроенный веб-интерфейс."     
+                name: "Все управление устройством осуществляется дистанционно через встроенный веб-интерфейс."
+                site: [r]
 
           - id: "control_content"
             name: "Настройка и управление устройством через веб-интерфейс"
+            site: [r]
             points:
               - id: "ui_description"
                 name: "Главная страница веб-интерфейса содержит следующие элементы (сверху вниз):"
+                site: [r]
                 blocks:
                   - list:
                       style: bullet
@@ -523,7 +572,8 @@ sections:
                         - "секция отображения полного изображения с камеры;"
                         - "внизу расположена секция, отображающая системные сообщения в реальном времени."
               - id: "settings_stages"
-                name: "Основные этапы настройки в веб-интерфейсе:"    
+                name: "Основные этапы настройки в веб-интерфейсe:"
+                site: [r]
                 blocks:                
                   - list:
                       style: alpha
@@ -534,6 +584,7 @@ sections:
                         - "настроить общие параметры."     
               - id: "roi_settings"
                 name: "Настройка зоны распознавания"
+                site: [r]
                 blocks:
                   - text: |
                         Настройка зоны распознавания производится следующим образом:
@@ -556,6 +607,7 @@ sections:
 
               - id: "camera_settings"
                 name: "Настройка параметров камеры"
+                site: [r]
                 blocks:
                   - text: |
                       Для настройки камеры необходимо нажать на кнопку ⚙ (в правом верхнем углу). Откроется модальное окно, как показано на рисунке {{image_counter_next}}, где можно выбрать следующие настройки: 
@@ -572,6 +624,7 @@ sections:
 
               - id: "meter_settings"
                 name: "Настройка параметров счётчика"
+                site: [r]
                 blocks:
                   - text: |
                       Для настройки параметров счётчика нажать на ссылку «Meter». Откроется модальное окно, как показано на рисунке {{image_counter_next}}, где можно выбрать следующие настройки: 
@@ -587,6 +640,7 @@ sections:
 
               - id: "ocr_settings"
                 name: "Распознавание текста (OCR)"
+                site: [r]
                 blocks:
                   - text: |
                       Для включения или отключения функции распознавания текста используется переключатель «OCR enabled»:
@@ -598,6 +652,7 @@ sections:
 
               - id: "sleep_settings"
                 name: "Настройка режима сна"
+                site: [r]
                 blocks:
                   - text: |
                       Для управления энергосбережением используются два элемента в разделе общих настроек:
@@ -613,6 +668,7 @@ sections:
 
               - id: "server_settings"
                 name: "Настройка копирования на сервер"
+                site: [r]
                 blocks:
                   - text: |
                       Для настройки отправки данных на удаленный сервер используются два элемента в разделе общих настроек:
@@ -628,9 +684,11 @@ sections:
 
           - id: "operability_check"
             name: "Проверка работы устройства"
+            site: [r]
             points:
               - id: "check_methods"
                 name: "Проверка работоспособности выполняется следующими методами:"
+                site: [r]
                 blocks:
                   - list:
                       style: bullet
@@ -640,6 +698,7 @@ sections:
 
               - id: "image_processing"
                 name: "Проверка работы через веб-интерфейс"
+                site: []
                 blocks:
                   - text: |
                       Для проверки работы всех функции устройства используется кнопка «Action». При нажатии на кнопку запускается рабочий цикл, в результате которого происходит получение изображений с обоих счётчиков как показано на рисунке {{image_counter_next}}.
@@ -657,12 +716,15 @@ sections:
 
           - id: "software_interfaces_overview"
             name: "Программные интерфейсы"
+            site: [r]
             points:
               - id: "software_interfaces_intro"
                 name: "Для интеграции с внешними системами автоматизации устройство предоставляет программные интерфейсы. Полная документация по API доступна в отдельном документе «Справочник по API»."
+                site: [r]
 
               - id: "software_interfaces_capabilities"
                 name: "Основные возможности API"
+                site: [r]
                 blocks:
                   - list:
                       style: bullet
@@ -671,6 +733,7 @@ sections:
                         - "Управление устройством: изменение настроек счетчиков; настройка параметров камеры; запуск циклов работы; перезагрузка устройства"
               - id: "software_interfaces_examples"
                 name: "Примеры использования"
+                site: [r]
                 blocks:
                   - list:
                       style: bullet
@@ -681,6 +744,7 @@ sections:
 
           - id: "operation_troubleshooting"
             name: "Возможные неисправности в процессе эксплуатации и рекомендации по действиям"
+            site: [r]
             blocks:
               - text: |
                   Возможные неисправности в процессе эксплуатации и рекомендации по их устранению приведены в таблице {{table_counter_next}}.
@@ -722,6 +786,7 @@ sections:
 
           - id: "operation_modes"
             name: "Режимы работы устройства"
+            site: [r]
             blocks:
               - text: |
                   Устройство поддерживает следующие режимы работы:
@@ -735,6 +800,7 @@ sections:
 
           - id: "initial_state"
             name: "Приведение в исходное положение"
+            site: [r]
             blocks:
               - text: |
                   После цикла работы система автоматически возвращается в состояние ожидания (активный режим или режим глубокого сна в зависимости от настроек).
@@ -743,15 +809,18 @@ sections:
 
           - id: "power_off"
             name: "Выключение изделия"
+            site: [r]
             blocks:
               - text: |
                   Для выключения изделия необходимо отключить питание.
 
       - id: "safety_operation"
         name: "Меры безопасности при использовании"
+        site: []
         points:
           - id: "safety_web_interface"
             name: "Дополнительные меры при работе с веб-интерфейсом:"
+            site: [r]
             blocks:
               - list:
                   style: bullet
@@ -762,9 +831,11 @@ sections:
 
       - id: "extreme_conditions"
         name: "Действия в экстремальных условиях"
+        site: []
         points:
           - id: "extreme_conditions_actions"
             name: "Действия в экстремальных условиях"
+            site: [r]
             blocks:
               - text: |
                   Действия в экстремальных условиях:
@@ -777,9 +848,11 @@ sections:
 
       - id: "modified_product"
         name: "Возможность доработки"
+        site: []
         points:
           - id: "modified_product_permissions"
             name: "Доработка изделия возможна только в следующих пределах"
+            site: [r]
             blocks:
               - list:
                   style: bullet
@@ -789,6 +862,7 @@ sections:
                     - "логика работы может быть модифицирована через OTA-обновления прошивки."
           - id: "modified_product_prohibitions"
             name: "Запрещается"
+            site: [r]
             blocks:
               - list:
                   style: bullet
@@ -800,15 +874,19 @@ sections:
   # РАЗДЕЛ 3: ТЕХНИЧЕСКОЕ ОБСЛУЖИВАНИЕ
   - id: "maintenance"
     name: "Техническое обслуживание"
+    site: [m]
     subsections:
       - id: "general_instructions"
         name: "Общие указания"
+        site: [m]
         points:
           - id: "maintenance_purpose"
             name: "Техническое обслуживание проводится для проверки работоспособности и обновления программного обеспечения изделия"
+            site: [m]
             blocks: []
           - id: "maintenance_executors"
             name: "Техническое обслуживание выполняется:"
+            site: [m]
             blocks:
               - list:
                   style: bullet
@@ -817,9 +895,11 @@ sections:
                     - "в авторизованном сервисном центре — для сложных операций и ремонта."
           - id: "disassembly_warning"
             name: "Разборка корпуса пользователем запрещена и аннулирует гарантийные обязательства"
+            site: [m]
             blocks: []
           - id: "personnelquirements"
             name: "Требуемый уровень подготовки персонала:"
+            site: [m]
             blocks:
               - list:
                   style: bullet
@@ -831,9 +911,11 @@ sections:
 
       - id: "safety_measures"
         name: "Меры безопасности"
+        site: [m]
         points:
           - id: "safety_rules"
             name: "При проведении технического обслуживания необходимо соблюдать следующие меры безопасности:"
+            site: [m]
             blocks:
               - list:
                   style: bullet
@@ -846,9 +928,11 @@ sections:
 
       - id: "maintenance_procedure"
         name: "Порядок технического обслуживания"
+        site: [m]
         points:
           - id: "maintenance_steps"
             name: "Техническое обслуживание должно проводиться в следующем порядке:"
+            site: [m]
             blocks:
               - list:
                   style: bullet
@@ -856,12 +940,13 @@ sections:
                     - "внешний осмотр: проверка целостности корпуса и пломбы, чистоты креплений, чистоты объектива;"
                     - "очистка объектива мягкой салфеткой из микрофибры;"
                     - "проверка электрических подключений: надежность соединений, отсутствие повреждений изоляции;"
-                    - "проверка работы через веб-интерфейс: получение тестового изображения; выполнение полного цикла работы; проверка OTA-статуса;"
+                    - "проверка работы через веб-интерфейс: получение тестового изображение; выполнение полного цикла работы; проверка OTA-статуса;"
                     - "проверка состояния файловой системы: свободное место, отсутствие ошибок;"
                     - "проверка актуальности прошивки: наличие и установка OTA-обновлений."
 
           - id: "maintenance_features"
             name: "Особенности технического обслуживания:"
+            site: [m]
             blocks:
               - list:
                   style: bullet
@@ -874,9 +959,11 @@ sections:
 
       - id: "maintenance_check"
         name: "Проверка работоспособности"
+        site: [m]
         points:
           - id: "maintenance_methods"
             name: "Проверка работоспособности выполняется следующими методами:"
+            site: [m]
             blocks:
               - list:
                   style: bullet
@@ -889,12 +976,15 @@ sections:
 
       - id: "technical_inspection"
         name: "Техническое освидетельствование"
+        site: [m]
         points:
           - id: "inspection_frequency"
             name: "Рекомендуется проводить техническое освидетельствование каждые 6 месяцев"
+            site: [m]
             blocks: []
           - id: "inspection_program"
             name: "Программа технического освидетельствования включает:"
+            site: [m]
             blocks:
               - list:
                   style: bullet
@@ -909,9 +999,11 @@ sections:
 
       - id: "conservation"
         name: "Консервация (расконсервация)"
+        site: [m]
         points:
           - id: "conservation_procedure"
             name: "Консервация изделия для длительного хранения:"
+            site: [m]
             blocks:
               - list:
                   style: bullet
@@ -922,6 +1014,7 @@ sections:
                     - "поместить в герметичную тару."
           - id: "deconservation_procedure"
             name: "Расконсервация изделия:"
+            site: [m]
             blocks:
               - list:
                   style: bullet
@@ -934,9 +1027,11 @@ sections:
   # РАЗДЕЛ 4: ТЕКУЩИЙ РЕМОНТ
   - id: "current_repair"
     name: "Текущий ремонт"
+    site: [m]
     subsections:
       - id: "general_repair_instructions"
         name: "Общие указания"
+        site: [r,m]
         blocks:
             - text: |
                 Текущий ремонт выполняется при неисправностях, не требующих замены основных компонентов изделия.
@@ -945,9 +1040,11 @@ sections:
 
       - id: "repair_safety"
         name: "Меры безопасности"
+        site: [m]
         points:
           - id: "repair_safety_rules"
             name: "При проведении текущего ремонта необходимо соблюдать следующие меры безопасности:"
+            site: [m]
             blocks:
               - list:
                   style: bullet
@@ -961,17 +1058,21 @@ sections:
   # РАЗДЕЛ 5: ХРАНЕНИЕ
   - id: "storage"
     name: "Хранение"
+    site: [m]
     points:
       - id: "storage_warehousing"
         name: "Правила хранения и складирования"
+        site: [m]
         points : 
           - id: "storage_rules"
             name: "Постановка и снятие с хранения" 
+            site: [m]
             blocks:
              - text: |
                   Постановка на хранение — по процедуре консервации, снятие — по процедуре расконсервации.
           - id: "warehousing"
             name: "Складирование:"
+            site: [m]
             blocks:
               - list:
                   style: bullet
@@ -983,6 +1084,7 @@ sections:
           
       - id: "limited_life_parts"
         name: "Составные части с ограниченным сроком хранения"
+        site: [r,m]
         blocks:
           - text: |
                 Составные части с ограниченным сроком хранения:
@@ -993,6 +1095,7 @@ sections:
                 - "крепёжные элементы: до 5 лет (резинки, уплотнители креплений)."
       - id: "storage_conditions"
         name: "Условия хранения"
+        site: [r,m]
         blocks:
           - text: |
                 Условия хранения:
@@ -1008,9 +1111,11 @@ sections:
   # РАЗДЕЛ 6: ТРАНСПОРТИРОВАНИЕ
   - id: "transportation"
     name: "Транспортирование"
+    site: [m]
     points:
       - id: "transport_requirements"
         name: "Требования к транспортированию"
+        site: [r,m]
         blocks:
           - text: |
                 Требования к транспортированию:
@@ -1023,6 +1128,7 @@ sections:
                 - "целостность корпуса и пломбы."
       - id: "transport_preparation"
         name: "Подготовка к транспортированию"
+        site: [m]
         blocks:
           - text: |
                 Подготовка к транспортированию:       
@@ -1034,6 +1140,7 @@ sections:
                 - "упаковать в антистатический пакет и коробку с амортизацией."
       - id: "transport_characteristics"
         name: "Транспортные характеристики"
+        site: [r,m]
         blocks:
           - text: |
                 Транспортные характеристики:            
@@ -1046,6 +1153,7 @@ sections:
                 - "масса в упаковке: ≈ 300 {{ specifications.physical.weight_grams.unit }}."
       - id: "transport_handling"
         name: "Обращение после транспортирования"
+        site: [r,m]
         blocks:
           - text: |
                 Обращение после транспортирования:         
@@ -1061,12 +1169,15 @@ sections:
   # РАЗДЕЛ 7: УТИЛИЗАЦИЯ
   - id: "disposal"
     name: "Утилизация"
+    site: [r,m]
     subsections:
       - id: "safety_disposal"
         name: "Меры безопасности"
+        site: [m]
         points:
           - id: "disposal_safety_rules"
             name: "При утилизации необходимо соблюдать следующие меры безопасности"
+            site: [m]
             blocks:
               - list:
                   style: bullet
@@ -1075,6 +1186,7 @@ sections:
                     - "сдавать в сборе, разборка запрещена."
           - id: "disposal_prohibitions"
             name: "Запрещается"
+            site: [r,m]
             blocks:
               - list:
                   style: bullet
@@ -1086,9 +1198,11 @@ sections:
 
       - id: "preparation_disposal"
         name: "Подготовка к утилизации"
+        site: [m]
         points:
           - id: "disposal_preparation"
             name: "Подготовка изделия к утилизации включает"
+            site: [r,m]
             blocks:
               - list:
                   style: bullet
@@ -1099,9 +1213,11 @@ sections:
 
       - id: "disposable_parts"
         name: "Утилизируемые части"
+        site: [m]
         points:
           - id: "parts_for_disposal"
             name: "Утилизации подлежат"
+            site: [r,m]
             blocks:
               - list:
                   style: bullet
@@ -1112,9 +1228,11 @@ sections:
 
       - id: "methods_disposal"
         name: "Методы утилизации"
+        site: [m]
         points:
           - id: "disposal_methods"
             name: "При утилизации могут применяться следующие методы"
+            site: [m]
             blocks:
               - list:
                   style: bullet
@@ -1125,9 +1243,11 @@ sections:
 
       - id: "organizations_disposal"
         name: "Организации для утилизации"
+        site: [m]
         points:
           - id: "disposal_organizations"
             name: "Изделие должно передаваться специализированным организациям, имеющим лицензию на утилизацию неразборных электронных устройств"
+            site: [r,m]
             blocks:
               - list:
                   style: bullet
