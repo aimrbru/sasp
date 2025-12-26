@@ -603,8 +603,7 @@ def build_site():
                             <span class="text-2xl">📄</span>
                         </div>
                     </div>
-                    <h5 class="text-sm font-semibold mb-2 text-center">{safe_name}</h5>
-                    <p class="text-xs text-gray-400 text-center">Только для чтения</p>
+    
                 </a>
                 """
             
