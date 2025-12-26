@@ -28,10 +28,18 @@
       text-decoration: none;
       backdrop-filter: blur(10px);
     }
+    .error {
+      color: white;
+      padding: 50px;
+      text-align: center;
+      font-size: 18px;
+    }
   </style>
 </head>
 <body>
   <a href="standards.html" class="back-button">← Назад</a>
+  
+  <div id="pdf-container"></div>
   
   <script>
     // Получаем имя файла
@@ -39,19 +47,24 @@
     const filename = urlParams.get('file');
     
     if (!filename) {
-      document.body.innerHTML = '<div style="color:white;padding:50px">❌ Не указан файл</div>';
-      return;
+      document.getElementById('pdf-container').innerHTML = 
+        '<div class="error">❌ Не указан файл PDF</div>';
+    } else {
+      // Просто передаем имя файла
+      const viewerUrl = `./pdfjs/web/viewer.html?file=${filename}`;
+      
+      console.log('Opening PDF viewer:', viewerUrl);
+      
+      // Создаем iframe
+      const iframe = document.createElement('iframe');
+      iframe.src = viewerUrl;
+      iframe.onerror = function() {
+        document.getElementById('pdf-container').innerHTML = 
+          '<div class="error">❌ Ошибка загрузки PDF viewer</div>';
+      };
+      
+      document.getElementById('pdf-container').appendChild(iframe);
     }
-    
-    // КЛЮЧЕВОЕ ИЗМЕНЕНИЕ ▼▼▼
-    // Просто передаем имя файла, БЕЗ ../pdf/
-    const viewerUrl = `./pdfjs/web/viewer.html?file=${filename}`;
-    
-    console.log('Viewer URL:', viewerUrl);
-    
-    const iframe = document.createElement('iframe');
-    iframe.src = viewerUrl;
-    document.body.appendChild(iframe);
   </script>
 </body>
 </html>
