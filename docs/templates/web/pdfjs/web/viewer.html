@@ -1,44 +1,19 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>PDF Viewer</title>
+<script>
+  // Настраиваем PDF.js для GitHub Pages
+  window.PDFJS = window.PDFJS || {};
+  window.PDFJS.workerSrc = '../build/pdf.worker.js';
   
-  <!-- АБСОЛЮТНЫЕ ПУТИ К PDF.JS -->
-  <script src="/sasp/pdfjs/build/pdf.js"></script>
-  <script src="/sasp/pdfjs/web/viewer.js"></script>
-  <link rel="stylesheet" href="/sasp/pdfjs/web/viewer.css">
-</head>
-
-<body>
-  <div id="outerContainer">
-    <div id="mainContainer">
-      <div id="viewerContainer">
-        <div id="viewer" class="pdfViewer"></div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // АБСОЛЮТНЫЙ ПУТЬ К PDF ФАЙЛУ
-    const urlParams = new URLSearchParams(window.location.search);
-    const fileParam = urlParams.get('file');
-    
-    if (fileParam) {
-      // Убираем ../ если есть
-      let pdfPath = fileParam.replace(/^\.\.\//, '');
-      pdfPath = pdfPath.replace(/^\.\//, '');
-      
-      // Формируем абсолютный путь
-      const absolutePath = `/sasp/pdf/${pdfPath}`;
-      
-      console.log('Loading PDF:', absolutePath);
-      
-      // Настраиваем PDF.js
+  // Автоматически формируем правильный путь к PDF
+  const urlParams = new URLSearchParams(window.location.search);
+  let fileParam = urlParams.get('file');
+  
+  if (fileParam) {
+    // Если передан просто filename, добавляем путь
+    if (!fileParam.startsWith('/') && !fileParam.startsWith('http')) {
       window.PDFViewerApplicationOptions = {
-        defaultUrl: absolutePath
+        defaultUrl: `/sasp/pdf/${fileParam}`
       };
+      console.log('PDF path set to:', `/sasp/pdf/${fileParam}`);
     }
-  </script>
-</body>
-</html>
+  }
+</script>
