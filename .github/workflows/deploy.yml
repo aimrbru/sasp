@@ -26,12 +26,23 @@ jobs:
 
       - name: Build documentation
         run: |
+          # 1. Генерируем PDF
           python docs/scripts/builders/build_docs.py all
+          # 2. Генерируем HTML-сайт
+          python docs/scripts/builders/build_site.py
+          # 3. Копируем PDF (на всякий случай — build_site.py уже делает это, но повторим)
           mkdir -p docs/output/web/pdf
           cp -r docs/output/pdf/*.pdf docs/output/web/pdf/ 2>/dev/null || echo "No PDFs to copy"
-          python docs/scripts/builders/build_site.py
-          touch docs/output/web/.nojekyll
+          # 4. КОПИРУЕМ PDF.JS — КЛЮЧЕВОЙ ШАГ!
+          if [ -d "docs/templates/web/pdfjs" ]; then
+            cp -r docs/templates/web/pdfjs docs/output/web/
+            echo "✅ PDF.js скопирован"
+          else
+            echo "⚠️ PDF.js не найден в docs/templates/web/pdfjs/"
+          fi
+          # 5. Копируем viewer (на случай, если build_site.py его не копирует)
           cp docs/templates/web/pdf_viewer.html docs/output/web/
+          touch docs/output/web/.nojekyll
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4  # ← v4 тоже работает!
