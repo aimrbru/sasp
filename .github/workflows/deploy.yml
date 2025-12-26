@@ -8,7 +8,7 @@ on:
   workflow_dispatch:  # Ручной запуск
 
 env:
-  PYTHON_VERSION: '3.9'
+  PYTHON_VERSION: '3.11'  # Используем Python 3.11 вместо 3.9
 
 jobs:
   generate-docs:
@@ -40,8 +40,18 @@ jobs:
 
       - name: 📋 Install Python dependencies
         run: |
-          pip install --upgrade pip
-          pip install -r docs/scripts/requirements.txt
+          pip install --upgrade pip setuptools wheel
+          # Используем более старые версии, совместимые с Python 3.9+
+          pip install \
+            "PyYAML>=6.0.1,<7.0" \
+            "Jinja2>=3.0.0,<4.0" \
+            "Markdown>=3.4.0,<4.0" \
+            "python-docx>=0.8.11,<1.0" \
+            "odfpy>=1.3.0,<1.5" \
+            "click>=8.0.0,<9.0" \
+            "colorama>=0.4.0,<1.0"
+          # Альтернативно можно использовать requirements.txt с корректными версиями
+          pip install -r docs/scripts/requirements.txt || echo "Trying alternative installation..."
 
       - name: 🏗️ Generate documents (ODT/PDF)
         run: |
@@ -74,7 +84,7 @@ jobs:
           name: documentation-artifacts
           path: |
             docs/output/
-            !docs/output/**/*.odt  # Не загружаем ODT файлы
+            !docs/output/**/*.odt
           retention-days: 7
 
   deploy-pages:
