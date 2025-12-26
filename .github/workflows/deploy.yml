@@ -13,7 +13,8 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    environment:
+      name: github-pages  # ← ЭТО ОБЯЗАТЕЛЬНО
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -44,18 +45,10 @@ jobs:
           mkdir -p docs/output/web/pdf
           cp -r docs/output/pdf/*.pdf docs/output/web/pdf/ 2>/dev/null || echo "No PDFs to copy"
 
-      - name: Copy PDF.js viewer (local, without download/print buttons)
+      - name: Copy PDF.js viewer
         run: |
           mkdir -p docs/output/web/pdfjs
-          cp -r docs/templates/web/pdfjs/* docs/output/web/pdfjs/ 2>/dev/null || echo "PDF.js not found in templates"
-
-      - name: Verify deployment structure
-        run: |
-          echo "=== Web directory structure ==="
-          find docs/output/web -type f | sort
-          echo ""
-          echo "=== PDF files ==="
-          ls -1 docs/output/web/pdf/ 2>/dev/null || echo "No PDFs in web/pdf/"
+          cp -r docs/templates/web/pdfjs/* docs/output/web/pdfjs/ 2>/dev/null || echo "PDF.js not found"
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
