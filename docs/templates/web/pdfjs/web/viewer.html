@@ -27,6 +27,48 @@ See https://github.com/adobe-type-tools/cmap-resources
   <meta name="google" content="notranslate">
   <title>PDF.js viewer</title>
 
+
+
+  
+<!DOCTYPE html>
+<html dir="ltr" mozdisallowselectionprint>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="google" content="notranslate">
+  <title>PDF.js viewer</title>
+
+  <!-- КОНФИГУРАЦИОННЫЙ СКРИПТ (ДОБАВЬТЕ ЭТО) -->
+  <script>
+    // ============================================
+    // КОНФИГУРАЦИЯ PDF.js ДЛЯ GITHUB PAGES
+    // ============================================
+    window.PDFJS = window.PDFJS || {};
+    
+    // 1. Путь к worker скрипту
+    window.PDFJS.workerSrc = '../build/pdf.worker.js';
+    
+    // 2. Пути к CMAP файлам (для шрифтов)
+    window.PDFJS.cMapUrl = '../web/cmaps/';
+    window.PDFJS.cMapPacked = true;
+    
+    // 3. Локализация
+    window.PDFJS.locale = 'ru';
+    
+    // 4. Отключение ненужных функций для GitHub Pages
+    window.PDFJS.disableCreateObjectURL = true;
+    window.PDFJS.disableStream = true;
+    window.PDFJS.disableRange = false;
+    window.PDFJS.disableAutoFetch = false;
+    
+    // 5. Настройки производительности
+    window.PDFJS.maxImageSize = 1024 * 1024; // 1MB max per image
+    window.PDFJS.disableFontFace = false;
+    
+    console.log('PDF.js configured for GitHub Pages');
+  </script>
+
+
   <!-- Локализация -->
   <link rel="resource" type="application/l10n" href="/sasp/pdfjs/web/locale/locale.properties">
 
