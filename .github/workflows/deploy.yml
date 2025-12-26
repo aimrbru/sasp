@@ -1,1 +1,61 @@
-cp -r docs/output/pdf/*.pdf docs/output/web/pdf/
+name: Build and Deploy Documentation
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - run: sudo apt-get update && sudo apt-get install -y libreoffice
+      
+      - run: pip install PyYAML Jinja2 markupsafe python-docx odfpy click colorama
+      
+      - name: Build documentation
+        run: |
+          # 1. Генерируем PDF
+          python docs/scripts/builders/build_docs.py all
+          
+          # 2. Копируем PDF в web папку (ОБЯЗАТЕЛЬНО!)
+          mkdir -p docs/output/web/pdf
+          cp -r docs/output/pdf/*.pdf docs/output/web/pdf/ 2>/dev/null || echo "No PDFs to copy"
+          
+          # 3. Генерируем сайт
+          python docs/scripts/builders/build_site.py
+          touch docs/output/web/.nojekyll
+          
+          # 4. Копируем viewer
+          cp docs/templates/web/pdf_viewer.html docs/output/web/
+      
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/output/web
+          publish_branch: gh-pages
+
+                - name: Verify deployment
+      - run: |
+          echo "=== Проверка PDF файлов ==="
+          echo "В web папке:"
+          find docs/output/web -name "*.pdf" -type f | xargs -I {} echo "  - {}"
+          
+          echo ""
+          echo "=== Примеры ссылок ==="
+          echo "Прямой доступ:"
+          echo "  https://aimrbru.github.io/sasp/pdf/АИМУ.123456.002.ПС.pdf"
+          echo ""
+          echo "Через viewer:"
+          echo "  https://aimrbru.github.io/sasp/pdf_viewer.html?file=АИМУ.123456.002.ПС.pdf"
