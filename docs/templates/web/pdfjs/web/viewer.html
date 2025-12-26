@@ -4,35 +4,43 @@
   <meta charset="utf-8">
   <title>PDF Viewer</title>
   
-  <!-- Основные скрипты -->
-  <script src="../build/pdf.js"></script>
-  <script src="viewer.js"></script>
-  <link rel="stylesheet" href="viewer.css">
-  
+  <!-- 1. КОНФИГУРАЦИЯ ПЕРЕД ВСЕМИ СКРИПТАМИ -->
   <script>
-    // Конфигурация для GitHub Pages
+    // Убедитесь что эти переменные существуют ДО загрузки viewer.js
     window.PDFJS = window.PDFJS || {};
-    window.PDFJS.workerSrc = '../build/pdf.worker.js';
+    window.PDFViewerApplication = window.PDFViewerApplication || {};
+    window.PDFViewerApplicationOptions = window.PDFViewerApplicationOptions || {};
     
-    // Формируем правильный путь к PDF
+    // Основные настройки
+    window.PDFJS.workerSrc = '../build/pdf.worker.js';
+    window.PDFJS.disableCreateObjectURL = true;
+    window.PDFJS.cMapUrl = '../web/cmaps/';
+    window.PDFJS.cMapPacked = true;
+    
+    // Получаем имя файла из URL
     const urlParams = new URLSearchParams(window.location.search);
     const filename = urlParams.get('file');
     
     if (filename) {
-      // Абсолютный путь на GitHub Pages
-      const pdfPath = `/sasp/pdf/${filename}`;
-      
-      // Передаем путь в viewer
-      window.PDFViewerApplicationOptions = {
-        defaultUrl: pdfPath
-      };
-      
-      console.log('PDF will load from:', pdfPath);
+      // Устанавливаем путь к PDF
+      window.PDFViewerApplicationOptions.defaultUrl = `/sasp/pdf/${filename}`;
+      console.log('PDF path configured:', window.PDFViewerApplicationOptions.defaultUrl);
     }
+    
+    // Отключаем локализацию если нет файлов
+    try {
+      delete window.PDFViewerApplicationOptions.locale;
+    } catch(e) {}
   </script>
+  
+  <!-- 2. БИБЛИОТЕКИ -->
+  <script src="../build/pdf.js"></script>
+  <script src="viewer.js"></script>
+  <link rel="stylesheet" href="viewer.css">
 </head>
 
 <body>
+  <!-- 3. МИНИМАЛЬНЫЙ HTML -->
   <div id="outerContainer">
     <div id="mainContainer">
       <div id="viewerContainer">
@@ -40,5 +48,18 @@
       </div>
     </div>
   </div>
+  
+  <!-- 4. СКРИПТ ПОСЛЕ ЗАГРУЗКИ ДЛЯ ПРОВЕРКИ -->
+  <script>
+    // Проверяем что все настроено
+    setTimeout(() => {
+      console.log('PDF.js loaded:', typeof pdfjsLib !== 'undefined');
+      console.log('Viewer options:', window.PDFViewerApplicationOptions);
+      
+      if (window.PDFViewerApplication && window.PDFViewerApplication.open) {
+        console.log('Viewer is ready');
+      }
+    }, 1000);
+  </script>
 </body>
 </html>
