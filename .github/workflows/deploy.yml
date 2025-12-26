@@ -47,7 +47,7 @@ jobs:
           publish_branch: gh-pages
 
                 - name: Verify deployment
-        run: |
+      - run: |
           echo "=== Проверка PDF файлов ==="
           echo "В web папке:"
           find docs/output/web -name "*.pdf" -type f | xargs -I {} echo "  - {}"
