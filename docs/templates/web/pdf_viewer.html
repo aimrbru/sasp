@@ -1,131 +1,101 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Просмотр документа</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; margin-bottom: 20px; border-bottom: 1px solid #334155; }
-        .title { font-size: 24px; color: #60a5fa; }
-        .btn { padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; text-decoration: none; }
-        #viewer { width: 100%; height: calc(100vh - 180px); border: none; border-radius: 12px; background: #1e293b; }
-        .debug { background: #1e293b; padding: 15px; margin-top: 20px; border-radius: 8px; font-family: monospace; font-size: 12px; color: #94a3b8; }
-        .error { color: #ef4444; padding: 40px; text-align: center; }
-        .loading { display: flex; justify-content: center; align-items: center; height: 100%; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Просмотр PDF</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #111827;
+      color: #e5e7eb;
+      font-family: sans-serif;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .header {
+      padding: 16px 20px;
+      background: #1f2937;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #374151;
+    }
+    .header h1 {
+      font-size: 18px;
+      color: #60a5fa;
+    }
+    .btn {
+      color: #93c5fd;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    #pdf-container {
+      width: 100%;
+      height: calc(100vh - 60px);
+      background: #0f172a;
+    }
+    #pdf-container object,
+    #pdf-container embed {
+      width: 100%;
+      height: 100%;
+      outline: none;
+    }
+    .error {
+      padding: 40px;
+      text-align: center;
+      color: #ef4444;
+    }
+    /* Защита от выделения и контекстного меню */
+    #pdf-container {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1 class="title" id="docTitle">Просмотр документа</h1>
-            <a href="standards.html" class="btn">← Назад к документам</a>
-        </div>
-        
-        <div id="viewer" class="loading">
-            Загрузка документа...
-        </div>
-        
-        <div id="debug" class="debug"></div>
-    </div>
-    
-    <script>
-        // Защита
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        
-        // Получаем параметры
-        const urlParams = new URLSearchParams(window.location.search);
-        const pdfFile = urlParams.get('file');
-        const debug = document.getElementById('debug');
-        
-        debug.innerHTML = `<div>Получен файл: ${pdfFile || 'не указан'}</div>`;
-        
-        if (!pdfFile) {
-            showError('Файл не указан в URL параметрах');
-            return;
-        }
-        
-        // Декодируем имя файла
-        const decodedFile = decodeURIComponent(pdfFile);
-        document.getElementById('docTitle').textContent = decodedFile.replace('.pdf', '');
-        
-        debug.innerHTML += `<div>Декодировано: ${decodedFile}</div>`;
-        
-        // Пробуем разные варианты URL
-        const baseUrl = window.location.origin;
-        const possibleUrls = [
-            `${baseUrl}/sasp/pdf/${pdfFile}`,
-            `${baseUrl}/pdf/${pdfFile}`,
-            `https://aimrbru.github.io/sasp/pdf/${pdfFile}`,
-            `pdf/${pdfFile}`
-        ];
-        
-        debug.innerHTML += '<div>Тестирую URL:</div>';
-        
-        // Тестируем каждый URL
-        let workingUrl = null;
-        for (const url of possibleUrls) {
-            debug.innerHTML += `<div>- ${url}</div>`;
-            
-            try {
-                const response = await fetch(url, { method: 'HEAD' });
-                if (response.ok) {
-                    workingUrl = url;
-                    debug.innerHTML += `<div style="color: #10b981;">✅ Доступен: ${url}</div>`;
-                    break;
-                } else {
-                    debug.innerHTML += `<div style="color: #ef4444;">❌ Не доступен (${response.status}): ${url}</div>`;
-                }
-            } catch (error) {
-                debug.innerHTML += `<div style="color: #ef4444;">❌ Ошибка: ${url}</div>`;
-            }
-        }
-        
-        if (!workingUrl) {
-            showError('PDF файл не найден на сервере');
-            return;
-        }
-        
-        debug.innerHTML += `<div>Использую URL: ${workingUrl}</div>`;
-        
-        // Загружаем через iframe с PDF.js (самый простой способ)
-        const viewer = document.getElementById('viewer');
-        viewer.innerHTML = ''; // Убираем loading
-        
-        const iframe = document.createElement('iframe');
-        iframe.style.width = '100%';
-        iframe.style.height = '100%';
-        iframe.style.border = 'none';
-        
-        // Используем PDF.js viewer
-        const viewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(workingUrl)}`;
-        debug.innerHTML += `<div>Viewer URL: ${viewerUrl}</div>`;
-        
-        iframe.src = viewerUrl;
-        viewer.appendChild(iframe);
-        
-        function showError(message) {
-            document.getElementById('viewer').innerHTML = `
-                <div class="error">
-                    <h3>❌ Ошибка</h3>
-                    <p>${message}</p>
-                    <p>Проверьте:</p>
-                    <ul style="text-align: left; margin: 20px auto; max-width: 400px;">
-                        <li>PDF файл существует в репозитории</li>
-                        <li>Файл находится в папке /pdf/</li>
-                        <li>Имя файла правильно указано</li>
-                    </ul>
-                    <p><a href="standards.html">Вернуться к списку документов</a></p>
-                </div>
-            `;
-        }
-        
-        // Авто-обновление debug info
-        setTimeout(() => {
-            debug.innerHTML += `<div>Загрузка через iframe начата</div>`;
-        }, 1000);
-    </script>
+  <div class="header">
+    <h1 id="docTitle">Загрузка...</h1>
+    <a href="standards.html" class="btn">← Назад</a>
+  </div>
+  <div id="pdf-container"></div>
+
+  <script>
+    // Отключаем контекстное меню
+    document.addEventListener('contextmenu', e => e.preventDefault());
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const filename = urlParams.get('file');
+
+    const titleEl = document.getElementById('docTitle');
+
+    if (!filename) {
+      showError('Не указан файл в URL');
+      titleEl.textContent = 'Ошибка';
+    } else {
+      const decodedName = decodeURIComponent(filename);
+      titleEl.textContent = decodedName.replace(/\.pdf$/i, '');
+      const pdfUrl = `./pdf/${decodedName}`;
+
+      const embed = document.createElement('embed');
+      embed.type = 'application/pdf';
+      embed.src = pdfUrl;
+      embed.setAttribute('aria-label', 'PDF документ');
+
+      const container = document.getElementById('pdf-container');
+      container.appendChild(embed);
+
+      // Проверка загрузки (базовая)
+      embed.onerror = () => {
+        container.innerHTML = `<div class="error">❌ Не удалось загрузить PDF.<br>Проверьте имя файла и наличие документа.</div>`;
+      };
+    }
+
+    function showError(msg) {
+      document.getElementById('pdf-container').innerHTML = `<div class="error">${msg}</div>`;
+    }
+  </script>
 </body>
 </html>
