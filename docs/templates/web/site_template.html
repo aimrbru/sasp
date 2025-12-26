@@ -1,27 +1,375 @@
-# Вместо старого кода для PDF карточек:
-pdf_content += f"""
-<a href="pdf/{fname}" target="_blank" class="...">
-    {safe_name}
-</a>
-"""
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} | САСП-2</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        /* Основные стили (оставляем как были) */
+        body { font-family: 'Segoe UI', system-ui, sans-serif; }
+        .neon { text-shadow: 0 0 10px #3b82f6, 0 0 20px #3b82f6; }
+        .content h1, .content h2, .content h3 { scroll-margin-top: 100px; }
+        html { scroll-behavior: smooth; }
+        
+        /* Стили для TOC (оставляем как были) */
+        .toc-container { height: calc(100vh - 140px); position: sticky; top: 100px; }
+        .toc-scrollable { height: 100%; overflow-y: auto; overscroll-behavior: contain; }
+        
+        /* ЗАЩИТА PDF - только самое важное */
+        .no-select {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        
+        #pdf-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            display: none;
+        }
+        
+        .pdf-viewer {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .pdf-canvas {
+            max-width: 100%;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        /* Мобильное меню */
+        .mobile-nav a {
+            display: block;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #374151;
+        }
+        
+        .nav-active {
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        
+        .centered-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+    </style>
+    <script>
+        // ============ МИНИМАЛЬНАЯ ЗАЩИТА PDF ============
+        
+        // Глобальная переменная для отслеживания состояния
+        let isPdfViewerOpen = false;
+        
+        // Базовые защиты при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Запрет контекстного меню везде
+            document.addEventListener('contextmenu', function(e) {
+                if (isPdfViewerOpen) {
+                    e.preventDefault();
+                    showWarning('Копирование запрещено');
+                    return false;
+                }
+            });
+            
+            // Запрет копирования в PDF просмотрщике
+            document.addEventListener('copy', function(e) {
+                if (isPdfViewerOpen) {
+                    e.preventDefault();
+                    showWarning('Копирование заблокировано');
+                    return false;
+                }
+            });
+            
+            // Запрет перетаскивания
+            document.addEventListener('dragstart', function(e) {
+                if (isPdfViewerOpen) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            
+            // Блокировка Ctrl+S, Ctrl+P
+            document.addEventListener('keydown', function(e) {
+                if (isPdfViewerOpen && (e.ctrlKey || e.metaKey)) {
+                    if (e.key === 's' || e.key === 'p') {
+                        e.preventDefault();
+                        showWarning('Сохранение заблокировано');
+                        return false;
+                    }
+                }
+            });
+            
+            // Инициализация PDF просмотрщика для всех ссылок с data-pdf
+            document.querySelectorAll('button[data-pdf]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const pdfUrl = this.getAttribute('data-pdf');
+                    const pdfName = this.getAttribute('data-name') || 'Документ';
+                    openProtectedPdf(pdfUrl, pdfName);
+                });
+            });
+        });
+        
+        // Простое предупреждение
+        function showWarning(msg) {
+            const warning = document.createElement('div');
+            warning.textContent = '⚠️ ' + msg;
+            warning.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #ef4444;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 5px;
+                z-index: 10001;
+                animation: fadeInOut 2s;
+            `;
+            
+            document.body.appendChild(warning);
+            setTimeout(() => warning.remove(), 2000);
+        }
+        
+        // Добавляем стили для анимации
+        if (!document.querySelector('#anim-styles')) {
+            const style = document.createElement('style');
+            style.id = 'anim-styles';
+            style.textContent = `
+                @keyframes fadeInOut {
+                    0% { opacity: 0; transform: translateY(-20px); }
+                    20% { opacity: 1; transform: translateY(0); }
+                    80% { opacity: 1; transform: translateY(0); }
+                    100% { opacity: 0; transform: translateY(-20px); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // ============ ПРОСТОЙ PDF ПРОСМОТРЩИК ============
+        
+        function openProtectedPdf(pdfUrl, pdfName) {
+            isPdfViewerOpen = true;
+            document.body.classList.add('no-select');
+            document.body.style.overflow = 'hidden';
+            
+            // Создаем простой модальный просмотрщик
+            const modal = document.createElement('div');
+            modal.id = 'pdf-modal';
+            modal.innerHTML = `
+                <div class="pdf-viewer">
+                    <!-- Шапка -->
+                    <div class="bg-gray-800 p-4 border-b border-blue-600 flex justify-between items-center">
+                        <h3 class="text-xl font-bold text-blue-400">${pdfName}</h3>
+                        <button onclick="closePdfViewer()" class="text-2xl text-gray-400 hover:text-white px-3">×</button>
+                    </div>
+                    
+                    <!-- Контейнер для PDF -->
+                    <div id="pdf-container" class="flex-1 overflow-auto p-4" style="background: #1a202c;">
+                        <div class="text-center py-8">
+                            <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+                            <p class="text-gray-400">Загрузка документа...</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Простые контролы -->
+                    <div class="bg-gray-800 p-4 border-t border-blue-600 flex justify-center space-x-4">
+                        <button onclick="prevPage()" id="prev-btn" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg disabled:opacity-50">← Назад</button>
+                        <span id="page-info" class="px-4 py-2 text-gray-300">Страница: 1</span>
+                        <button onclick="nextPage()" id="next-btn" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg disabled:opacity-50">Вперед →</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            modal.style.display = 'block';
+            
+            // Загружаем PDF
+            loadPdfPages(pdfUrl);
+        }
+        
+        function closePdfViewer() {
+            isPdfViewerOpen = false;
+            document.body.classList.remove('no-select');
+            document.body.style.overflow = '';
+            const modal = document.getElementById('pdf-modal');
+            if (modal) modal.remove();
+        }
+        
+        // Глобальные переменные для PDF
+        let pdfDoc = null;
+        let currentPage = 1;
+        let scale = 1.3;
+        
+        function loadPdfPages(url) {
+            // Используем PDF.js из CDN
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            
+            pdfjsLib.getDocument(url).promise.then(pdf => {
+                pdfDoc = pdf;
+                renderPage(currentPage);
+            }).catch(err => {
+                document.getElementById('pdf-container').innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="text-red-400 text-4xl mb-4">❌</div>
+                        <h4 class="text-xl font-bold mb-2">Ошибка загрузки</h4>
+                        <p class="text-gray-400">Не удалось загрузить документ</p>
+                        <button onclick="closePdfViewer()" class="mt-4 px-6 py-2 bg-blue-600 rounded-lg">
+                            Закрыть
+                        </button>
+                    </div>
+                `;
+            });
+        }
+        
+        function renderPage(pageNum) {
+            if (!pdfDoc) return;
+            
+            pdfDoc.getPage(pageNum).then(page => {
+                const viewport = page.getViewport({ scale: scale });
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.className = 'pdf-canvas';
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                
+                // Запрещаем правый клик на canvas
+                canvas.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    showWarning('Копирование запрещено');
+                    return false;
+                };
+                
+                // Рендерим
+                const renderContext = { canvasContext: ctx, viewport: viewport };
+                page.render(renderContext).promise.then(() => {
+                    const container = document.getElementById('pdf-container');
+                    container.innerHTML = '';
+                    container.appendChild(canvas);
+                    
+                    // Обновляем информацию о странице
+                    document.getElementById('page-info').textContent = `Страница: ${pageNum} из ${pdfDoc.numPages}`;
+                    
+                    // Обновляем состояние кнопок
+                    document.getElementById('prev-btn').disabled = pageNum <= 1;
+                    document.getElementById('next-btn').disabled = pageNum >= pdfDoc.numPages;
+                });
+            });
+        }
+        
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPage(currentPage);
+            }
+        }
+        
+        function nextPage() {
+            if (pdfDoc && currentPage < pdfDoc.numPages) {
+                currentPage++;
+                renderPage(currentPage);
+            }
+        }
+        
+        // Закрытие по ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && isPdfViewerOpen) {
+                closePdfViewer();
+            }
+        });
+        
+        // ============ ОГЛАВЛЕНИЕ И НАВИГАЦИЯ (как было) ============
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ваш существующий код для TOC и навигации
+            // ... 
+        });
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen" x-data="{ mobileMenuOpen: false, tocOpen: false }">
+    <!-- Навигация (оставляем как было) -->
+    <header class="bg-gray-800 border-b border-blue-600 sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
+            <h1 class="text-xl sm:text-2xl font-bold neon">САСП-2</h1>
+            
+            <!-- Десктопная навигация -->
+            <ul class="hidden md:flex space-x-4 lg:space-x-6 text-sm lg:text-base">
+                <li><a href="index.html" class="hover:text-blue-400 {% if page_id == 'index' %}text-blue-400 font-semibold{% endif %}">Главная</a></li>
+                <li><a href="user_guide.html" class="hover:text-blue-400 {% if page_id == 'user_guide' %}text-blue-400 font-semibold{% endif %}">Руководство</a></li>
+                <li><a href="maintenance.html" class="hover:text-blue-400 {% if page_id == 'maintenance' %}text-blue-400 font-semibold{% endif %}">Обслуживание</a></li>
+                <li><a href="api.html" class="hover:text-blue-400 {% if page_id == 'api' %}text-blue-400 font-semibold{% endif %}">API</a></li>
+                <li><a href="standards.html" class="hover:text-blue-400 {% if page_id == 'standards' %}text-blue-400 font-semibold{% endif %}">ГОСТ / PDF</a></li>
+            </ul>
+            
+            <!-- Кнопка меню для мобильных -->
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-gray-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </nav>
+    </header>
 
-# Делаем так:
-pdf_content += f"""
-<div class="bg-gray-800/50 p-6 rounded-xl border border-blue-700 hover:border-blue-500 transition-all">
-    <div class="text-center">
-        <div class="w-12 h-12 bg-blue-600/20 rounded-lg flex items-center justify-center mx-auto mb-4">
-            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-            </svg>
+    <!-- Мобильное меню -->
+    <div x-show="mobileMenuOpen" class="md:hidden fixed inset-x-0 top-16 bg-gray-800 border-b border-blue-600 z-40">
+        <div class="mobile-nav py-2">
+            <a href="index.html" class="{% if page_id == 'index' %}nav-active{% endif %}" @click="mobileMenuOpen = false">Главная</a>
+            <a href="user_guide.html" class="{% if page_id == 'user_guide' %}nav-active{% endif %}" @click="mobileMenuOpen = false">Руководство</a>
+            <a href="maintenance.html" class="{% if page_id == 'maintenance' %}nav-active{% endif %}" @click="mobileMenuOpen = false">Обслуживание</a>
+            <a href="api.html" class="{% if page_id == 'api' %}nav-active{% endif %}" @click="mobileMenuOpen = false">API</a>
+            <a href="standards.html" class="{% if page_id == 'standards' %}nav-active{% endif %}" @click="mobileMenuOpen = false">ГОСТ / PDF</a>
         </div>
-        <h5 class="font-semibold mb-2">{safe_name}</h5>
-        <p class="text-gray-400 text-sm mb-4">Только для просмотра</p>
-        <button data-pdf="pdf/{fname}" 
-                data-name="{safe_name}"
-                class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
-            Открыть для просмотра
-        </button>
-        <p class="text-xs text-gray-500 mt-2">Скачивание запрещено</p>
     </div>
-</div>
-"""
+
+    <!-- Основной контент -->
+    <main class="container mx-auto px-4 md:px-6 py-6 md:py-12 max-w-7xl">
+        {% if page_id in ['index', 'standards'] %}
+            <div class="content bg-gray-800/30 backdrop-blur-sm p-6 rounded-2xl border border-blue-700/30 centered-content">
+                {{ content | safe }}
+            </div>
+        {% else %}
+            <div class="flex flex-col lg:flex-row gap-8">
+                {% if toc %}
+                <aside class="hidden lg:block w-64 flex-shrink-0">
+                    <div class="toc-container">
+                        <div class="toc-scrollable">
+                            <div class="toc bg-gray-800/50 p-6 rounded-xl border border-blue-700/50">
+                                <h3 class="text-xl font-bold mb-4 text-blue-400">Оглавление</h3>
+                                {{ toc | safe }}
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+                {% endif %}
+                
+                <div class="flex-1">
+                    <div class="content bg-gray-800/30 backdrop-blur-sm p-6 rounded-2xl border border-blue-700/30">
+                        {{ content | safe }}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </main>
+
+    <!-- Футер -->
+    <footer class="bg-gray-800 border-t border-blue-600 mt-12 py-6">
+        <div class="container mx-auto px-6 text-center text-gray-500 text-sm">
+            <p>Разработчик: {{ developer.company }}, {{ developer.city }}</p>
+            <p class="mt-2">Версия: {{ version.hardware }} | Прошивка: {{ version.firmware_base }}</p>
+        </div>
+    </footer>
+</body>
+</html>

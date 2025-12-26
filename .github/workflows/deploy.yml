@@ -21,7 +21,6 @@ jobs:
             libreoffice-core \
             libreoffice-writer \
             poppler-utils
-          
           pip install -r docs/scripts/requirements.txt
           pip install img2pdf
 
@@ -32,62 +31,50 @@ jobs:
 
       - name: Protect PDFs
         run: |
-          echo "🛡️ Защита PDF..."
           mkdir -p docs/output/protected_pdf
           
-          # Проверяем есть ли PDF файлы
-          if ls docs/output/pdf/*.pdf 1> /dev/null 2>&1; then
-            for pdf in docs/output/pdf/*.pdf; do
-              name=$(basename "$pdf")
-              temp=$(mktemp -d)
-              
-              echo "🔒 $name"
-              
-              # PDF → JPEG
-              pdftoppm -jpeg -jpegopt "quality=95" -r 150 "$pdf" "$temp/page"
-              
-              # JPEG → PDF (если создались JPEG)
-              if ls "$temp"/page-*.jpg 1> /dev/null 2>&1; then
-                jpegs=($(ls "$temp"/page-*.jpg | sort))
-                img2pdf "${jpegs[@]}" --output "docs/output/protected_pdf/$name"
-                echo "✅ Защищен"
-              else
-                echo "⚠️  Не созданы JPEG файлы для $name"
-                # Копируем оригинал как fallback
-                cp "$pdf" "docs/output/protected_pdf/$name"
-              fi
-              
-              rm -rf "$temp"
-            done
+          for pdf in docs/output/pdf/*.pdf; do
+            [ -f "$pdf" ] || continue
+            name=$(basename "$pdf")
+            temp=$(mktemp -d)
             
-            echo "📊 Результат:"
-            ls -lh docs/output/protected_pdf/
-          else
-            echo "⚠️  Нет PDF файлов для защиты"
-            # Создаем тестовый файл
-            echo "Тестовый PDF" > docs/output/protected_pdf/TEST.pdf
-          fi
+            echo "🔄 $name"
+            
+            # PDF → JPEG (серый, 120 DPI, 85% качество)
+            pdftoppm -jpeg -gray -r 120 -jpegopt "quality=85" "$pdf" "$temp/page"
+            
+            # JPEG → PDF
+            if ls "$temp"/page-*.jpg 1> /dev/null 2>&1; then
+              jpegs=$(ls "$temp"/page-*.jpg | sort -V)
+              img2pdf $jpegs --output "docs/output/protected_pdf/$name"
+              size=$(stat -c%s "docs/output/protected_pdf/$name" 2>/dev/null || echo 0)
+              echo "  ✅ $((size/1024)) KB"
+            else
+              cp "$pdf" "docs/output/protected_pdf/$name"
+              echo "  ⚠️  копия оригинала"
+            fi
+            
+            rm -rf "$temp"
+          done
 
       - name: Prepare deployment
         run: |
-          # Копируем HTML сайт
+          # Копируем сайт
           if [ -d "docs/templates/web" ]; then
             cp -r docs/templates/web/* docs/output/web/ 2>/dev/null || true
           fi
           
-          # Копируем защищенные PDF
+          # Копируем защищённые PDF
           mkdir -p docs/output/web/pdf
-          if [ -d "docs/output/protected_pdf" ] && [ -n "$(ls -A docs/output/protected_pdf/*.pdf 2>/dev/null)" ]; then
-            cp docs/output/protected_pdf/*.pdf docs/output/web/pdf/
-            echo "✅ PDF скопированы"
-          else
-            echo "⚠️  Нет защищенных PDF"
+          if [ -d "docs/output/protected_pdf" ]; then
+            cp docs/output/protected_pdf/*.pdf docs/output/web/pdf/ 2>/dev/null || true
           fi
           
-          # Обязательный файл для GitHub Pages
+          # Файл для GitHub Pages
           touch docs/output/web/.nojekyll
           
-          echo "📁 Готово к деплою:"
+          # Показываем что получилось
+          echo "📁 docs/output/web:"
           ls -la docs/output/web/
 
       - name: Deploy
