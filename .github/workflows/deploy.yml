@@ -40,8 +40,8 @@ jobs:
             
             echo "🔄 $name"
             
-            # PDF → JPEG (серый, 120 DPI, 85% качество)
-            pdftoppm -jpeg -gray -r 120 -jpegopt "quality=85" "$pdf" "$temp/page"
+            # PDF → JPEG (серый, 120 DPI, 80% качество)
+            pdftoppm -jpeg -gray -r 120 -jpegopt "quality=80" "$pdf" "$temp/page"
             
             # JPEG → PDF
             if ls "$temp"/page-*.jpg 1> /dev/null 2>&1; then
