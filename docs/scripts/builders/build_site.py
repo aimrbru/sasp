@@ -591,18 +591,20 @@ def build_site():
             for name, fname in available_pdfs:
                 safe_name = name.replace("'", "&apos;").replace('"', "&quot;")
                 
-                # Ссылка на просмотр через viewer
-                pdf_url = f"pdf_viewer.html?file={fname}"
+                # Прямая ссылка на PDF (браузер откроет его)
+                pdf_url = f"pdf/{fname}"
                 
                 pdf_content += f"""
                 <a href="{pdf_url}" 
+                target="_blank"
                 class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20 block">
                     <div class="flex items-center justify-center mb-4">
                         <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
-                            <span class="text-и xl">📄</span>
+                            <span class="text-2xl">📄</span>
                         </div>
                     </div>
                     <h5 class="text-sm font-semibold mb-2 text-center">{safe_name}</h5>
+                    <p class="text-xs text-gray-400 text-center">Только для чтения</p>
                 </a>
                 """
             
