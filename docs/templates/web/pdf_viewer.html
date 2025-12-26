@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Просмотр PDF | САСП-2</title>
   <style>
     body, html {
-      margin: 0; padding: 0;
+      margin: 0;
+      padding: 0;
       height: 100%;
       background: #0f172a;
     }
@@ -26,44 +27,34 @@
       padding: 10px 20px;
       border-radius: 8px;
       text-decoration: none;
-      backdrop-filter: blur(10px);
-    }
-    .error {
-      color: white;
-      padding: 50px;
-      text-align: center;
-      font-size: 18px;
+      font-family: sans-serif;
     }
   </style>
 </head>
 <body>
-  <a href="standards.html" class="back-button">← Назад</a>
-  
-  <div id="pdf-container"></div>
+  <a href="standards.html" class="back-button">← Назад к документам</a>
   
   <script>
-    // Получаем имя файла
-    const urlParams = new URLSearchParams(window.location.search);
-    const filename = urlParams.get('file');
+    // Получаем параметр file из URL
+    const query = window.location.search;
+    const params = new URLSearchParams(query);
+    const filename = params.get('file');
     
+    // Проверяем наличие файла
     if (!filename) {
-      document.getElementById('pdf-container').innerHTML = 
-        '<div class="error">❌ Не указан файл PDF</div>';
+      document.body.innerHTML = '<div style="color:white;padding:50px;text-align:center"><h2>❌ Не указан файл PDF</h2></div>';
     } else {
-      // Просто передаем имя файла
+      // Формируем URL для viewer
+      // Просто имя файла, без путей
       const viewerUrl = `./pdfjs/web/viewer.html?file=${filename}`;
-      
-      console.log('Opening PDF viewer:', viewerUrl);
       
       // Создаем iframe
       const iframe = document.createElement('iframe');
       iframe.src = viewerUrl;
-      iframe.onerror = function() {
-        document.getElementById('pdf-container').innerHTML = 
-          '<div class="error">❌ Ошибка загрузки PDF viewer</div>';
-      };
+      iframe.title = "PDF Viewer";
       
-      document.getElementById('pdf-container').appendChild(iframe);
+      // Добавляем на страницу
+      document.body.appendChild(iframe);
     }
   </script>
 </body>

@@ -1,19 +1,44 @@
-<script>
-  // Настраиваем PDF.js для GitHub Pages
-  window.PDFJS = window.PDFJS || {};
-  window.PDFJS.workerSrc = '../build/pdf.worker.js';
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>PDF Viewer</title>
   
-  // Автоматически формируем правильный путь к PDF
-  const urlParams = new URLSearchParams(window.location.search);
-  let fileParam = urlParams.get('file');
+  <!-- Основные скрипты -->
+  <script src="../build/pdf.js"></script>
+  <script src="viewer.js"></script>
+  <link rel="stylesheet" href="viewer.css">
   
-  if (fileParam) {
-    // Если передан просто filename, добавляем путь
-    if (!fileParam.startsWith('/') && !fileParam.startsWith('http')) {
+  <script>
+    // Конфигурация для GitHub Pages
+    window.PDFJS = window.PDFJS || {};
+    window.PDFJS.workerSrc = '../build/pdf.worker.js';
+    
+    // Формируем правильный путь к PDF
+    const urlParams = new URLSearchParams(window.location.search);
+    const filename = urlParams.get('file');
+    
+    if (filename) {
+      // Абсолютный путь на GitHub Pages
+      const pdfPath = `/sasp/pdf/${filename}`;
+      
+      // Передаем путь в viewer
       window.PDFViewerApplicationOptions = {
-        defaultUrl: `/sasp/pdf/${fileParam}`
+        defaultUrl: pdfPath
       };
-      console.log('PDF path set to:', `/sasp/pdf/${fileParam}`);
+      
+      console.log('PDF will load from:', pdfPath);
     }
-  }
-</script>
+  </script>
+</head>
+
+<body>
+  <div id="outerContainer">
+    <div id="mainContainer">
+      <div id="viewerContainer">
+        <div id="viewer" class="pdfViewer"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
