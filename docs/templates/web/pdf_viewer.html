@@ -21,6 +21,24 @@
 <body>
   <iframe id="pdfFrame"></iframe>
   <script>
+      // Проверяем наличие PDF.js
+  if (!window.PDFViewerApplication) {
+    console.warn('PDF.js не загружен, проверьте путь к библиотеке');
+    
+    // Пробуем динамически загрузить
+    const script = document.createElement('script');
+    script.src = './pdfjs/web/viewer.js';
+    script.onerror = function() {
+      document.body.innerHTML = `
+        <div style="color:white;text-align:center;margin-top:100px;">
+          <h2>❌ Ошибка: PDF.js не найден</h2>
+          <p>Библиотека просмотра PDF отсутствует</p>
+          <p><a href="standards.html" style="color:#60a5fa;">Вернуться назад</a></p>
+        </div>
+      `;
+    };
+    document.head.appendChild(script);
+  }
     // Отключаем контекстное меню и горячие клавиши
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('keydown', e => {
