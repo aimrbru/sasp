@@ -16,33 +16,18 @@ jobs:
       - name: 📥 Checkout
         uses: actions/checkout@v4
 
-      - name: 🐍 Setup Python with cache
+      - name: 🐍 Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: 📦 Cache apt packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            /var/cache/apt
-            /var/lib/apt/lists
-          key: ${{ runner.os }}-apt-${{ hashFiles('.github/apt-packages.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-apt-
-
-      - name: 📦 Install system dependencies
+      - name: 📦 Install LibreOffice
         run: |
-          if ! dpkg -l | grep -q libreoffice; then
-            echo "Installing LibreOffice..."
-            sudo apt-get update
-            sudo apt-get install -y libreoffice
-          else
-            echo "✅ LibreOffice already installed"
-          fi
+          sudo apt-get update
+          sudo apt-get install -y libreoffice
 
-      - name: 📋 Install Python dependencies
+      - name: 📋 Install Python packages
         run: |
           pip install --upgrade pip
           pip install PyYAML Jinja2 markupsafe python-docx odfpy click colorama
@@ -51,29 +36,24 @@ jobs:
         run: |
           echo "🏗️ Generating GOST documents..."
           python docs/scripts/builders/build_docs.py all
-          echo "✅ Documents generated in docs/output/pdf/"
+          echo "✅ Documents generated"
 
-      - name: 📄 Copy PDFs to web folder
+      - name: 📄 Create PDF folder in web
         run: |
-          echo "📄 Preparing PDFs for website..."
-          
-          # Создаем папку pdf внутри web
+          echo "📄 Creating PDF folder..."
           mkdir -p docs/output/web/pdf
           
-          # Копируем PDF файлы
-          if [ -d "docs/output/pdf" ] && [ "$(ls -A docs/output/pdf/*.pdf 2>/dev/null)" ]; then
+          # Копируем все PDF файлы
+          if ls docs/output/pdf/*.pdf 1> /dev/null 2>&1; then
             echo "Found PDF files:"
             ls -la docs/output/pdf/*.pdf
-            
-            # Копируем в web/pdf
             cp docs/output/pdf/*.pdf docs/output/web/pdf/
-            
-            echo "✅ PDFs copied to web/pdf/:"
+            echo "✅ PDFs copied to web/pdf/"
             ls -la docs/output/web/pdf/*.pdf
           else
-            echo "⚠️ No PDFs generated in docs/output/pdf/"
-            # Создаем placeholder чтобы сайт не падал
-            echo "PDF files will be available after build" > docs/output/web/pdf/README.txt
+            echo "⚠️ No PDF files found"
+            # Создаем placeholder
+            echo "PDF files will be available after build" > docs/output/web/pdf/placeholder.txt
           fi
 
       - name: 🌐 Generate website
@@ -81,10 +61,57 @@ jobs:
           echo "🌐 Generating website..."
           python docs/scripts/builders/build_site.py
           
-          # Важно для GitHub Pages
+          # Создаем .nojekyll
           touch docs/output/web/.nojekyll
           
-          echo "✅ Website generated with PDF links"
+          # Создаем простой pdf_viewer.html если нет
+          if [ ! -f "docs/output/web/pdf_viewer.html" ]; then
+            echo "Creating pdf_viewer.html..."
+            cat > docs/output/web/pdf_viewer.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Просмотр PDF</title>
+    <style>
+        body { margin: 0; padding: 20px; background: #0f172a; color: #e2e8f0; font-family: sans-serif; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .title { font-size: 24px; color: #60a5fa; }
+        .btn { padding: 10px 20px; background: #3b82f6; color: white; border-radius: 8px; text-decoration: none; }
+        .viewer { width: 100%; height: calc(100vh - 100px); border: none; border-radius: 12px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="title" id="title">PDF Viewer</h1>
+        <a href="index.html" class="btn">← Назад</a>
+    </div>
+    <iframe id="viewer" class="viewer"></iframe>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const file = params.get('file');
+        if (file) {
+            document.getElementById('title').textContent = decodeURIComponent(file);
+            document.getElementById('viewer').src = 
+                `https://mozilla.github.io/pdf.js/web/viewer.html?file=pdf/${encodeURIComponent(file)}`;
+        }
+    </script>
+</body>
+</html>
+EOF
+          fi
+
+      - name: 📊 Verify files before deploy
+        run: |
+          echo "=== Files to deploy ==="
+          echo "HTML files:"
+          find docs/output/web -name "*.html" -type f | sort
+          echo ""
+          echo "PDF files:"
+          find docs/output/web -name "*.pdf" -type f | sort
+          echo ""
+          echo "Total files in web/:"
+          find docs/output/web -type f | wc -l
 
       - name: 📤 Deploy
         uses: peaceiris/actions-gh-pages@v3
