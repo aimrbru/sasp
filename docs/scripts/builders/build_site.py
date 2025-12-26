@@ -513,19 +513,19 @@ def build_site():
             "toc": "",
             "content": f"""
             <div class="text-center">
-                <h3 class="text-3xl font-bold neon mb-6">{context['product'].get('full_name', 'САСП-2')}</h3>
-                <p class="text-xl text-gray-400 mb-8">Разработчик: {context['developer'].get('company', '')}, {context['developer'].get('city', '')}</p>
+                <h4 class="text-3xl font-bold neon mb-6">{context['product'].get('full_name', 'САСП-2')}</h4>
+               
                 <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
                     <a href="user_guide.html" class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
-                        <h3 class="text-xl font-semibold mb-4">Руководство пользователя</h3>
+                        <h4 class="text-xl font-semibold mb-4">Руководство пользователя</h4>
                         <p class="text-gray-400">Полное описание эксплуатации изделия</p>
                     </a>
                     <a href="maintenance.html" class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
-                        <h3 class="text-xl font-semibold mb-4">Руководство по обслуживанию</h3>
+                        <h4 class="text-xl font-semibold mb-4">Руководство по обслуживанию</h4>
                         <p class="text-gray-400">ТО, ремонт, хранение, транспортировка</p>
                     </a>
                     <a href="api.html" class="bg-gray800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
-                        <h3 class="text-xl font-semibold mb-4">Справочник по API</h3>
+                        <h4 class="text-xl font-semibold mb-4">Справочник по API</h4>
                         <p class="text-gray-400">Программный интерфейс устройства</p>
                     </a>
                 </div>
