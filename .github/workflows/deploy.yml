@@ -78,21 +78,95 @@ jobs:
             touch docs/output/web/pdf/.keep
           fi
 
-      - name: 🌐 Generate website
+      - name: 🌐 Generate website with correct PDF paths
         run: |
           echo "🌐 Generating website..."
           python docs/scripts/builders/build_site.py
-          
-          # Обязательно для GitHub Pages
           touch docs/output/web/.nojekyll
           
-          echo "✅ Website generated"
-
-      - name: 📤 Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/output/web
-          publish_branch: gh-pages
-          force_orphan: false
-          enable_jekyll: false
+          # Создаем pdf_viewer.html с правильными путями
+          cat > docs/output/web/pdf_viewer.html << 'EOF'
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Просмотр документа</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; margin-bottom: 20px; border-bottom: 1px solid #334155; }
+        .title { font-size: 24px; color: #60a5fa; }
+        .btn { padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; text-decoration: none; }
+        .viewer-container { width: 100%; height: calc(100vh - 180px); border-radius: 12px; overflow: hidden; background: #1e293b; }
+        iframe { width: 100%; height: 100%; border: none; }
+        .debug { background: #1e293b; padding: 10px; margin-top: 10px; border-radius: 5px; font-size: 12px; color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title" id="docTitle">Просмотр документа</h1>
+            <a href="standards.html" class="btn">← Назад к документам</a>
+        </div>
+        
+        <div class="viewer-container">
+            <iframe id="pdfViewer" title="PDF Viewer"></iframe>
+        </div>
+        
+        <div class="debug" id="debugInfo"></div>
+    </div>
+    
+    <script>
+        // Получаем имя файла из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const pdfFile = urlParams.get('file');
+        
+        if (!pdfFile) {
+            document.getElementById('docTitle').textContent = 'Ошибка: файл не указан';
+            document.getElementById('pdfViewer').srcdoc = '<div style="padding: 40px; text-align: center; color: #ef4444;"><p>Файл для просмотра не указан</p><p>Пример: ?file=АИМУ.123456.002.ПС.pdf</p></div>';
+        } else {
+            // Устанавливаем заголовок
+            const fileName = decodeURIComponent(pdfFile).replace('.pdf', '');
+            document.getElementById('docTitle').textContent = fileName;
+            
+            // ПРАВИЛЬНЫЙ ПУТЬ: pdf/файл.pdf (без 's' на конце!)
+            const pdfUrl = `pdf/${pdfFile}`;
+            const viewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(window.location.origin + '/' + pdfUrl)}`;
+            
+            // Отладочная информация
+            document.getElementById('debugInfo').innerHTML = `
+                <div>Файл: ${pdfFile}</div>
+                <div>PDF путь: ${pdfUrl}</div>
+                <div>Полный URL: ${window.location.origin}/${pdfUrl}</div>
+                <div>Viewer URL: ${viewerUrl}</div>
+            `;
+            
+            console.log('PDF URL:', pdfUrl);
+            console.log('Full PDF URL:', window.location.origin + '/' + pdfUrl);
+            console.log('Viewer URL:', viewerUrl);
+            
+            // Загружаем PDF
+            document.getElementById('pdfViewer').src = viewerUrl;
+            
+            // Проверяем доступность файла
+            fetch(pdfUrl)
+                .then(response => {
+                    if (response.ok) {
+                        console.log('✅ PDF доступен');
+                    } else {
+                        console.error('❌ PDF не доступен:', response.status);
+                        document.getElementById('debugInfo').innerHTML += `<div style="color: #ef4444;">Ошибка: PDF не найден (${response.status})</div>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Ошибка проверки:', error);
+                });
+        }
+    </script>
+</body>
+</html>
+EOF
+          
+          echo "✅ Created pdf_viewer.html with correct PDF paths"
