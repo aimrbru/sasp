@@ -228,7 +228,7 @@ sections:
                 site: [r]
               - id: "assembly_overview"
                 name: "Внешний вид устройства показан на рисунке {{image_counter_next}}."
-                site: []
+                site: [r]
                 blocks:
                   - image:
                       path: "docs/media/images/assembly_overview.svg"
