@@ -512,30 +512,7 @@ def build_site():
             "title": "Документация САСП-2",
             "page_id": "index",
             "toc": "",
-            "content": f"""
-            <div class="text-center">
-                <h4 class="text-xl font-bold neon mb-6">{context['product'].get('full_name', 'САСП-2')}</h4>
-            
-                <div class="mt-16 grid grid-cols-1 md:grid-cols-4 gap-8">
-                    <a href="user_guide.html" class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
-                        <h4 class="text-xl font-semibold mb-4">Руководство пользователя</h4>
-                        <p class="text-gray-400">Полное описание эксплуатации изделия</p>
-                    </a>
-                    <a href="maintenance.html" class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
-                        <h4 class="text-xl font-semibold mb-4">Руководство по обслуживанию</h4>
-                        <p class="text-gray-400">ТО, ремонт, хранение, транспортировка</p>
-                    </a>
-                    <a href="api.html" class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
-                        <h4 class="text-xl font-semibold mb-4">Справочник по API</h4>
-                        <p class="text-gray-400">Программный интерфейс устройства</p>
-                    </a>
-                    <a href="standards.html" class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
-                        <h4 class="text-xl font-semibold mb-4">ГОСТ / PDF</h4>
-                        <p class="text-gray-400">Нормативная документация, спецификации</p>
-                    </a>
-                </div>
-            </div>
-            """
+            "content": ""  # Пустой контент - всё будет в шаблоне
         })
         render_page(template, index_ctx, CONFIG["web_output"] / "index.html")
         print("✅ Главная страница сгенерирована")

@@ -3,4 +3,4 @@ docs/output/odt/           # ODT файлы (промежуточные)
 *.tmp
 *.temp
 __pycache__/
-*.pyc
+*.pycdocs/output/

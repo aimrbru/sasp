@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} | САСП-2</title>
+    <title>ГОСТ / Нормативные документы | САСП-2</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <!-- PDF.js -->
@@ -66,25 +66,6 @@
         .centered-content {
             max-width: 900px;
             margin: 0 auto;
-        }
-        
-        /* Стили для карточек на главной */
-        .feature-card {
-            transition: all 0.3s ease;
-            height: 100%;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
-        }
-        
-        .card-icon {
-            transition: all 0.3s ease;
-        }
-        
-        .feature-card:hover .card-icon {
-            transform: scale(1.1);
         }
     </style>
     <script>
@@ -312,92 +293,28 @@
         
         // ============ ОГЛАВЛЕНИЕ И НАВИГАЦИЯ (как было) ============
         document.addEventListener('DOMContentLoaded', function() {
-            // Определяем текущую страницу для подсветки навигации
-            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-            const navLinks = document.querySelectorAll('nav a, .mobile-nav a');
-            
-            navLinks.forEach(link => {
-                const href = link.getAttribute('href');
-                if (href === currentPage || (currentPage === '' && href === 'index.html')) {
-                    link.classList.add('nav-active');
-                }
-            });
-            
-            // Инициализация TOC если есть
-            const hasToc = document.querySelector('.toc') !== null;
-            if (hasToc) {
-                function updateActiveTocLink() {
-                    const headers = document.querySelectorAll('.content h1, .content h2, .content h3, .content h4, .content h5, .content h6');
-                    const tocLinks = document.querySelectorAll('.toc a[href^="#"]');
-                    
-                    let currentActive = null;
-                    
-                    for (let i = headers.length - 1; i >= 0; i--) {
-                        const header = headers[i];
-                        const rect = header.getBoundingClientRect();
-                        
-                        if (rect.top <= 150 && rect.bottom >= 0) {
-                            currentActive = header.id;
-                            break;
-                        }
-                    }
-                    
-                    tocLinks.forEach(link => {
-                        const href = link.getAttribute('href');
-                        if (href === '#' + currentActive) {
-                            link.classList.add('active');
-                        } else {
-                            link.classList.remove('active');
-                        }
-                    });
-                }
-                
-                window.addEventListener('scroll', updateActiveTocLink);
-                updateActiveTocLink();
-                
-                document.querySelectorAll('.toc a[href^="#"]').forEach(anchor => {
-                    anchor.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const targetId = this.getAttribute('href');
-                        if (targetId === '#') return;
-                        
-                        const targetElement = document.querySelector(targetId);
-                        if (targetElement) {
-                            const headerHeight = 80;
-                            const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
-                            
-                            window.scrollTo({
-                                top: targetPosition,
-                                behavior: 'smooth'
-                            });
-                            
-                            if (window.innerWidth < 1024) {
-                                document.querySelector('[x-data]').__x.$data.tocOpen = false;
-                            }
-                        }
-                    });
-                });
-            }
+            // Ваш существующий код для TOC и навигации
+            // ... 
         });
     </script>
 </head>
 <body class="bg-gray-900 text-gray-100 min-h-screen" x-data="{ mobileMenuOpen: false, tocOpen: false }">
-    <!-- Навигация -->
+    <!-- Навигация (оставляем как было) -->
     <header class="bg-gray-800 border-b border-blue-600 sticky top-0 z-50">
         <nav class="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
             <h1 class="text-xl sm:text-2xl font-bold neon">САСП-2</h1>
             
             <!-- Десктопная навигация -->
             <ul class="hidden md:flex space-x-4 lg:space-x-6 text-sm lg:text-base">
-                <li><a href="index.html" class="hover:text-blue-400 transition-colors duration-200 py-2 px-3 rounded-lg {% if page_id == 'index' %}bg-gray-700/50 text-blue-400{% endif %}">Главная</a></li>
-                <li><a href="user_guide.html" class="hover:text-blue-400 transition-colors duration-200 py-2 px-3 rounded-lg {% if page_id == 'user_guide' %}bg-gray-700/50 text-blue-400{% endif %}">Руководство</a></li>
-                <li><a href="maintenance.html" class="hover:text-blue-400 transition-colors duration-200 py-2 px-3 rounded-lg {% if page_id == 'maintenance' %}bg-gray-700/50 text-blue-400{% endif %}">Обслуживание</a></li>
-                <li><a href="api.html" class="hover:text-blue-400 transition-colors duration-200 py-2 px-3 rounded-lg {% if page_id == 'api' %}bg-gray-700/50 text-blue-400{% endif %}">API</a></li>
-                <li><a href="standards.html" class="hover:text-blue-400 transition-colors duration-200 py-2 px-3 rounded-lg {% if page_id == 'standards' %}bg-gray-700/50 text-blue-400{% endif %}">ГОСТ / PDF</a></li>
+                <li><a href="index.html" class="hover:text-blue-400 ">Главная</a></li>
+                <li><a href="user_guide.html" class="hover:text-blue-400 ">Руководство</a></li>
+                <li><a href="maintenance.html" class="hover:text-blue-400 ">Обслуживание</a></li>
+                <li><a href="api.html" class="hover:text-blue-400 ">API</a></li>
+                <li><a href="standards.html" class="hover:text-blue-400 text-blue-400 font-semibold">ГОСТ / PDF</a></li>
             </ul>
             
             <!-- Кнопка меню для мобильных -->
-            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-gray-300 hover:text-white focus:outline-none p-2 hover:bg-gray-700/50 rounded-lg transition-colors">
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-gray-300">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -407,138 +324,38 @@
     </header>
 
     <!-- Мобильное меню -->
-    <div x-show="mobileMenuOpen" 
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0 -translate-y-2"
-         x-transition:enter-end="opacity-100 translate-y-0"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100 translate-y-0"
-         x-transition:leave-end="opacity-0 -translate-y-2"
-         class="md:hidden fixed inset-x-0 top-16 bg-gray-800 border-b border-blue-600 z-40"
-         @click.away="mobileMenuOpen = false">
+    <div x-show="mobileMenuOpen" class="md:hidden fixed inset-x-0 top-16 bg-gray-800 border-b border-blue-600 z-40">
         <div class="mobile-nav py-2">
-            <a href="index.html" 
-               class="{% if page_id == 'index' %}nav-active{% endif %}" 
-               @click="mobileMenuOpen = false">Главная</a>
-            <a href="user_guide.html" 
-               class="{% if page_id == 'user_guide' %}nav-active{% endif %}" 
-               @click="mobileMenuOpen = false">Руководство</a>
-            <a href="maintenance.html" 
-               class="{% if page_id == 'maintenance' %}nav-active{% endif %}" 
-               @click="mobileMenuOpen = false">Обслуживание</a>
-            <a href="api.html" 
-               class="{% if page_id == 'api' %}nav-active{% endif %}" 
-               @click="mobileMenuOpen = false">API</a>
-            <a href="standards.html" 
-               class="{% if page_id == 'standards' %}nav-active{% endif %}" 
-               @click="mobileMenuOpen = false">ГОСТ / PDF</a>
+            <a href="index.html" class="" @click="mobileMenuOpen = false">Главная</a>
+            <a href="user_guide.html" class="" @click="mobileMenuOpen = false">Руководство</a>
+            <a href="maintenance.html" class="" @click="mobileMenuOpen = false">Обслуживание</a>
+            <a href="api.html" class="" @click="mobileMenuOpen = false">API</a>
+            <a href="standards.html" class="nav-active" @click="mobileMenuOpen = false">ГОСТ / PDF</a>
         </div>
     </div>
 
     <!-- Основной контент -->
     <main class="container mx-auto px-4 md:px-6 py-6 md:py-12 max-w-7xl">
-        {% if page_id == 'index' %}
-            <!-- ГЛАВНАЯ СТРАНИЦА С БЛОКАМИ -->
-            <div class="text-center mb-12">
-                <h4 class="text-2xl font-bold neon mb-4">{{ product.full_name or 'САСП-2' }}</h4>
-                <p class="text-gray-400 text-lg max-w-3xl mx-auto">
-
-            </div>
-            
-            <!-- БЛОКИ НАВИГАЦИИ -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-                <!-- Руководство пользователя -->
-                <a href="user_guide.html" class="feature-card bg-gray-800/50 backdrop-blur-sm p-6 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all">
-                    <div class="flex flex-col items-center text-center">
-                        <div class="card-icon w-16 h-16 bg-blue-600/20 rounded-xl flex items-center justify-center mb-4 border border-blue-600/30">
-                            <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                            </svg>
-                        </div>
-                        <h4 class="text-xl font-semibold mb-2">Руководство пользователя</h4>
-                        <p class="text-gray-400 text-sm">Полное описание эксплуатации изделия, настройка, работа</p>
-                    </div>
-                </a>
-                
-                <!-- Обслуживание -->
-                <a href="maintenance.html" class="feature-card bg-gray-800/50 backdrop-blur-sm p-6 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all">
-                    <div class="flex flex-col items-center text-center">
-                        <div class="card-icon w-16 h-16 bg-blue-600/20 rounded-xl flex items-center justify-center mb-4 border border-blue-600/30">
-                            <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                        </div>
-                        <h4 class="text-xl font-semibold mb-2">Обслуживание</h4>
-                        <p class="text-gray-400 text-sm">ТО, ремонт, хранение, транспортировка, утилизация</p>
-                    </div>
-                </a>
-                
-                <!-- API -->
-                <a href="api.html" class="feature-card bg-gray-800/50 backdrop-blur-sm p-6 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all">
-                    <div class="flex flex-col items-center text-center">
-                        <div class="card-icon w-16 h-16 bg-blue-600/20 rounded-xl flex items-center justify-center mb-4 border border-blue-600/30">
-                            <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                        </div>
-                        <h4 class="text-xl font-semibold mb-2">Справочник API</h4>
-                        <p class="text-gray-400 text-sm">Программный интерфейс, команды, протоколы, интеграция</p>
-                    </div>
-                </a>
-                
-                <!-- ГОСТ / PDF -->
-                <a href="standards.html" class="feature-card bg-gray-800/50 backdrop-blur-sm p-6 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all">
-                    <div class="flex flex-col items-center text-center">
-                        <div class="card-icon w-16 h-16 bg-blue-600/20 rounded-xl flex items-center justify-center mb-4 border border-blue-600/30">
-                            <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                        </div>
-                        <h4 class="text-xl font-semibold mb-2">ГОСТ / PDF</h4>
-                        <p class="text-gray-400 text-sm">Нормативная документация, чертежи, спецификации</p>
-                    </div>
-                </a>
-            </div>
-            
-
-            
-        {% elif page_id == 'standards' %}
-            <!-- СТРАНИЦА PDF -->
+        
             <div class="content bg-gray-800/30 backdrop-blur-sm p-6 rounded-2xl border border-blue-700/30 centered-content">
-                {{ content | safe }}
-            </div>
-        {% else %}
-            <!-- СТРАНИЦЫ С ОГЛАВЛЕНИЕМ -->
-            <div class="flex flex-col lg:flex-row gap-8">
-                {% if toc %}
-                <aside class="hidden lg:block w-64 flex-shrink-0">
-                    <div class="toc-container">
-                        <div class="toc-scrollable pr-4">
-                            <div class="toc bg-gray-800/50 p-6 rounded-xl border border-blue-700/50">
-                                <h3 class="text-xl font-bold mb-4 text-blue-400">Оглавление</h3>
-                                {{ toc | safe }}
-                            </div>
-                        </div>
-                    </div>
-                </aside>
-                {% endif %}
-                
-                <div class="flex-1">
-                    <div class="content bg-gray-800/30 backdrop-blur-sm p-6 rounded-2xl border border-blue-700/30">
-                        {{ content | safe }}
-                    </div>
+                <h3 class='text-4xl font-bold neon mb-12'>ГОСТ-документация</h3>
+            <div class="text-center py-12">
+                <div class="inline-block p-6 bg-gray-800/50 rounded-2xl">
+                    <div class="text-6xl mb-4">📄</div>
+                    <p class="text-gray-400 text-lg">PDF-документы не сгенерированы</p>
+                    <p class="text-gray-500 text-sm mt-2">Запустите сборку документации</p>
                 </div>
             </div>
-        {% endif %}
+            
+            </div>
+        
     </main>
 
     <!-- Футер -->
     <footer class="bg-gray-800 border-t border-blue-600 mt-12 py-6">
         <div class="container mx-auto px-6 text-center text-gray-500 text-sm">
-            <p>Разработчик: {{ developer.company }}, {{ developer.city }}</p>
-            <p class="mt-2">Версия документации: {{ version.hardware }} | Прошивка: {{ version.firmware_base }}</p>
-            <p class="mt-2 text-xs text-gray-600">© {{ current_year }}. Все права защищены.</p>
+            <p>Разработчик: ООО &#34;АИМ&#34;, Москва</p>
+            <p class="mt-2">Версия: V1 | Прошивка: ESP-IDF Framework</p>
         </div>
     </footer>
 </body>
