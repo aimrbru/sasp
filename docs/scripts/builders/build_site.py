@@ -513,7 +513,7 @@ def build_site():
             "toc": "",
             "content": f"""
             <div class="text-center">
-                <h4 class="text-3xl font-bold neon mb-6">{context['product'].get('full_name', 'САСП-2')}</h4>
+                <h4 class="text-xl font-bold neon mb-6">{context['product'].get('full_name', 'САСП-2')}</h4>
                
                 <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
                     <a href="user_guide.html" class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
