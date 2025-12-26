@@ -1,0 +1,2 @@
+# Создайте файл
+echo "libreoffice" > .github/apt-packages.txt

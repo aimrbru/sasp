@@ -195,22 +195,17 @@ def copy_media():
                 shutil.copy2(item, dest)
 
 def get_available_pdfs():
-    """Автоматически находит все PDF-файлы в папке pdf_dir"""
+    """Автоматически находит все PDF-файлы"""
     available = []
     pdf_folder = CONFIG["pdf_dir"]
-    if not pdf_folder.exists() or not pdf_folder.is_dir():
-        print(f"Папка PDF не найдена или недоступна: {pdf_folder}")
-        return available
-
-    for pdf_file in pdf_folder.glob("*.pdf"):
-        name = pdf_file.stem
-        fname = pdf_file.name
-        available.append((name, fname))
-        print(f"Найден PDF: {name} ({fname})")
-
-    if not available:
-        print("PDF-файлы не найдены в папке:", pdf_folder)
-
+    
+    if pdf_folder.exists() and pdf_folder.is_dir():
+        for pdf_file in pdf_folder.glob("*.pdf"):
+            name = pdf_file.stem
+            fname = pdf_file.name
+            available.append((name, fname))
+            print(f"✅ PDF: {name}")
+    
     return available
 
 def render_text(text: str, context: dict) -> str:
@@ -404,6 +399,38 @@ def filter_sections_by_tag(sections: list, target_tag: str, preserve_structure: 
     
     return result
 
+def copy_pdfs_to_web():
+    """Копирует PDF файлы в web папку для локальной разработки"""
+    pdf_source = CONFIG["pdf_dir"]
+    pdf_dest = CONFIG["web_output"] / "pdf"
+    
+    if not pdf_source.exists():
+        print(f"⚠️ Исходная папка PDF не найдена: {pdf_source}")
+        return False
+    
+    # Создаем папку назначения
+    pdf_dest.mkdir(parents=True, exist_ok=True)
+    
+    # Копируем PDF файлы
+    pdf_files = list(pdf_source.glob("*.pdf"))
+    if not pdf_files:
+        print(f"⚠️ PDF файлы не найдены в: {pdf_source}")
+        return False
+    
+    copied_count = 0
+    for pdf_file in pdf_files:
+        dest_file = pdf_dest / pdf_file.name
+        try:
+            import shutil
+            shutil.copy2(pdf_file, dest_file)
+            copied_count += 1
+            print(f"✅ Скопирован: {pdf_file.name}")
+        except Exception as e:
+            print(f"❌ Ошибка копирования {pdf_file.name}: {e}")
+    
+    print(f"📄 Скопировано {copied_count} PDF файлов в {pdf_dest}")
+    return copied_count > 0
+
 def build_site():
     """Основная функция генерации сайта"""
     try:
@@ -411,10 +438,15 @@ def build_site():
         print("🚀 НАЧИНАЮ ГЕНЕРАЦИЮ САЙТА ДОКУМЕНТАЦИИ")
         print("=" * 60)
         
+       
         print("\n📦 ПОДГОТОВКА ВЫХОДНОЙ ДИРЕКТОРИИ")
         clean_output()
         copy_media()
         print("✅ Выходная директория подготовлена")
+
+        # КОПИРУЕМ PDF ДЛЯ ЛОКАЛЬНОЙ РАЗРАБОТКИ
+        print("\n📄 Подготовка PDF файлов...")
+        copy_pdfs_to_web()
         
         print("\n📖 ЗАГРУЗКА ДАННЫХ")
         
@@ -554,21 +586,39 @@ def build_site():
         if available_pdfs:
             pdf_content = "<h3 class='text-4xl font-bold neon mb-12'>ГОСТ-документация</h3>"
             pdf_content += "<div class='grid grid-cols-1 md:grid-cols-3 gap-8'>"
+            
             for name, fname in available_pdfs:
-                # ФИКС: Экранируем кавычки
                 safe_name = name.replace("'", "&apos;").replace('"', "&quot;")
-                safe_fname = fname.replace("'", "&apos;").replace('"', "&quot;")
+                
+                # Ссылка на просмотр через viewer
+                pdf_url = f"pdf_viewer.html?file={fname}"
+                
                 pdf_content += f"""
-                <a href="docs/{safe_fname}" target="_blank" class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
-                    <h3 class="text-2xl font-semibold mb-4">{safe_name}</h3>
-                    <p class="text-gray-400">Открыть PDF</p>
+                <a href="{pdf_url}" 
+                class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20 block">
+                    <div class="flex items-center justify-center mb-4">
+                        <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+                            <span class="text-2xl">📄</span>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-center">{safe_name}</h3>
+                    <p class="text-gray-400 text-center text-sm">Открыть для просмотра</p>
                 </a>
                 """
+            
             pdf_content += "</div>"
             print(f"✅ Найдено PDF документов: {len(available_pdfs)}")
         else:
             pdf_content = "<h3 class='text-4xl font-bold neon mb-12'>ГОСТ-документация</h3>"
-            pdf_content += "<p class='text-gray-400 text-center'>PDF-документы отсутствуют</p>"
+            pdf_content += """
+            <div class="text-center py-12">
+                <div class="inline-block p-6 bg-gray-800/50 rounded-2xl">
+                    <div class="text-6xl mb-4">📄</div>
+                    <p class="text-gray-400 text-lg">PDF-документы не сгенерированы</p>
+                    <p class="text-gray-500 text-sm mt-2">Запустите сборку документации</p>
+                </div>
+            </div>
+            """
             print("⚠️ PDF документы не найдены")
         
         pdf_ctx = context.copy()
