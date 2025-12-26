@@ -5,13 +5,26 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
+# ДАЖЕ ВАЖНЕЕ: права для всего workflow
+permissions:
+  contents: write  # ДОЛЖНО БЫТЬ write для записи в ветку!
+  pages: write
+  id-token: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     
+    # Права для конкретного job (опционально, но лучше явно указать)
+    permissions:
+      contents: write  # КРИТИЧЕСКИ ВАЖНО!
+    
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0  # Полная история для деплоя
 
       - name: 🐍 Set up Python
         uses: actions/setup-python@v5
@@ -20,18 +33,13 @@ jobs:
           cache: 'pip'
 
       - name: 📦 Check and install LibreOffice
-        id: libreoffice
         run: |
-          # Проверяем установлен ли LibreOffice
-          if command -v libreoffice &> /dev/null; then
-            echo "✅ LibreOffice already installed"
-            libreoffice --version | head -1
-            echo "cached=true" >> $GITHUB_OUTPUT
-          else
-            echo "🔄 Installing LibreOffice..."
+          if ! command -v libreoffice &> /dev/null; then
+            echo "Installing LibreOffice..."
             sudo apt-get update
             sudo apt-get install -y libreoffice
-            echo "cached=false" >> $GITHUB_OUTPUT
+          else
+            echo "✅ LibreOffice already installed"
           fi
 
       - name: 📋 Install Python dependencies
@@ -39,19 +47,38 @@ jobs:
           pip install --upgrade pip
           pip install PyYAML Jinja2 markupsafe python-docx odfpy click colorama
 
-      - name: 🏗️ Generate documents
+      - name: 🏗️ Generate documents (ODT/PDF)
         run: |
-          echo "🏗️ Generating documents..."
+          echo "🏗️ Generating GOST documents..."
           python docs/scripts/builders/build_docs.py all
+          echo "✅ Documents generated"
 
-      - name: 🌐 Generate website
+      - name: 🌐 Generate documentation website
         run: |
-          echo "🌐 Generating website..."
+          echo "🌐 Generating documentation website..."
           python docs/scripts/builders/build_site.py
+          echo "✅ Website generated"
+
+      - name: 📁 Verify generated files
+        run: |
+          echo "Generated files:"
+          ls -la docs/output/web/ 2>/dev/null || echo "No web directory"
+          echo ""
+          if [ -f "docs/output/web/index.html" ]; then
+            echo "✅ index.html exists"
+          else
+            echo "❌ index.html not found"
+            exit 1
+          fi
 
       - name: 📤 Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v3
         with:
+          # Указываем токен явно
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/output/web
           publish_branch: gh-pages
+          force_orphan: true  # Очищаем ветку каждый раз
+          enable_jekyll: false  # Не нужно для статических сайтов
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
