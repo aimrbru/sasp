@@ -35,33 +35,54 @@ jobs:
           echo "🛡️ Защита PDF..."
           mkdir -p docs/output/protected_pdf
           
-          for pdf in docs/output/pdf/*.pdf 2>/dev/null; do
-            [ -f "$pdf" ] || continue
-            name=$(basename "$pdf")
-            temp=$(mktemp -d)
+          # Проверяем есть ли PDF файлы
+          if ls docs/output/pdf/*.pdf 1> /dev/null 2>&1; then
+            for pdf in docs/output/pdf/*.pdf; do
+              name=$(basename "$pdf")
+              temp=$(mktemp -d)
+              
+              echo "🔒 $name"
+              
+              # PDF → JPEG
+              pdftoppm -jpeg -jpegopt "quality=95" -r 150 "$pdf" "$temp/page"
+              
+              # JPEG → PDF (если создались JPEG)
+              if ls "$temp"/page-*.jpg 1> /dev/null 2>&1; then
+                jpegs=($(ls "$temp"/page-*.jpg | sort))
+                img2pdf "${jpegs[@]}" --output "docs/output/protected_pdf/$name"
+                echo "✅ Защищен"
+              else
+                echo "⚠️  Не созданы JPEG файлы для $name"
+                # Копируем оригинал как fallback
+                cp "$pdf" "docs/output/protected_pdf/$name"
+              fi
+              
+              rm -rf "$temp"
+            done
             
-            echo "🔒 $name"
-            
-            # PDF → JPEG
-            pdftoppm -jpeg -jpegopt "quality=95" -r 150 "$pdf" "$temp/page"
-            
-            # JPEG → PDF
-            jpegs=$(ls "$temp"/page-*.jpg 2>/dev/null | sort)
-            [ -n "$jpegs" ] && img2pdf $jpegs --output "docs/output/protected_pdf/$name"
-            
-            rm -rf "$temp"
-          done
-          
-          ls -lh docs/output/protected_pdf/ 2>/dev/null || echo "Нет PDF"
+            echo "📊 Результат:"
+            ls -lh docs/output/protected_pdf/
+          else
+            echo "⚠️  Нет PDF файлов для защиты"
+            # Создаем тестовый файл
+            echo "Тестовый PDF" > docs/output/protected_pdf/TEST.pdf
+          fi
 
       - name: Prepare deployment
         run: |
           # Копируем HTML сайт
-          cp -r docs/templates/web/* docs/output/web/ 2>/dev/null || true
+          if [ -d "docs/templates/web" ]; then
+            cp -r docs/templates/web/* docs/output/web/ 2>/dev/null || true
+          fi
           
           # Копируем защищенные PDF
           mkdir -p docs/output/web/pdf
-          cp docs/output/protected_pdf/*.pdf docs/output/web/pdf/ 2>/dev/null || true
+          if [ -d "docs/output/protected_pdf" ] && [ -n "$(ls -A docs/output/protected_pdf/*.pdf 2>/dev/null)" ]; then
+            cp docs/output/protected_pdf/*.pdf docs/output/web/pdf/
+            echo "✅ PDF скопированы"
+          else
+            echo "⚠️  Нет защищенных PDF"
+          fi
           
           # Обязательный файл для GitHub Pages
           touch docs/output/web/.nojekyll
