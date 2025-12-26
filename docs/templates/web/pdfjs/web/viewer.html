@@ -4,16 +4,13 @@
   <meta charset="utf-8">
   <title>PDF Viewer</title>
   
-  <!-- ТОЛЬКО ЭТИ ДВА СКРИПТА -->
-  <script src="../build/pdf.js"></script>
-  <script src="viewer.js"></script>
-  
-  <!-- ТОЛЬКО ЭТОТ СТИЛЬ -->
-  <link rel="stylesheet" href="viewer.css">
+  <!-- АБСОЛЮТНЫЕ ПУТИ К PDF.JS -->
+  <script src="/sasp/pdfjs/build/pdf.js"></script>
+  <script src="/sasp/pdfjs/web/viewer.js"></script>
+  <link rel="stylesheet" href="/sasp/pdfjs/web/viewer.css">
 </head>
 
 <body>
-  <!-- МИНИМАЛЬНЫЙ HTML ДЛЯ VIEWER -->
   <div id="outerContainer">
     <div id="mainContainer">
       <div id="viewerContainer">
@@ -21,5 +18,27 @@
       </div>
     </div>
   </div>
+
+  <script>
+    // АБСОЛЮТНЫЙ ПУТЬ К PDF ФАЙЛУ
+    const urlParams = new URLSearchParams(window.location.search);
+    const fileParam = urlParams.get('file');
+    
+    if (fileParam) {
+      // Убираем ../ если есть
+      let pdfPath = fileParam.replace(/^\.\.\//, '');
+      pdfPath = pdfPath.replace(/^\.\//, '');
+      
+      // Формируем абсолютный путь
+      const absolutePath = `/sasp/pdf/${pdfPath}`;
+      
+      console.log('Loading PDF:', absolutePath);
+      
+      // Настраиваем PDF.js
+      window.PDFViewerApplicationOptions = {
+        defaultUrl: absolutePath
+      };
+    }
+  </script>
 </body>
 </html>

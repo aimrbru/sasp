@@ -34,30 +34,23 @@
   <a href="standards.html" class="back-button">← Назад</a>
   
   <script>
-    // Получаем имя файла
+    // Просто передаем имя файла
     const urlParams = new URLSearchParams(window.location.search);
-    let filename = urlParams.get('file');
+    const filename = urlParams.get('file');
     
     if (!filename) {
       document.body.innerHTML = '<div style="color:white;padding:50px">❌ Не указан файл</div>';
-    } else {
-      // Декодируем имя файла ОДИН РАЗ
-      filename = decodeURIComponent(filename);
-      
-      // ФИКС: НЕ кодируем снова русские символы в пути
-      // Просто передаем как есть, кодируем только специальные символы типа /
-      const pdfUrl = encodeURI(`../pdf/${filename}`);
-      const viewerUrl = `./pdfjs/web/viewer.html?file=${pdfUrl}`;
-      
-      console.log('Loading PDF:', filename);
-      console.log('PDF URL:', pdfUrl);
-      console.log('Viewer URL:', viewerUrl);
-      
-      // Создаем iframe
-      const iframe = document.createElement('iframe');
-      iframe.src = viewerUrl;
-      document.body.appendChild(iframe);
+      return;
     }
+    
+    // АБСОЛЮТНЫЙ ПУТЬ к viewer
+    const viewerUrl = `/sasp/pdfjs/web/viewer.html?file=${filename}`;
+    
+    console.log('Opening viewer:', viewerUrl);
+    
+    const iframe = document.createElement('iframe');
+    iframe.src = viewerUrl;
+    document.body.appendChild(iframe);
   </script>
 </body>
 </html>
