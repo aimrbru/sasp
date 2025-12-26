@@ -24,46 +24,74 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install --quiet --no-cache-dir -r docs/scripts/requirements.txt
-          python -m pip install reportlab python-docx jinja2 pyyaml
+          python -m pip install reportlab python-docx jinja2 pyyaml PyYAML
+
+      - name: Install LibreOffice for PDF conversion
+        run: |
+          echo "📄 Установка LibreOffice для конвертации PDF..."
+          sudo apt-get update
+          sudo apt-get install -y libreoffice-core libreoffice-writer
+          libreoffice --version
 
       - name: Build PDF documentation
         run: |
           echo "📄 Генерация PDF файлов..."
-          cd docs/scripts/builders
-          python build_docs.py all
+          cd ${{ github.workspace }}/docs/scripts/builders
+          
+          # Проверяем наличие файла
+          if [ -f "build_docs.py" ]; then
+            echo "✅ Найден build_docs.py"
+            python build_docs.py all --path ${{ github.workspace }}
+          else
+            echo "❌ build_docs.py не найден"
+            ls -la
+            exit 1
+          fi
           
           echo "📁 Проверка созданных PDF:"
-          ls -la ../../output/pdf/ 2>/dev/null || echo "PDF не созданы"
+          if [ -d "${{ github.workspace }}/docs/output/pdf" ]; then
+            ls -la ${{ github.workspace }}/docs/output/pdf/
+          else
+            echo "❌ Папка PDF не создана"
+            mkdir -p ${{ github.workspace }}/docs/output/pdf
+          fi
 
       - name: Build HTML site
         run: |
           echo "🌐 Генерация HTML сайта..."
-          cd docs/scripts/builders
-          python build_site.py
-
-      - name: Copy templates
-        run: |
-          echo "📋 Копирование шаблонов..."
+          cd ${{ github.workspace }}/docs/scripts/builders
           
-          # Копируем все из templates/web
-          cp -r docs/templates/web/. docs/output/web/
-          
-          # Создаем папку pdf если её нет
-          mkdir -p docs/output/web/pdf
-          
-          # Копируем PDF файлы если они есть
-          if ls docs/output/pdf/*.pdf 1>/dev/null 2>&1; then
-            cp -r docs/output/pdf/*.pdf docs/output/web/pdf/
-            echo "✅ PDF файлы скопированы"
+          if [ -f "build_site.py" ]; then
+            echo "✅ Найден build_site.py"
+            python build_site.py
           else
-            echo "⚠️ PDF файлы не найдены в docs/output/pdf/"
-            # Создаем заглушку для проверки
-            echo "PDF будут сгенерированы при следующем запуске" > docs/output/web/pdf/README.txt
+            echo "❌ build_site.py не найден"
+            ls -la
+            exit 1
           fi
 
-      - name: Create .nojekyll
+      - name: Prepare for deployment
         run: |
-          touch docs/output/web/.nojekyll
+          echo "📋 Подготовка файлов для деплоя..."
+          
+          # Создаем .nojekyll
+          touch ${{ github.workspace }}/docs/output/web/.nojekyll
+          
+          # Проверяем что в web папке
+          echo "📁 Содержимое web папки:"
+          ls -la ${{ github.workspace }}/docs/output/web/
+          
+          echo "📁 PDF файлы:"
+          if [ -d "${{ github.workspace }}/docs/output/pdf" ]; then
+            ls -la ${{ github.workspace }}/docs/output/pdf/
+            
+            # Копируем PDF в web папку если их там нет
+            if [ ! -d "${{ github.workspace }}/docs/output/web/pdf" ]; then
+              mkdir -p ${{ github.workspace }}/docs/output/web/pdf
+            fi
+            
+            cp ${{ github.workspace }}/docs/output/pdf/*.pdf ${{ github.workspace }}/docs/output/web/pdf/ 2>/dev/null || echo "Нет PDF для копирования"
+          fi
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
@@ -72,3 +100,4 @@ jobs:
           publish_dir: ./docs/output/web
           publish_branch: gh-pages
           force_orphan: true
+          keep_files: false
