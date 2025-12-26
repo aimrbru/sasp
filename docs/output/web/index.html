@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Документация САСП-2 | САСП-2</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        /* Основные стили (оставляем как были) */
+        body { font-family: 'Segoe UI', system-ui, sans-serif; }
+        .neon { text-shadow: 0 0 10px #3b82f6, 0 0 20px #3b82f6; }
+        .content h1, .content h2, .content h3 { scroll-margin-top: 100px; }
+        html { scroll-behavior: smooth; }
+        
+        /* Стили для TOC (оставляем как были) */
+        .toc-container { height: calc(100vh - 140px); position: sticky; top: 100px; }
+        .toc-scrollable { height: 100%; overflow-y: auto; overscroll-behavior: contain; }
+        
+        /* ЗАЩИТА PDF - только самое важное */
+        .no-select {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        
+        #pdf-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            display: none;
+        }
+        
+        .pdf-viewer {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .pdf-canvas {
+            max-width: 100%;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        /* Мобильное меню */
+        .mobile-nav a {
+            display: block;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #374151;
+        }
+        
+        .nav-active {
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        
+        .centered-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+    </style>
+    <script>
+        // ============ МИНИМАЛЬНАЯ ЗАЩИТА PDF ============
+        
+        // Глобальная переменная для отслеживания состояния
+        let isPdfViewerOpen = false;
+        
+        // Базовые защиты при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Запрет контекстного меню везде
+            document.addEventListener('contextmenu', function(e) {
+                if (isPdfViewerOpen) {
+                    e.preventDefault();
+                    showWarning('Копирование запрещено');
+                    return false;
+                }
+            });
+            
+            // Запрет копирования в PDF просмотрщике
+            document.addEventListener('copy', function(e) {
+                if (isPdfViewerOpen) {
+                    e.preventDefault();
+                    showWarning('Копирование заблокировано');
+                    return false;
+                }
+            });
+            
+            // Запрет перетаскивания
+            document.addEventListener('dragstart', function(e) {
+                if (isPdfViewerOpen) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            
+            // Блокировка Ctrl+S, Ctrl+P
+            document.addEventListener('keydown', function(e) {
+                if (isPdfViewerOpen && (e.ctrlKey || e.metaKey)) {
+                    if (e.key === 's' || e.key === 'p') {
+                        e.preventDefault();
+                        showWarning('Сохранение заблокировано');
+                        return false;
+                    }
+                }
+            });
+            
+            // Инициализация PDF просмотрщика для всех ссылок с data-pdf
+            document.querySelectorAll('button[data-pdf]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const pdfUrl = this.getAttribute('data-pdf');
+                    const pdfName = this.getAttribute('data-name') || 'Документ';
+                    openProtectedPdf(pdfUrl, pdfName);
+                });
+            });
+        });
+        
+        // Простое предупреждение
+        function showWarning(msg) {
+            const warning = document.createElement('div');
+            warning.textContent = '⚠️ ' + msg;
+            warning.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #ef4444;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 5px;
+                z-index: 10001;
+                animation: fadeInOut 2s;
+            `;
+            
+            document.body.appendChild(warning);
+            setTimeout(() => warning.remove(), 2000);
+        }
+        
+        // Добавляем стили для анимации
+        if (!document.querySelector('#anim-styles')) {
+            const style = document.createElement('style');
+            style.id = 'anim-styles';
+            style.textContent = `
+                @keyframes fadeInOut {
+                    0% { opacity: 0; transform: translateY(-20px); }
+                    20% { opacity: 1; transform: translateY(0); }
+                    80% { opacity: 1; transform: translateY(0); }
+                    100% { opacity: 0; transform: translateY(-20px); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // ============ ПРОСТОЙ PDF ПРОСМОТРЩИК ============
+        
+        function openProtectedPdf(pdfUrl, pdfName) {
+            isPdfViewerOpen = true;
+            document.body.classList.add('no-select');
+            document.body.style.overflow = 'hidden';
+            
+            // Создаем простой модальный просмотрщик
+            const modal = document.createElement('div');
+            modal.id = 'pdf-modal';
+            modal.innerHTML = `
+                <div class="pdf-viewer">
+                    <!-- Шапка -->
+                    <div class="bg-gray-800 p-4 border-b border-blue-600 flex justify-between items-center">
+                        <h3 class="text-xl font-bold text-blue-400">${pdfName}</h3>
+                        <button onclick="closePdfViewer()" class="text-2xl text-gray-400 hover:text-white px-3">×</button>
+                    </div>
+                    
+                    <!-- Контейнер для PDF -->
+                    <div id="pdf-container" class="flex-1 overflow-auto p-4" style="background: #1a202c;">
+                        <div class="text-center py-8">
+                            <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+                            <p class="text-gray-400">Загрузка документа...</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Простые контролы -->
+                    <div class="bg-gray-800 p-4 border-t border-blue-600 flex justify-center space-x-4">
+                        <button onclick="prevPage()" id="prev-btn" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg disabled:opacity-50">← Назад</button>
+                        <span id="page-info" class="px-4 py-2 text-gray-300">Страница: 1</span>
+                        <button onclick="nextPage()" id="next-btn" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg disabled:opacity-50">Вперед →</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            modal.style.display = 'block';
+            
+            // Загружаем PDF
+            loadPdfPages(pdfUrl);
+        }
+        
+        function closePdfViewer() {
+            isPdfViewerOpen = false;
+            document.body.classList.remove('no-select');
+            document.body.style.overflow = '';
+            const modal = document.getElementById('pdf-modal');
+            if (modal) modal.remove();
+        }
+        
+        // Глобальные переменные для PDF
+        let pdfDoc = null;
+        let currentPage = 1;
+        let scale = 1.3;
+        
+        function loadPdfPages(url) {
+            // Используем PDF.js из CDN
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            
+            pdfjsLib.getDocument(url).promise.then(pdf => {
+                pdfDoc = pdf;
+                renderPage(currentPage);
+            }).catch(err => {
+                document.getElementById('pdf-container').innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="text-red-400 text-4xl mb-4">❌</div>
+                        <h4 class="text-xl font-bold mb-2">Ошибка загрузки</h4>
+                        <p class="text-gray-400">Не удалось загрузить документ</p>
+                        <button onclick="closePdfViewer()" class="mt-4 px-6 py-2 bg-blue-600 rounded-lg">
+                            Закрыть
+                        </button>
+                    </div>
+                `;
+            });
+        }
+        
+        function renderPage(pageNum) {
+            if (!pdfDoc) return;
+            
+            pdfDoc.getPage(pageNum).then(page => {
+                const viewport = page.getViewport({ scale: scale });
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.className = 'pdf-canvas';
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                
+                // Запрещаем правый клик на canvas
+                canvas.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    showWarning('Копирование запрещено');
+                    return false;
+                };
+                
+                // Рендерим
+                const renderContext = { canvasContext: ctx, viewport: viewport };
+                page.render(renderContext).promise.then(() => {
+                    const container = document.getElementById('pdf-container');
+                    container.innerHTML = '';
+                    container.appendChild(canvas);
+                    
+                    // Обновляем информацию о странице
+                    document.getElementById('page-info').textContent = `Страница: ${pageNum} из ${pdfDoc.numPages}`;
+                    
+                    // Обновляем состояние кнопок
+                    document.getElementById('prev-btn').disabled = pageNum <= 1;
+                    document.getElementById('next-btn').disabled = pageNum >= pdfDoc.numPages;
+                });
+            });
+        }
+        
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPage(currentPage);
+            }
+        }
+        
+        function nextPage() {
+            if (pdfDoc && currentPage < pdfDoc.numPages) {
+                currentPage++;
+                renderPage(currentPage);
+            }
+        }
+        
+        // Закрытие по ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && isPdfViewerOpen) {
+                closePdfViewer();
+            }
+        });
+        
+        // ============ ОГЛАВЛЕНИЕ И НАВИГАЦИЯ (как было) ============
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ваш существующий код для TOC и навигации
+            // ... 
+        });
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen" x-data="{ mobileMenuOpen: false, tocOpen: false }">
+    <!-- Навигация (оставляем как было) -->
+    <header class="bg-gray-800 border-b border-blue-600 sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
+            <h1 class="text-xl sm:text-2xl font-bold neon">САСП-2</h1>
+            
+            <!-- Десктопная навигация -->
+            <ul class="hidden md:flex space-x-4 lg:space-x-6 text-sm lg:text-base">
+                <li><a href="index.html" class="hover:text-blue-400 text-blue-400 font-semibold">Главная</a></li>
+                <li><a href="user_guide.html" class="hover:text-blue-400 ">Руководство</a></li>
+                <li><a href="maintenance.html" class="hover:text-blue-400 ">Обслуживание</a></li>
+                <li><a href="api.html" class="hover:text-blue-400 ">API</a></li>
+                <li><a href="standards.html" class="hover:text-blue-400 ">ГОСТ / PDF</a></li>
+            </ul>
+            
+            <!-- Кнопка меню для мобильных -->
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-gray-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Мобильное меню -->
+    <div x-show="mobileMenuOpen" class="md:hidden fixed inset-x-0 top-16 bg-gray-800 border-b border-blue-600 z-40">
+        <div class="mobile-nav py-2">
+            <a href="index.html" class="nav-active" @click="mobileMenuOpen = false">Главная</a>
+            <a href="user_guide.html" class="" @click="mobileMenuOpen = false">Руководство</a>
+            <a href="maintenance.html" class="" @click="mobileMenuOpen = false">Обслуживание</a>
+            <a href="api.html" class="" @click="mobileMenuOpen = false">API</a>
+            <a href="standards.html" class="" @click="mobileMenuOpen = false">ГОСТ / PDF</a>
+        </div>
+    </div>
+
+    <!-- Основной контент -->
+    <main class="container mx-auto px-4 md:px-6 py-6 md:py-12 max-w-7xl">
+        
+            <div class="content bg-gray-800/30 backdrop-blur-sm p-6 rounded-2xl border border-blue-700/30 centered-content">
+                
+            <div class="text-center">
+                <h4 class="text-xl font-bold neon mb-6">Система автоматизированного считывания показаний счетчиков "САСП-2"</h4>
+               
+                <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <a href="user_guide.html" class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
+                        <h4 class="text-xl font-semibold mb-4">Руководство пользователя</h4>
+                        <p class="text-gray-400">Полное описание эксплуатации изделия</p>
+                    </a>
+                    <a href="maintenance.html" class="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
+                        <h4 class="text-xl font-semibold mb-4">Руководство по обслуживанию</h4>
+                        <p class="text-gray-400">ТО, ремонт, хранение, транспортировка</p>
+                    </a>
+                    <a href="api.html" class="bg-gray800/50 backdrop-blur-sm p-8 rounded-2xl border border-blue-700 hover:border-blue-500 transition-all shadow-lg hover:shadow-blue-500/20">
+                        <h4 class="text-xl font-semibold mb-4">Справочник по API</h4>
+                        <p class="text-gray-400">Программный интерфейс устройства</p>
+                    </a>
+                </div>
+            </div>
+            
+            </div>
+        
+    </main>
+
+    <!-- Футер -->
+    <footer class="bg-gray-800 border-t border-blue-600 mt-12 py-6">
+        <div class="container mx-auto px-6 text-center text-gray-500 text-sm">
+            <p>Разработчик: ООО &#34;АИМ&#34;, Москва</p>
+            <p class="mt-2">Версия: V1 | Прошивка: ESP-IDF Framework</p>
+        </div>
+    </footer>
+</body>
+</html>
