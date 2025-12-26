@@ -5,16 +5,9 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    outputs:
-      site-generated: ${{ steps.check-site.outputs.generated }}
     
     steps:
       - name: 📥 Checkout repository
@@ -26,59 +19,39 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: 📦 Install system dependencies
+      - name: 📦 Check and install LibreOffice
+        id: libreoffice
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libreoffice
+          # Проверяем установлен ли LibreOffice
+          if command -v libreoffice &> /dev/null; then
+            echo "✅ LibreOffice already installed"
+            libreoffice --version | head -1
+            echo "cached=true" >> $GITHUB_OUTPUT
+          else
+            echo "🔄 Installing LibreOffice..."
+            sudo apt-get update
+            sudo apt-get install -y libreoffice
+            echo "cached=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: 📋 Install Python dependencies
         run: |
           pip install --upgrade pip
           pip install PyYAML Jinja2 markupsafe python-docx odfpy click colorama
 
-      - name: 🏗️ Generate documents (ODT/PDF)
+      - name: 🏗️ Generate documents
         run: |
-          echo "🏗️ Generating GOST documents..."
+          echo "🏗️ Generating documents..."
           python docs/scripts/builders/build_docs.py all
-          echo "✅ Documents generated"
 
-      - name: 🌐 Generate documentation website
+      - name: 🌐 Generate website
         run: |
-          echo "🌐 Generating documentation website..."
+          echo "🌐 Generating website..."
           python docs/scripts/builders/build_site.py
-          echo "✅ Website generation attempted"
 
-      - name: 🔍 Check if site was generated
-        id: check-site
-        run: |
-          if [ -f "docs/output/web/index.html" ]; then
-            echo "✅ Website was generated successfully"
-            echo "generated=true" >> $GITHUB_OUTPUT
-          else
-            echo "❌ Website was NOT generated"
-            echo "generated=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: 📤 Upload site artifact (if generated)
-        if: steps.check-site.outputs.generated == 'true'
-        uses: actions/upload-pages-artifact@v3
+      - name: 📤 Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          path: ./docs/output/web
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    if: needs.build.outputs.site-generated == 'true'
-    
-    permissions:
-      pages: write
-      id-token: write
-    
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    
-    steps:
-      - name: 🚀 Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/output/web
+          publish_branch: gh-pages
