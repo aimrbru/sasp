@@ -45,3 +45,17 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/output/web
           publish_branch: gh-pages
+
+                - name: Verify deployment
+        run: |
+          echo "=== Проверка PDF файлов ==="
+          echo "В web папке:"
+          find docs/output/web -name "*.pdf" -type f | xargs -I {} echo "  - {}"
+          
+          echo ""
+          echo "=== Примеры ссылок ==="
+          echo "Прямой доступ:"
+          echo "  https://aimrbru.github.io/sasp/pdf/АИМУ.123456.002.ПС.pdf"
+          echo ""
+          echo "Через viewer:"
+          echo "  https://aimrbru.github.io/sasp/pdf_viewer.html?file=АИМУ.123456.002.ПС.pdf"

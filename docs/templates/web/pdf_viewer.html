@@ -12,148 +12,120 @@
         .title { font-size: 24px; color: #60a5fa; }
         .btn { padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; text-decoration: none; }
         #viewer { width: 100%; height: calc(100vh - 180px); border: none; border-radius: 12px; background: #1e293b; }
-        .loading { display: flex; justify-content: center; align-items: center; height: 100%; font-size: 18px; color: #94a3b8; }
-        .error { color: #ef4444; text-align: center; padding: 40px; }
+        .debug { background: #1e293b; padding: 15px; margin-top: 20px; border-radius: 8px; font-family: monospace; font-size: 12px; color: #94a3b8; }
+        .error { color: #ef4444; padding: 40px; text-align: center; }
+        .loading { display: flex; justify-content: center; align-items: center; height: 100%; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1 class="title" id="docTitle">Загрузка документа...</h1>
+            <h1 class="title" id="docTitle">Просмотр документа</h1>
             <a href="standards.html" class="btn">← Назад к документам</a>
         </div>
         
         <div id="viewer" class="loading">
-            Загрузка PDF...
+            Загрузка документа...
         </div>
+        
+        <div id="debug" class="debug"></div>
     </div>
     
-    <!-- PDF.js библиотеки -->
-    <script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
-    <script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js"></script>
-    
     <script>
-        // Защита от копирования
+        // Защита
         document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('selectstart', e => e.preventDefault());
-        document.addEventListener('keydown', e => {
-            if (e.ctrlKey && (e.key === 'c' || e.key === 's' || e.key === 'p')) {
-                e.preventDefault();
-                alert('Копирование и скачивание запрещено');
-            }
-        });
         
         // Получаем параметры
         const urlParams = new URLSearchParams(window.location.search);
         const pdfFile = urlParams.get('file');
+        const debug = document.getElementById('debug');
+        
+        debug.innerHTML = `<div>Получен файл: ${pdfFile || 'не указан'}</div>`;
         
         if (!pdfFile) {
-            showError('Файл не указан');
+            showError('Файл не указан в URL параметрах');
             return;
         }
         
-        // Устанавливаем заголовок
-        const fileName = decodeURIComponent(pdfFile).replace('.pdf', '');
-        document.getElementById('docTitle').textContent = fileName;
+        // Декодируем имя файла
+        const decodedFile = decodeURIComponent(pdfFile);
+        document.getElementById('docTitle').textContent = decodedFile.replace('.pdf', '');
         
-        // Загружаем PDF
-        loadPDF(pdfFile);
+        debug.innerHTML += `<div>Декодировано: ${decodedFile}</div>`;
         
-        async function loadPDF(filename) {
+        // Пробуем разные варианты URL
+        const baseUrl = window.location.origin;
+        const possibleUrls = [
+            `${baseUrl}/sasp/pdf/${pdfFile}`,
+            `${baseUrl}/pdf/${pdfFile}`,
+            `https://aimrbru.github.io/sasp/pdf/${pdfFile}`,
+            `pdf/${pdfFile}`
+        ];
+        
+        debug.innerHTML += '<div>Тестирую URL:</div>';
+        
+        // Тестируем каждый URL
+        let workingUrl = null;
+        for (const url of possibleUrls) {
+            debug.innerHTML += `<div>- ${url}</div>`;
+            
             try {
-                const viewer = document.getElementById('viewer');
-                viewer.innerHTML = '<div class="loading">Загрузка документа...</div>';
-                
-                // URL к PDF
-                const pdfUrl = `/sasp/pdf/${filename}`;
-                
-                // Инициализация PDF.js
-                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
-                
-                // Загрузка PDF
-                const loadingTask = pdfjsLib.getDocument(pdfUrl);
-                const pdf = await loadingTask.promise;
-                
-                // Создаем canvas для отображения
-                viewer.innerHTML = '';
-                const canvas = document.createElement('canvas');
-                viewer.appendChild(canvas);
-                
-                // Рендерим первую страницу
-                const page = await pdf.getPage(1);
-                const scale = 1.5;
-                const viewport = page.getViewport({ scale });
-                
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-                
-                const ctx = canvas.getContext('2d');
-                await page.render({
-                    canvasContext: ctx,
-                    viewport: viewport
-                }).promise;
-                
-                // Добавляем водяные знаки
-                addWatermark(canvas);
-                
-                // Навигация (опционально)
-                addNavigation(pdf, canvas);
-                
-            } catch (error) {
-                console.error('Ошибка загрузки PDF:', error);
-                showError(`Не удалось загрузить документ: ${error.message}`);
-            }
-        }
-        
-        function addWatermark(canvas) {
-            const ctx = canvas.getContext('2d');
-            ctx.save();
-            ctx.globalAlpha = 0.1;
-            ctx.font = '60px Arial';
-            ctx.fillStyle = 'red';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.rotate(-Math.PI / 4);
-            
-            // Множественные водяные знаки
-            for(let i = -3; i < 4; i++) {
-                for(let j = -3; j < 4; j++) {
-                    ctx.fillText('КОНФИДЕНЦИАЛЬНО', i * 400, j * 300);
+                const response = await fetch(url, { method: 'HEAD' });
+                if (response.ok) {
+                    workingUrl = url;
+                    debug.innerHTML += `<div style="color: #10b981;">✅ Доступен: ${url}</div>`;
+                    break;
+                } else {
+                    debug.innerHTML += `<div style="color: #ef4444;">❌ Не доступен (${response.status}): ${url}</div>`;
                 }
+            } catch (error) {
+                debug.innerHTML += `<div style="color: #ef4444;">❌ Ошибка: ${url}</div>`;
             }
-            
-            ctx.restore();
         }
         
-        function addNavigation(pdf, canvas) {
-            // Простая навигация
-            const nav = document.createElement('div');
-            nav.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: #1e293b; padding: 10px; border-radius: 8px;';
-            nav.innerHTML = `
-                <button onclick="changePage(-1)" style="margin: 0 5px; padding: 5px 10px; background: #3b82f6; color: white; border: none; border-radius: 4px;">←</button>
-                <span style="color: #94a3b8; margin: 0 10px;">Страница 1 из ${pdf.numPages}</span>
-                <button onclick="changePage(1)" style="margin: 0 5px; padding: 5px 10px; background: #3b82f6; color: white; border: none; border-radius: 4px;">→</button>
-            `;
-            document.body.appendChild(nav);
-            
-            window.changePage = async (delta) => {
-                // Реализация навигации по страницам
-                alert('Навигация по страницам доступна в полной версии');
-            };
+        if (!workingUrl) {
+            showError('PDF файл не найден на сервере');
+            return;
         }
+        
+        debug.innerHTML += `<div>Использую URL: ${workingUrl}</div>`;
+        
+        // Загружаем через iframe с PDF.js (самый простой способ)
+        const viewer = document.getElementById('viewer');
+        viewer.innerHTML = ''; // Убираем loading
+        
+        const iframe = document.createElement('iframe');
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.border = 'none';
+        
+        // Используем PDF.js viewer
+        const viewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(workingUrl)}`;
+        debug.innerHTML += `<div>Viewer URL: ${viewerUrl}</div>`;
+        
+        iframe.src = viewerUrl;
+        viewer.appendChild(iframe);
         
         function showError(message) {
-            const viewer = document.getElementById('viewer');
-            viewer.className = 'error';
-            viewer.innerHTML = `
-                <div>
-                    <p style="margin-bottom: 10px;">❌ ${message}</p>
-                    <p style="font-size: 14px; color: #94a3b8;">
-                        Проверьте правильность ссылки или обратитесь к администратору
-                    </p>
+            document.getElementById('viewer').innerHTML = `
+                <div class="error">
+                    <h3>❌ Ошибка</h3>
+                    <p>${message}</p>
+                    <p>Проверьте:</p>
+                    <ul style="text-align: left; margin: 20px auto; max-width: 400px;">
+                        <li>PDF файл существует в репозитории</li>
+                        <li>Файл находится в папке /pdf/</li>
+                        <li>Имя файла правильно указано</li>
+                    </ul>
+                    <p><a href="standards.html">Вернуться к списку документов</a></p>
                 </div>
             `;
         }
+        
+        // Авто-обновление debug info
+        setTimeout(() => {
+            debug.innerHTML += `<div>Загрузка через iframe начата</div>`;
+        }, 1000);
     </script>
 </body>
 </html>
