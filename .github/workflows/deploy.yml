@@ -13,59 +13,30 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: 📥 Checkout
-        uses: actions/checkout@v4
-
-      - name: 🐍 Setup Python with pip cache
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-
-      - name: 📦 Cache apt packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            /var/cache/apt
-            /var/lib/apt/lists
-          key: ${{ runner.os }}-apt-${{ hashFiles('.github/apt-packages.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-apt-
-
-      - name: 📦 Install LibreOffice
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libreoffice
-
-      - name: 📋 Install Python packages
-        run: |
-          pip install --upgrade pip
-          pip install PyYAML Jinja2 markupsafe python-docx odfpy click colorama
-
-      - name: 🏗️ Generate documents
+      
+      - run: sudo apt-get update && sudo apt-get install -y libreoffice
+      
+      - run: pip install PyYAML Jinja2 markupsafe python-docx odfpy click colorama
+      
+      - name: Build documentation
         run: |
           python docs/scripts/builders/build_docs.py all
-
-      - name: 📄 Copy PDFs to web
-        run: |
+          
           mkdir -p docs/output/web/pdf
-          if ls docs/output/pdf/*.pdf 1> /dev/null 2>&1; then
-            cp docs/output/pdf/*.pdf docs/output/web/pdf/
-            echo "PDFs copied to web/pdf/"
-          fi
-
-      - name: 🌐 Generate website
-        run: |
+          cp -r docs/output/pdf/*.pdf docs/output/web/pdf/ 2>/dev/null || echo "No PDFs"
+          
           python docs/scripts/builders/build_site.py
           touch docs/output/web/.nojekyll
-
-      - name: 📋 Copy PDF viewer template
-        run: |
+          
           cp docs/templates/web/pdf_viewer.html docs/output/web/
-          echo "✅ PDF viewer template copied"
-        
-      - name: 📤 Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      
+      - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/output/web
