@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-build_site.py - Генерация high-tech сайта документации САСП-2
+build_site.py - Генерация high-tech сайта документации САСП-2.
 """
 import os
 import sys
