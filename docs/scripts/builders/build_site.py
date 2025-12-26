@@ -584,7 +584,7 @@ def build_site():
         available_pdfs = get_available_pdfs()
         
         if available_pdfs:
-            pdf_content = "<h3 class='text-4xl font-bold neon mb-12'>ГОСТ-документация</h3>"
+            pdf_content = "<h3 class='text-2xl font-bold neon mb-12'>ГОСТ-документация</h3>"
             pdf_content += "<div class='grid grid-cols-1 md:grid-cols-3 gap-8'>"
             
             for name, fname in available_pdfs:
@@ -601,7 +601,7 @@ def build_site():
                             <span class="text-и xl">📄</span>
                         </div>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2 text-center">{safe_name}</h3>
+                    <h5 class="text-xl font-semibold mb-2 text-center">{safe_name}</h5>
                     <p class="text-gray-400 text-center text-sm">Открыть для просмотра</p>
                 </a>
                 """
