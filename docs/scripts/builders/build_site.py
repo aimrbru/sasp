@@ -576,10 +576,10 @@ def build_site():
                 pdf_url = f"pdf/{fname}"
                 
                 pdf_content += f"""
-                <div class="bg-gray-800/50 p-6 rounded-xl border border-blue-700 hover:border-blue-500 transition-all">
+                <div class="bg-white/90 p-6 rounded-xl border border-gray-300 hover:border-blue-400 transition-all">
                     <div class="text-center">
-                        <div class="w-12 h-12 bg-blue-600/20 rounded-lg flex items-center justify-center mx-auto mb-4">
-                            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
                         </div>
@@ -590,7 +590,6 @@ def build_site():
                                 class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
                             Открыть для просмотра
                         </button>
-   
                     </div>
                 </div>
                 """
