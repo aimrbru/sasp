@@ -587,7 +587,7 @@ def build_site():
 
                         <button data-pdf="pdf/{fname}" 
                                 data-name="{safe_name}"
-                                class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                                class="w-full py-2 bg-blue-400 hover:bg-blue-800 text-white rounded-lg transition-colors">
                             Открыть для просмотра
                         </button>
                     </div>
@@ -602,8 +602,8 @@ def build_site():
             <div class="text-center py-12">
                 <div class="inline-block p-6 bg-gray-800/50 rounded-2xl">
                     <div class="text-6xl mb-4">📄</div>
-                    <p class="text-gray-400 text-lg">PDF-документы не сгенерированы</p>
-                    <p class="text-gray-500 text-sm mt-2">Запустите сборку документации</p>
+                    <p class="text-gray-300 text-lg">PDF-документы не сгенерированы</p>
+                    <p class="text-gray-300 text-sm mt-2">Запустите сборку документации</p>
                 </div>
             </div>
             """
