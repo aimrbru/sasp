@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="991.96967"
+   height="459.43204"
+   viewBox="0 0 991.96969 459.43204"
+   version="1.1"
+   id="svg438"
+   sodipodi:docname="structural_diagram.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   inkscape:export-filename="structural_diagram.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview440"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="0.62076532"
+     inkscape:cx="571.06927"
+     inkscape:cy="567.04198"
+     inkscape:window-width="1920"
+     inkscape:window-height="1026"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg438" />
+  <style
+     id="style313">
+    .blk { fill:#fff; stroke:#000; stroke-width:2; }
+    .title { font: bold 18px sans-serif; }
+    .label { font: 16px sans-serif; }
+    .small { font: 14px sans-serif; }
+    .line { stroke:#000; stroke-width:2; fill:none; }
+    .arrow path { fill:#000; }
+  </style>
+  <defs
+     id="defs318">
+    <marker
+       id="arrow"
+       class="arrow"
+       markerWidth="10"
+       markerHeight="10"
+       refX="9"
+       refY="5"
+       orient="auto">
+      <path
+         d="M 0,0 10,5 0,10 Z"
+         id="path315" />
+    </marker>
+    <marker
+       id="arrow-35"
+       class="arrow"
+       markerWidth="10"
+       markerHeight="10"
+       refX="9"
+       refY="5"
+       orient="auto">
+      <path
+         d="M 0,0 10,5 0,10 Z"
+         id="path315-62" />
+    </marker>
+    <marker
+       id="arrow-5"
+       class="arrow"
+       markerWidth="10"
+       markerHeight="10"
+       refX="9"
+       refY="5"
+       orient="auto">
+      <path
+         d="M 0,0 10,5 0,10 Z"
+         id="path315-4" />
+    </marker>
+  </defs>
+  <!-- ================= LEFT COLUMN: POWER ================= -->
+  <!-- Вход питания -->
+  <rect
+     x="0.70670116"
+     y="70.650185"
+     width="170.15233"
+     height="66.112946"
+     class="blk"
+     id="rect320" />
+  <text
+     x="24.459564"
+     y="101.84822"
+     class="label"
+     id="text322"
+     transform="scale(0.96562864,1.0355948)"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:sans-serif;stroke-width:1.53709">Вход питания</text>
+  <text
+     x="135.83888"
+     y="102.55163"
+     class="small"
+     id="text324"
+     transform="scale(0.96562864,1.0355948)"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:sans-serif;stroke-width:1.53709">5 В</text>
+  <!-- Линейный стабилизатор -->
+  <!-- Шина 3.3 В -->
+  <!-- GND -->
+  <!-- Connections (power chain) -->
+  <path
+     d="m 170.54481,103.9952 h 69.2633"
+     class="line"
+     marker-end="url(#arrow)"
+     id="path344" />
+  <!-- ================= CENTER COLUMN: ESP32 ================= -->
+  <rect
+     x="241.71213"
+     y="0.79732728"
+     width="408.38348"
+     height="282.50049"
+     class="blk"
+     id="rect350" />
+  <text
+     x="370.74612"
+     y="51.56675"
+     class="title"
+     id="text352"
+     transform="scale(0.96562864,1.0355948)"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:18px;line-height:normal;font-family:sans-serif;stroke-width:1.53709">Модуль ESP32</text>
+  <text
+     x="370.74612"
+     y="97.679359"
+     class="small"
+     id="text354"
+     transform="scale(0.96562864,1.0355948)"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:sans-serif;stroke-width:1.53709">CPU, Wi-Fi, BT, RTC</text>
+  <text
+     x="370.74612"
+     y="128.42116"
+     class="small"
+     id="text356"
+     transform="scale(0.96562864,1.0355948)"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:sans-serif;stroke-width:1.53709">Flash / PSRAM</text>
+  <text
+     x="370.74612"
+     y="159.16292"
+     class="small"
+     id="text358"
+     transform="scale(0.96562864,1.0355948)"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:sans-serif;stroke-width:1.53709">GPIO</text>
+  <text
+     x="370.74612"
+     y="189.90463"
+     class="small"
+     id="text360"
+     transform="scale(0.96562864,1.0355948)"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:sans-serif;stroke-width:1.53709">UART0 / SPI / I2C / DVP</text>
+  <!-- Power to ESP32 -->
+  <!-- ================= TOP: ПРОГРАММИРУЮЩИЙ РАЗЪЁМ ================= -->
+  <!-- ================= BOTTOM: ANTENNA ================= -->
+  <rect
+     x="455.09586"
+     y="347.93182"
+     width="194.24945"
+     height="110.68304"
+     class="blk"
+     id="rect380" />
+  <text
+     x="488.06747"
+     y="393.92517"
+     class="label"
+     id="text382"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:sans-serif;stroke-width:1.53709"
+     transform="scale(0.96562864,1.0355948)">Антенна Wi-Fi / BT</text>
+  <path
+     d="M 559.60511,348.16056 V 284.48852"
+     class="line"
+     marker-end="url(#arrow)"
+     id="path384" />
+  <path
+     d="M 331.38798,349.51486 V 285.84282"
+     class="line"
+     marker-end="url(#arrow-5)"
+     id="path384-7"
+     style="fill:none;stroke:#000000;stroke-width:2;marker-end:url(#arrow-5)" />
+  <text
+     x="587.91235"
+     y="321.51935"
+     class="small"
+     id="text386"
+     transform="scale(0.96562864,1.0355948)"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:sans-serif;stroke-width:1.53709">RF тракт</text>
+  <!-- ================= RIGHT COLUMN: CAMERA ================= -->
+  <rect
+     x="785.00409"
+     y="0.76661706"
+     width="206.23402"
+     height="276.46692"
+     class="blk"
+     id="rect388" />
+  <text
+     x="841.73059"
+     y="55.165337"
+     class="title"
+     id="text390"
+     transform="scale(0.96562864,1.0355948)"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:18px;line-height:normal;font-family:sans-serif;stroke-width:1.53709">Камера OV2640</text>
+  <text
+     x="841.73059"
+     y="101.27796"
+     class="small"
+     id="text392"
+     transform="scale(0.96562864,1.0355948)"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:sans-serif;stroke-width:1.53709">DVP: D0–D7</text>
+  <text
+     x="841.73059"
+     y="132.01973"
+     class="small"
+     id="text394"
+     transform="scale(0.96562864,1.0355948)"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:sans-serif;stroke-width:1.53709">PCLK, VSYNC, HREF</text>
+  <text
+     x="841.73059"
+     y="162.76151"
+     class="small"
+     id="text396"
+     transform="scale(0.96562864,1.0355948)"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:sans-serif;stroke-width:1.53709">XCLK</text>
+  <text
+     x="841.73059"
+     y="193.50323"
+     class="small"
+     id="text398"
+     transform="scale(0.96562864,1.0355948)"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:sans-serif;stroke-width:1.53709">SCCB (SDA, SCL)</text>
+  <text
+     x="841.73059"
+     y="224.245"
+     class="small"
+     id="text400"
+     transform="scale(0.96562864,1.0355948)"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:sans-serif;stroke-width:1.53709">PWDN, RESET</text>
+  <!-- DVP bus -->
+  <path
+     d="M 785.17583,97.44942 H 651.59276"
+     class="line"
+     marker-end="url(#arrow)"
+     id="path402" />
+  <text
+     x="720.1427"
+     y="130.16913"
+     class="small"
+     id="text404"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:sans-serif;stroke-width:2.86848"
+     transform="scale(0.93888833,1.0650894)">DVP</text>
+  <!-- SCCB -->
+  <path
+     d="m 785.53249,192.28002 h -103.8979 v 0 h -29.68517"
+     class="line"
+     marker-end="url(#arrow)"
+     id="path406" />
+  <text
+     x="689.25281"
+     y="179.95473"
+     class="small"
+     id="text408"
+     transform="scale(0.98083556,1.0195389)"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:sans-serif;stroke-width:2.59607">SCCB</text>
+  <!-- RESET/PWDN -->
+  <path
+     d="m 785.84361,241.2595 h -74.21274 v 0 h -59.37033"
+     class="line"
+     marker-end="url(#arrow)"
+     id="path410" />
+  <path
+     d="m 785.18508,146.79914 h -74.21275 v 0 H 651.602"
+     class="line"
+     marker-end="url(#arrow-35)"
+     id="path410-9"
+     style="fill:none;stroke:#000000;stroke-width:2;marker-end:url(#arrow-35)" />
+  <text
+     x="661.12012"
+     y="234.9447"
+     class="small"
+     id="text412"
+     transform="scale(1.0175515,0.98275124)"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:sans-serif;stroke-width:2.45634">PWDN / RESET</text>
+  <!-- XCLK -->
+  <text
+     x="703.17352"
+     y="82.426994"
+     class="small"
+     id="text416"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:sans-serif;stroke-width:1.53709"
+     transform="scale(0.96562864,1.0355948)">XCLK</text>
+  <!-- ================= microSD (bottom center) ================= -->
+  <rect
+     x="240.1911"
+     y="349.51926"
+     width="191.28793"
+     height="108.69706"
+     class="blk"
+     id="rect418" />
+  <text
+     x="261.78156"
+     y="382.72421"
+     class="label"
+     id="text420"
+     transform="scale(0.96562864,1.0355948)"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:normal;font-family:sans-serif;stroke-width:1.53709">Слот microSD</text>
+  <text
+     x="261.78156"
+     y="421.15137"
+     class="small"
+     id="text422"
+     transform="scale(0.96562864,1.0355948)"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:sans-serif;stroke-width:1.53709">SPI: MOSI, MISO, SCK, CS</text>
+  <!-- microSD → ESP32 -->
+  <text
+     x="382.83798"
+     y="316.26831"
+     class="small"
+     id="text428"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:normal;font-family:sans-serif;stroke-width:1.53709"
+     transform="scale(0.96562864,1.0355948)"
+     inkscape:export-filename="./text428.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300">SPI</text>
+  <!-- microSD power -->
+</svg>
