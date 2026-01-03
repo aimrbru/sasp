@@ -253,12 +253,12 @@ def simple_render_section(section: dict, level: int = 1, context: dict | None = 
                     text = render_text(block["value"], context)
                     # ФИКС: Используем переменную для замены символов
                     processed_text = text.replace('\n', '<br>')
-                    html.append(f"<p class='mb-4 text-gray-300 leading-relaxed'>{processed_text}</p>")
+                    html.append(f"<p class='mb-4 text-gray-800 leading-relaxed'>{processed_text}</p>")
                 elif block.get("type") == "blank_line":
                     html.append("<br>" * block.get("count", 1))
                 elif block.get("type") == "bottom_info" and "value" in block:
                     value = render_text(block["value"], context)
-                    html.append(f"<p class='text-gray-400 mt-8'>{value}</p>")
+                    html.append(f"<p class='text-gray-800 mt-8'>{value}</p>")
 
     if "blocks" in section:
         for block in section.get("blocks") or []:
@@ -267,7 +267,7 @@ def simple_render_section(section: dict, level: int = 1, context: dict | None = 
                     text = render_text(block["text"], context)
                     # ФИКС: Используем переменную
                     processed_text = text.replace('\n', '<br>')
-                    html.append(f"<p class='mb-4 text-gray-300'>{processed_text}</p>")
+                    html.append(f"<p class='mb-4 text-gray-800'>{processed_text}</p>")
                 elif "list" in block:
                     if block["list"].get("style") == "no_bullet":
                         html.append("<ul class='list-none pl-0 mb-4 space-y-1'>")

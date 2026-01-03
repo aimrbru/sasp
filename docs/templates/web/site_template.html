@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru" class="dark">
+<html lang="ru" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
         /* Основные стили (оставляем как были) */
-        body { font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; color: #1f2937; }
         .neon { text-shadow: 0 0 10px #3b82f6, 0 0 20px #3b82f6; }
         .content h1, .content h2, .content h3 { scroll-margin-top: 100px; }
         html { scroll-behavior: smooth; }
@@ -206,7 +206,7 @@
                     <!-- Простые контролы -->
                     <div class="bg-gray-800 p-4 border-t border-blue-600 flex justify-center space-x-4">
                         <button onclick="prevPage()" id="prev-btn" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg disabled:opacity-50">← Назад</button>
-                        <span id="page-info" class="px-4 py-2 text-gray-300">Страница: 1</span>
+                        <span id="page-info" class="px-4 py-2 text-gray-800">Страница: 1</span>
                         <button onclick="nextPage()" id="next-btn" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg disabled:opacity-50">Вперед →</button>
                     </div>
                 </div>
@@ -381,9 +381,9 @@
         });
     </script>
 </head>
-<body class="bg-gray-900 text-gray-100 min-h-screen" x-data="{ mobileMenuOpen: false, tocOpen: false }">
+<body class=".bg-white text-gray-800 min-h-screen" x-data="{ mobileMenuOpen: false, tocOpen: false }">
     <!-- Навигация -->
-    <header class="bg-gray-800 border-b border-blue-600 sticky top-0 z-50">
+    <header class="bg-gray-100 border-b border-blue-600 sticky top-0 z-50">
         <nav class="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
             <h1 class="text-xl sm:text-2xl font-bold neon">САСП-2</h1>
             
@@ -397,7 +397,7 @@
             </ul>
             
             <!-- Кнопка меню для мобильных -->
-            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-gray-300 hover:text-white focus:outline-none p-2 hover:bg-gray-700/50 rounded-lg transition-colors">
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-gray-800 hover:text-white focus:outline-none p-2 hover:bg-gray-700/50 rounded-lg transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -534,11 +534,11 @@
     </main>
 
     <!-- Футер -->
-    <footer class="bg-gray-800 border-t border-blue-600 mt-12 py-6">
-        <div class="container mx-auto px-6 text-center text-gray-500 text-sm">
+    <footer class="bg-gray-300 border-t border-blue-600 mt-12 py-6">
+        <div class="container mx-auto px-6 text-center text-gray-200 text-sm">
             <p>Разработчик: {{ developer.company }}, {{ developer.city }}</p>
             <p class="mt-2">Версия документации: {{ version.hardware }} | Прошивка: {{ version.firmware_base }}</p>
-            <p class="mt-2 text-xs text-gray-600">© {{ current_year }}. Все права защищены.</p>
+            <p class="mt-2 text-xs text-gray-200">© {{ current_year }}. Все права защищены.</p>
         </div>
     </footer>
 </body>
