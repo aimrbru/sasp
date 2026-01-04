@@ -268,7 +268,7 @@
                 // Запрещаем правый клик на canvas
                 canvas.oncontextmenu = (e) => {
                     e.preventDefault();
-                    showWarning('Копирование запрещено');
+
                     return false;
                 };
                 
@@ -414,7 +414,7 @@
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100 translate-y-0"
          x-transition:leave-end="opacity-0 -translate-y-2"
-         class="md:hidden fixed inset-x-0 top-16 bg-gray-800 border-b border-blue-600 z-40"
+         class="md:hidden fixed inset-x-0 top-16 bg-gray-200 border-b border-blue-600 z-40"
          @click.away="mobileMenuOpen = false">
         <div class="mobile-nav py-2">
             <a href="index.html" 
